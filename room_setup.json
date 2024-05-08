@@ -1,0 +1,93 @@
+{
+  "room_type": "huddle_room",
+  "mail_subject": "NFAH Room 131D",
+  "evertz": {
+    "ip_address": "192.168.1.100",
+    "hdmi_output_default_source": {
+      "hdmi_out_1": "source_1",
+      "hdmi_out_2": "source_2",
+      "hdmi_out_3": "source_3"
+    },
+    "UDP_server": {
+      "udp_port": 5000,
+      "parameters_to_report": [
+        "param1",
+        "param2"
+      ],
+      "allowed_ip_address": "192.168.1.200",
+      "read_buffer_size": 2048,
+      "server_name": "ResponseServer"
+    }
+  },
+  "sony_cameras": {
+    "common_properties": {
+      "username": "user",
+      "password": "password",
+      "cam_url": "/presets/",
+      "image_name": "presetimg",
+      "storage_location": "/html/img/",
+      "pan": 10,
+      "zoom": 5
+    },
+    "cameras": [
+      {
+        "ip_address": "192.168.1.150"
+      },
+      {
+        "ip_address": "192.168.1.151"
+      }
+    ]
+  },
+  "microphones": [
+    {
+      "ip_address": "192.168.1.175"
+    },
+    {
+      "ip_address": "192.168.1.176"
+    }
+  ],
+  "huddle_room_settings": {
+    "default_video_output": 1,
+    "frontpanel_lock": "on",
+    "frontpanel_led": "on",
+    "autoroute": "off"
+  },
+  "DailyEvents": [
+    {
+      "EventName": "AutoShutdown",
+      "EventTime": "00:30:00",
+      "Daily": "False",
+      "WeekDaysOnly": "True",
+      "WeekendsOnly": "False",
+      "Monday": "False",
+      "Tuesday": "False",
+      "Wednesday": "False",
+      "Thursday": "False",
+      "Friday": "False",
+      "Saturday": "False",
+      "Sunday": "True"
+    },
+    {
+      "EventName": "AirMediaReboot",
+      "EventTime": "01:00:00",
+      "Daily": "False",
+      "WeekDaysOnly": "False",
+      "WeekendsOnly": "False",
+      "Monday": "True",
+      "Tuesday": "True",
+      "Wednesday": "True",
+      "Thursday": "False",
+      "Friday": "False",
+      "Saturday": "False",
+      "Sunday": "False"
+    }
+  ],
+  "timeouts": {
+    "error_check_delay": 30,
+    "error_threshold": 3
+  },
+  "nvx_settings": {
+    "dm_server_processor_ip": "192.168.1.125",
+    "assigned_ipid": "0x22"
+  }
+}
