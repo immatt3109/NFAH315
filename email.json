@@ -1,0 +1,13 @@
+{
+  "serverADDR": "mail.smtp2go.com",
+  "serverPORT": 2525,
+  "serverSecure": true,
+  "userName": "aspence.com",
+  "userPWD": "xEIsb0YT9JFgJYII",
+  "mailFrom": "matt@aspence.com",
+  "mailTo": "aspen.ok@gmail.com",
+  "mailBody": "This is an email that demonstrates the email capability of a Crestron CP4N for sending mail from withing a C# program.Best Regards,Your Crestron Friend",
+  "numAttach": 0,
+  "attachName": "",
+  "mailCC": ""
+}

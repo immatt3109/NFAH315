@@ -7,6 +7,7 @@ using Crestron.SimplSharpPro.DeviceSupport;         	// For Generic Device Suppo
 
 namespace NFAHRooms
 {
+
     public class ControlSystem : CrestronControlSystem
     {
         /// <summary>
@@ -25,10 +26,18 @@ namespace NFAHRooms
         /// 
        
         public RoomSetup roomSetup;
+        public Email ErrorEmail;
+        
 
         public ControlSystem()
             : base()
         {
+            ErrorEmail = new Email();
+            ErrorEmail.EmailSetup();
+
+            string configRoomFilePath = "/user/room_setup.json";
+            roomSetup = RoomSetup.LoadRoomSetup(configRoomFilePath);
+
             try
             {
                 Thread.MaxNumberOfUserThreads = 20;
@@ -38,15 +47,12 @@ namespace NFAHRooms
                 CrestronEnvironment.ProgramStatusEventHandler += new ProgramStatusEventHandler(_ControllerProgramEventHandler);
                 CrestronEnvironment.EthernetEventHandler += new EthernetEventHandler(_ControllerEthernetEventHandler);
 
-                string configFilePath = "/user/room_setup.json";
-                
-                roomSetup = RoomSetup.LoadRoomSetup(configFilePath);
-                
-                
             }
             catch (Exception e)
             {
                 ErrorLog.Error("Error in the constructor: {0}", e.Message);
+                CrestronConsole.PrintLine("Error in the constructor: {0}", e.Message);
+                ErrorEmail.SendEmail(roomSetup.MailSubject, e.Message);
             }
         }
 
@@ -65,8 +71,11 @@ namespace NFAHRooms
         /// </summary>
         public override void InitializeSystem()
         {
+            Email ErrorEmail = new Email();
+            ErrorEmail.EmailSetup();
+
             try
-            {
+            {   
                 CrestronConsole.PrintLine("Room Type: {0}", roomSetup.RoomType);
                 CrestronConsole.PrintLine("Mail Subject: {0}", roomSetup.MailSubject);
                 CrestronConsole.PrintLine("Evertz IP: {0}", roomSetup.Evertz.IpAddress);
@@ -82,17 +91,12 @@ namespace NFAHRooms
                     CrestronConsole.PrintLine("Daily Event: {0} - {1}", dailyEvent.EventTime, dailyEvent.EventName);
                 }
 
-
-                
-
-
-              
-
             }
             catch (Exception e)
             {
                 CrestronConsole.PrintLine("Error in InitializeSystem: {0}", e.Message);
                 ErrorLog.Error("Error in InitializeSystem: {0}", e.Message);
+                ErrorEmail.SendEmail(roomSetup.MailSubject, e.Message);
             }
         }
 

@@ -5,8 +5,7 @@ using Crestron.SimplSharp;
 using System;
 
 namespace NFAHRooms
-{
-        
+{       
     public class RoomSetup
     {
         private static string json;
