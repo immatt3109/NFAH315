@@ -17,7 +17,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
+    <DebugType>portable</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
@@ -136,10 +136,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Constants.cs" />
+    <Compile Include="HDMD.cs" />
+    <Compile Include="CmdLine.cs" />
     <Compile Include="Email.cs" />
+    <Compile Include="Enums.cs" />
+    <Compile Include="HuddleHandler.cs" />
     <Compile Include="RoomSetup.cs" />
     <Compile Include="ControlSystem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scheduling.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

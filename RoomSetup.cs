@@ -15,7 +15,10 @@ namespace NFAHRooms
 
         [JsonProperty("mail_subject")]
         public string MailSubject { get; set; }
-
+        [JsonProperty("Crestron")]
+        public CrestronConfiguration Crestron { get; set; }
+        [JsonProperty("Touchpanel")]
+        public TouchpanelConfiguration Touchpanel { get; set; }
         [JsonProperty("evertz")]
         public EvertzConfiguration Evertz { get; set; }
 
@@ -36,8 +39,6 @@ namespace NFAHRooms
 
         [JsonProperty("nvx_settings")]
         public NvxSettings NvxSettings { get; set; }
-
-        
 
         public static RoomSetup LoadRoomSetup(string filepath)
         {
@@ -61,6 +62,42 @@ namespace NFAHRooms
         }
     }
 
+    public class CrestronConfiguration
+    {
+        [JsonProperty("SNTP_server")]
+        public string SntpServer { get; set; }
+        [JsonProperty("Timezone_ID")]
+        public string TimezoneId { get; set; }
+        [JsonProperty("Processor_IP")]
+        public string ProcessorIp { get; set; }
+        [JsonProperty("Host_Name")]
+        public string HostName { get; set; }
+        [JsonProperty("Subnet")]
+        public string Subnet { get; set; }
+        [JsonProperty("DNS1")]
+        public string Dns1 { get; set; }
+        [JsonProperty("DNS2")]
+        public string Dns2 { get; set; }
+        [JsonProperty("Gateway")]
+        public string Gateway { get; set; }
+        [JsonProperty("Username")]
+        public string Username { get; set; }
+        [JsonProperty("Password")]
+        public string Password { get; set; }
+    }
+    public class TouchpanelConfiguration
+    {
+        [JsonProperty("Room_Text")]
+        public string RoomText { get; set; }
+        [JsonProperty("Proximity")]
+        public string Proximity { get; set; }
+        [JsonProperty("ScreenSaver")]
+        public string ScreenSaver{ get; set; }
+        [JsonProperty ("Standby_Timeout")]
+        public ushort StandbyTimeout { get; set; }
+        [JsonProperty("Image_URL")]
+        public string ImageUrl { get; set; }
+    }
     public class EvertzConfiguration
     {
         [JsonProperty("ip_address")]
@@ -157,7 +194,7 @@ namespace NFAHRooms
         public string EventName { get; set; }
 
         [JsonProperty("EventTime")]
-        public string EventTime { get; set; }
+        public DateTime EventTime { get; set; }
 
         [JsonProperty("Daily")]
         public bool Daily { get; set; }

@@ -1,6 +1,24 @@
 {
-  "room_type": "huddle_room",
-  "mail_subject": "NFAH Room 131D",
+"room_type": "huddle_room",
+"mail_subject": "NFAH Room 131D",
+"Crestron":{
+		"SNTP_server":"pool.ntp.org",
+		"Timezone_ID":"010",
+		"Processor_IP":"192.168.1.95",
+		"Host_Name":"NFAH-131",
+		"Subnet":"255.255.0.0",
+		"DNS1":"192.168.1.1",
+		"DNS2":"8.8.8.8",
+		"Gateway":"192.168.1.1",
+		"Username":"admin",
+		"Password":"password"},
+"Touchpanel":{
+	"Room_Text":"NFAH Room 131",
+	"Proximity":"on",
+	"Screensaver":"on",
+	"Standby_Timeout": 3,
+	"Image_URL":"http://192.168.1.95/TPAssets/AGSCreenSaver1920x1200.png"
+	},
   "evertz": {
     "ip_address": "192.168.1.100",
     "hdmi_output_default_source": {
@@ -47,17 +65,17 @@
     }
   ],
   "huddle_room_settings": {
-    "default_video_output": 1,
-    "frontpanel_lock": "on",
+    "default_video_output": 2,
+    "frontpanel_lock": "off",
     "frontpanel_led": "on",
     "autoroute": "off"
   },
   "DailyEvents": [
     {
       "EventName": "AutoShutdown",
-      "EventTime": "00:30:00",
-      "Daily": "False",
-      "WeekDaysOnly": "True",
+      "EventTime": "16:15:00",
+      "Daily": "True",
+      "WeekDaysOnly": "False",
       "WeekendsOnly": "False",
       "Monday": "False",
       "Tuesday": "False",
@@ -65,25 +83,81 @@
       "Thursday": "False",
       "Friday": "False",
       "Saturday": "False",
-      "Sunday": "True"
+      "Sunday": "False"
     },
     {
       "EventName": "AirMediaReboot",
-      "EventTime": "01:00:00",
-      "Daily": "False",
+      "EventTime": "16:00:00",
+      "Daily": "True",
       "WeekDaysOnly": "False",
       "WeekendsOnly": "False",
-      "Monday": "True",
-      "Tuesday": "True",
-      "Wednesday": "True",
+      "Monday": "False",
+      "Tuesday": "False",
+      "Wednesday": "False",
       "Thursday": "False",
       "Friday": "False",
       "Saturday": "False",
       "Sunday": "False"
-    }
+    },
+	{
+	"EventName": "TP_Screensaver_Off",
+      "EventTime": "16:41:00",
+      "Daily": "True",
+      "WeekDaysOnly": "False",
+      "WeekendsOnly": "False",
+      "Monday": "False",
+      "Tuesday": "False",
+      "Wednesday": "False",
+      "Thursday": "False",
+      "Friday": "False",
+      "Saturday": "False",
+      "Sunday": "False"
+	},
+	{
+	"EventName": "TP_Screensaver_On",
+      "EventTime": "16:46:00",
+      "Daily": "True",
+      "WeekDaysOnly": "False",
+      "WeekendsOnly": "False",
+      "Monday": "False",
+      "Tuesday": "False",
+      "Wednesday": "False",
+      "Thursday": "False",
+      "Friday": "False",
+      "Saturday": "False",
+      "Sunday": "False"
+	},
+	{
+	"EventName": "TP_Prox_Off",
+      "EventTime": "19:00:00",
+      "Daily": "True",
+      "WeekDaysOnly": "False",
+      "WeekendsOnly": "False",
+      "Monday": "False",
+      "Tuesday": "False",
+      "Wednesday": "False",
+      "Thursday": "False",
+      "Friday": "False",
+      "Saturday": "False",
+      "Sunday": "False"
+	},
+	{
+	"EventName": "TP_Prox_On",
+      "EventTime": "18:00:00",
+      "Daily": "True",
+      "WeekDaysOnly": "False",
+      "WeekendsOnly": "False",
+      "Monday": "False",
+      "Tuesday": "False",
+      "Wednesday": "False",
+      "Thursday": "False",
+      "Friday": "False",
+      "Saturday": "False",
+      "Sunday": "False"
+	}
   ],
   "timeouts": {
-    "error_check_delay": 30,
+    "error_check_delay": 1,
     "error_threshold": 3
   },
   "nvx_settings": {

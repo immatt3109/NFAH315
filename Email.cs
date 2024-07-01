@@ -1,20 +1,22 @@
 ﻿using Newtonsoft.Json;
-using System.Collections.Generic;
 using Crestron.SimplSharp.CrestronIO;
 using Crestron.SimplSharp;
 using System;
+using System.Net.Mail;
 
 namespace NFAHRooms
 {
     public class Email
     {
         private static string json;
-        private Email em;
-        public void EmailSetup()
+        //private Email em;
+              
+
+       public void EmailSetup()
         {
             LoadEmailSetup();
-            CrestronConsole.PrintLine("Email Setup Loaded");
-
+            
+            
         }
 
         [JsonProperty("serverADDR")]
@@ -60,7 +62,34 @@ namespace NFAHRooms
 
                 json = sr.ReadToEnd();
 
-                em = JsonConvert.DeserializeObject<Email>(json);
+                var tempEmail = JsonConvert.DeserializeObject<Email>(json);
+                CrestronConsole.PrintLine(tempEmail.serverADDR);
+                CrestronConsole.PrintLine(tempEmail.serverPORT.ToString());
+                CrestronConsole.PrintLine(tempEmail.serverSecure.ToString());
+                CrestronConsole.PrintLine(tempEmail.userName);
+                CrestronConsole.PrintLine(tempEmail.userPWD);
+                CrestronConsole.PrintLine(tempEmail.mailFrom);
+                CrestronConsole.PrintLine(tempEmail.mailTo);
+                CrestronConsole.PrintLine(tempEmail.mailCC);
+                CrestronConsole.PrintLine(tempEmail.mailBody);
+                CrestronConsole.PrintLine(tempEmail.numAttach.ToString());
+                CrestronConsole.PrintLine(tempEmail.attachName);
+
+                this.serverADDR = tempEmail.serverADDR;
+                this.serverPORT = tempEmail.serverPORT;
+                this.serverSecure = tempEmail.serverSecure;
+                this.userName = tempEmail.userName;
+                this.userPWD = tempEmail.userPWD;
+                this.mailFrom = tempEmail.mailFrom;
+                this.mailTo = tempEmail.mailTo;
+                this.mailBody = tempEmail.mailBody;
+                this.numAttach = tempEmail.numAttach;
+                this.attachName = tempEmail.attachName;
+                this.mailCC = tempEmail.mailCC;
+                
+
+                CrestronConsole.PrintLine($"{this.serverADDR}, {this.serverPORT.ToString()}, {this.serverSecure.ToString()}, {this.userName}, {this.userPWD}, {this.mailFrom}, {this.mailTo}, {this.mailCC}, {this.mailBody}, {this.numAttach.ToString()}, {this.attachName}");
+
             }
             catch (Exception e)
             {
@@ -71,9 +100,43 @@ namespace NFAHRooms
 
         public void SendEmail(string MailSub, string MailMessage)
         {
+            try
+            {
+                CrestronConsole.PrintLine("SendEmail");
+                CrestronConsole.PrintLine("Server");
+                CrestronConsole.PrintLine($"Server: {this.serverADDR}");
+                CrestronConsole.PrintLine("Port");
+                CrestronConsole.PrintLine($"Port: {this.serverPORT}");
+                CrestronConsole.PrintLine($"Secure: {this.serverSecure}");
+                CrestronConsole.PrintLine($"UserName: {this.userName}");
+                CrestronConsole.PrintLine($"Password: {this.userPWD}");
+                CrestronConsole.PrintLine($"MailFrom: {this.mailFrom}");
+                CrestronConsole.PrintLine($"MailTo: {this.mailTo}");
+                CrestronConsole.PrintLine($"MailCC: {this.mailCC}");
+
+                CrestronConsole.PrintLine($"MailBody: {this.mailBody}");
+                CrestronConsole.PrintLine($"NumAttch: {this.numAttach}");
+                CrestronConsole.PrintLine($"AttchName: {this.attachName}");
+            }
+            catch (Exception e)
+            {
+                ErrorLog.Error("Error printing: {0}", e.Message);
+                CrestronConsole.PrintLine("Error printing: {0} {1} {2} ", e.Message, e.StackTrace, e.Source);
+            }
+
+           
+            try 
+            { 
+                
             CrestronMailFunctions.SendMailErrorCodes myErrorCode = new  CrestronMailFunctions.SendMailErrorCodes(); 
-            myErrorCode = CrestronMailFunctions.SendMail(em.serverADDR, em.serverPORT, em.serverSecure, em.userName, em.userPWD, em.mailFrom, em.mailTo, em.mailCC, MailSub, (em.mailBody + "\r\r" + MailMessage), em.numAttach, em.attachName);
+            myErrorCode = CrestronMailFunctions.SendMail(this.serverADDR, this.serverPORT, this.serverSecure, this.userName, this.userPWD, this.mailFrom, this.mailTo, this.mailCC, MailSub, (this.mailBody + MailMessage), this.numAttach, this.attachName);
             CrestronConsole.PrintLine("Email Error Code = {0}", myErrorCode);        
+            }
+            catch (Exception e)
+            {
+                ErrorLog.Error("Error sending thisail: {0}", e.Message);
+                CrestronConsole.PrintLine("Error sending thisail: {0}", e.Message);
+            }
         }
     }
 }
