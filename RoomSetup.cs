@@ -14,7 +14,7 @@ namespace NFAHRooms
         public string RoomType { get; set; }
 
         [JsonProperty("mail_subject")]
-        public string MailSubject { get; set; }
+        public static string MailSubject { get; set; }
         [JsonProperty("Crestron")]
         public CrestronConfiguration Crestron { get; set; }
         [JsonProperty("Touchpanel")]

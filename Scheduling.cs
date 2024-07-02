@@ -6,6 +6,7 @@ using Crestron.SimplSharpPro.UI;
 using Crestron.SimplSharpPro;
 using Crestron.SimplSharpPro.DM.AirMedia;
 using Crestron.SimplSharpPro.CrestronConnected;
+using Crestron.SimplSharpPro.DM;
 
 
 
@@ -17,25 +18,27 @@ namespace NFAHRooms
         public List<ScheduledEvent> SysEvent = new List<ScheduledEvent>();
         
         private RoomSetup _rsetup;
-        private Email _email;
+        //private Email _email;
         private Ts1070 _tp;
         private Am300 _am3200;
+        private HdMd4x14kzE _hdmd;
         private CrestronConnectedDisplayV2 _tv;
-        public Dictionary<string, int> errorCounts = new Dictionary<string, int>();
+        public static Dictionary<string, int> errorCounts = new Dictionary<string, int>();
 
         public static bool SS_Active;
         public static bool Prox_Active;
         
 
-        public Scheduling(RoomSetup rsetup, Ts1070 tp, Am300 airmedia, CrestronConnectedDisplayV2 disp1)
+        public Scheduling(RoomSetup rsetup, Ts1070 tp, Am300 airmedia, CrestronConnectedDisplayV2 disp1, HdMd4x14kzE hdmd)
         {
             _rsetup = rsetup;
             _tp = tp;
             _am3200 = airmedia;
             _tv = disp1;
+            _hdmd = hdmd;
 
-            _email = new Email();
-            _email.EmailSetup();
+            //_email = new Email();
+            //_email.EmailSetup();
 
         }
 
@@ -110,10 +113,10 @@ namespace NFAHRooms
 
                 }
                 catch (Exception e)
-                { Email _email = new Email();
+                { //Email _email = new Email();
                     ErrorLog.Error("SystemEventTimer Add: {0}", e.Message);
                     CrestronConsole.PrintLine($"ERROR - SystemEventTimer Add:{e.Message}");
-                    _email.SendEmail(_rsetup.MailSubject, $"ERROR - SystemEventTimer Add: {e.Message} {e.Source} {e.StackTrace}");
+                    Email.SendEmail(RoomSetup.MailSubject, $"ERROR - SystemEventTimer Add: {e.Message} {e.Source} {e.StackTrace}");
                 }
             }
         }
@@ -297,10 +300,10 @@ namespace NFAHRooms
                 SysEvent[SysEvent.Count - 1].Enable();
             }
             catch (Exception e)
-            {Email _email = new Email();
+            {//Email _email = new Email();
                 ErrorLog.Error("Could not create Daily Event", e.Message);
                 CrestronConsole.PrintLine($"ERROR - Could Not Create Daily Event - Message: {e.Message}");
-                _email.SendEmail(_rsetup.MailSubject, $"ERROR - Daily Schedule Event: {e.Message} {e.Source} {e.StackTrace}");
+                Email.SendEmail(RoomSetup.MailSubject, $"ERROR - Daily Schedule Event: {e.Message} {e.Source} {e.StackTrace}");
             }
         }
         private int DaysUntil(int startday, int targetday)
@@ -361,14 +364,9 @@ namespace NFAHRooms
             
         }
 
-        public void Alert_Timer(string name, int delay, Exception ex)
+        public void Alert_Timer(string name, int delay, string ex)
         {
-           
-
-            CrestronConsole.PrintLine($"Alert_Timer for:  {name} is running.");
-            
-
-            try
+           try
             {
                 if (!errorCounts.ContainsKey(name))
                 {
@@ -383,7 +381,7 @@ namespace NFAHRooms
             {
                 ErrorLog.Error("Could not create Alert Timer", e.Message);
                 CrestronConsole.PrintLine($"ERROR - Could Not Create Alert Timer - Message: {e.Message}");
-                _email.SendEmail(_rsetup.MailSubject, $"ERROR - Alert Timer: {e.Message} {e.Source} {e.StackTrace}");
+                Email.SendEmail(RoomSetup.MailSubject, $"ERROR - Alert Timer: {e.Message} {e.Source} {e.StackTrace}");
             }
         }
     
@@ -394,65 +392,81 @@ namespace NFAHRooms
 
         public void Alert_Timer_Callback(object obj)
         {
-            
-
             var data = (dynamic)obj;
             string name = data.Name;
-            Exception ex = data.Exception;
+            string ex = data.Exception;
             int delay = data.Delay;
-
-            CrestronConsole.PrintLine($"Alert_Timer_Callback for:  {name}");
-            CrestronConsole.PrintLine($"Alert_Timer_Callback for:  {ex.Message}");
-            CrestronConsole.PrintLine($"Alert_Timer_Callback for:  {obj}");
-            
+                                    
             bool errorExists = CheckOnlineError(name);
             if (errorExists && errorCounts[name] <= _rsetup.Timeouts.ErrorThreshold)
             {
-                CrestronConsole.PrintLine($"{_rsetup.MailSubject}");
-                CrestronConsole.PrintLine($"ERROR - {name} - {ex.Message}");
-                //_email.SendEmail(_rsetup.MailSubject, $"ERROR - {name} - {ex.Message}");
-                _email.SendEmail(_rsetup.MailSubject, ex.Message);
+                Email.SendEmail(RoomSetup.MailSubject, ex);
                 Alert_Timer(name, delay, ex);
             }
             else if (!errorExists)
             {
-                
-                
                 errorCounts[name] = 0;
             }
         }
-
         private bool CheckOnlineError(string type)
         {
             if (type == "touchpanel")
-            {CrestronConsole.PrintLine("CheckOnlineError Touchpanel");
-                CrestronConsole.PrintLine("CheckOnlineError Touchpanel {0}", _tp.IsOnline);
+            {
                 if (_tp.IsOnline)
-                {   CrestronConsole.PrintLine("CheckOnlineError Touchpanel is online");
+                {   
                     return false;
                 }
                 else if (!_tp.IsOnline)
-                {   CrestronConsole.PrintLine("CheckOnlineError Touchpanel is offline");
+                {   
                     return true;
                 }
             }
-            else if (type == "hdmd")
+            if (type == "hdmd")
+            {
+                if (_hdmd.IsOnline)
+                {
+                    return false;
+                }
+                else if (!_hdmd.IsOnline)
+                {
+                    return true;
+                }
+            }
+            if (type == "airmedia")
+            {
+                if (_am3200.IsOnline)
+                {
+                    return false;
+                }
+                else if (!_am3200.IsOnline)
+                {
+                    return true;
+                }
+            }
+            if (type == "tv")
+            {
+                if (_tv.IsOnline)
+                {
+                    return false;
+                }
+                else if (!_tv.IsOnline)
+                {
+                    return true;
+                }
+            }
+            if (type == "evertz")
             {
                 return true;
             }
-            else if (type == "evertz")
+            if (type == "sony")
             {
                 return true;
             }
-            else if (type == "sony")
+            if (type == "microphone")
             {
                 return true;
             }
-            else if (type == "microphone")
-            {
-                return true;
-            }
-            else if (type == "nvx")
+            if (type == "nvx")
             {
                 return true;
             }
@@ -460,7 +474,7 @@ namespace NFAHRooms
             {
                 return false;
             }
-            return false;
+            
         }
 
         

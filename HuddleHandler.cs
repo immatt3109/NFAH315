@@ -1,15 +1,12 @@
 ﻿using System;
 using Crestron.SimplSharp;                          	// For Basic SIMPL# Classes
 using Crestron.SimplSharpPro;                       	// For Basic SIMPL#Pro classes
-using Crestron.SimplSharpPro.CrestronThread;        	// For Threading
-using Crestron.SimplSharpPro.Diagnostics;		    	// For System Monitor Access
 using Crestron.SimplSharpPro.DeviceSupport;
 using Crestron.SimplSharpPro.UI;
 using Crestron.SimplSharpPro.DM.AirMedia;
 using Crestron.SimplSharpPro.DM;
 using Crestron.SimplSharpPro.CrestronConnected;
-using System.Linq.Expressions;
-using System.Security.Cryptography.X509Certificates;
+
 
 namespace NFAHRooms
 {
@@ -21,19 +18,13 @@ namespace NFAHRooms
         private HdMd4x14kzE hdmd;
         private Am300 am3200;
         private CrestronConnectedDisplayV2 disp1;
-        private Email _email; // ErrorEmail;
         private HDMD hdmdClass;
         private RoomSetup roomSetup;
-        private Scheduling err_counts;
-        
-
-        
+        private Scheduling schedule;
         public HuddleHandler(Ts1070 tp, HdMd4x14kzE hdmd, Am300 am3200, CrestronConnectedDisplayV2 disp1, RoomSetup roomSetup)
         {
-            _email = new Email();
             hdmdClass = new HDMD(hdmd);
-            _email.EmailSetup();
-
+            
             this.tp = tp;
             this.hdmd = hdmd;
             this.am3200 = am3200;
@@ -49,10 +40,9 @@ namespace NFAHRooms
 
             this.roomSetup = roomSetup;
 
-            
-            
+            schedule = new Scheduling(roomSetup, tp, am3200, disp1, hdmd);
         }
-
+                
         private void disp1_BaseEvent(GenericBase currentDevice, BaseEventArgs args)
         {
             ///
@@ -60,26 +50,37 @@ namespace NFAHRooms
             ///btnPwrOn = 33,  //If power is off and you want to turn it on, it's this button
             ///btnPwrOnVis = 33 //If power is off this button should be visible
             ///
-            
-            if (disp1.Power.PowerOnFeedback.BoolValue)  //Power On
+
+            try
             {
-                tp.BooleanInput[((uint)Join.btnPwrOnVis)].BoolValue = false;
-                hdmdClass.RouteVideo(((uint)roomSetup.HuddleRoomSettings.DefaultVideoOutput));
-                if (disp1.Video.Source.SourceSelect.UShortValue != 1)
-                    disp1.Video.Source.SourceSelect.UShortValue = 1;
-                if (hdmd.FrontPanelLockEnabledFeedback.BoolValue && roomSetup.HuddleRoomSettings.FrontpanelLock == "off")
-                    hdmd.DisableFrontPanelLock();
+                if (disp1.Power.PowerOnFeedback.BoolValue)  //Power On
+                {
+                    tp.BooleanInput[((uint)Join.btnPwrOnVis)].BoolValue = false;
+                    hdmdClass.RouteVideo(((uint)roomSetup.HuddleRoomSettings.DefaultVideoOutput));
+
+                    if (disp1.Video.Source.SourceSelect.UShortValue != 1)
+                        disp1.Video.Source.SourceSelect.UShortValue = 1;
+                    if (hdmd.FrontPanelLockEnabledFeedback.BoolValue && roomSetup.HuddleRoomSettings.FrontpanelLock == "off")
+                        hdmd.DisableFrontPanelLock();
+                }
+
+                if (disp1.Power.PowerOffFeedback.BoolValue) //Power Off
+                {
+                    tp.BooleanInput[((uint)Join.btnPCOnVis)].BoolValue = false;
+                    tp.BooleanInput[((uint)Join.btnAirMediaOnVis)].BoolValue = false;
+                    tp.BooleanInput[((uint)Join.btnAuxOnVis)].BoolValue = false;
+                    tp.BooleanInput[((uint)Join.btnPwrOnVis)].BoolValue = true;
+                    hdmdClass.RouteVideo(0);
+
+                    if (hdmd.FrontPanelLockDisabledFeedback.BoolValue)
+                        hdmd.EnableFrontPanelLock();
+                }
             }
-            
-            if (disp1.Power.PowerOffFeedback.BoolValue ) //Power Off
+            catch (Exception e)
             {
-                tp.BooleanInput[((uint)Join.btnPCOnVis)].BoolValue = false;
-                tp.BooleanInput[((uint)Join.btnAirMediaOnVis)].BoolValue = false;
-                tp.BooleanInput[((uint)Join.btnAuxOnVis)].BoolValue = false;
-                tp.BooleanInput[((uint)Join.btnPwrOnVis)].BoolValue = true;
-                hdmdClass.RouteVideo(0);
-                if (hdmd.FrontPanelLockDisabledFeedback.BoolValue)
-                    hdmd.EnableFrontPanelLock();
+                ErrorLog.Notice($"HuddleHandler Error:  {e.Message}");
+                CrestronConsole.PrintLine($"HuddleHandler Error:  {e.Message}");
+                Email.SendEmail(RoomSetup.MailSubject + " Disp1_BaseEvent", e.Message);
             }
         }
         private void tp_SigChange(BasicTriList currentDevice, SigEventArgs args)
@@ -115,7 +116,6 @@ namespace NFAHRooms
                                                     if (disp1.Video.Source.SourceSelect.UShortValue != 1)
                                                         disp1.Video.Source.SourceSelect.UShortValue = 1;
                                                     hdmdClass.RouteVideo(3);
-
                                                 }
                                                 break;
                                             }
@@ -178,97 +178,100 @@ namespace NFAHRooms
             {
                 ErrorLog.Notice($"HuddleHandler Error:  {e.Message}");
                 CrestronConsole.PrintLine($"HuddleHandler Error:  { e.Message}");
+                Email.SendEmail(RoomSetup.MailSubject + " TP_SigChange", e.Message);
             }
         }
-
-        
         private void tp_OnlineStatusChange(GenericBase currentDevice, OnlineOfflineEventArgs args)
         {
-            try { 
-            if (args.DeviceOnLine)
+            try
             {
-                CrestronConsole.PrintLine("Online Status Change: {0} IPID: {1} Status: {2}", currentDevice.Name, currentDevice.ID, args.DeviceOnLine);
-                ErrorLog.Notice("Online Status Change: {0} IPID: {1} Status: {2}", currentDevice.Name, currentDevice.ID, args.DeviceOnLine);
-                   
-                if (err_counts.errorCounts["touchpanel"] > 0)
+                if (args.DeviceOnLine)
                 {
-                        CrestronConsole.PrintLine("Touchpanel is online");
-                        err_counts.errorCounts["touchpanel"] = 0;
-                        _email.SendEmail(roomSetup.MailSubject, $"{currentDevice.Name} is online");
-                        CrestronConsole.PrintLine("Touchpanel Online Email Sent");
-                }
-                tp.ExtenderSystemReservedSigs.StandbyTimeout.UShortValue = roomSetup.Touchpanel.StandbyTimeout;
+                    if (Scheduling.errorCounts.TryGetValue("touchpanel", out int x) && x > 0)
+                    {
+                        Scheduling.errorCounts["touchpanel"] = 0;
+                        Email.SendEmail(RoomSetup.MailSubject, $"{currentDevice.Name} is online {DateTime.Now}");
+                    }
 
-                if (roomSetup.Touchpanel.ScreenSaver.ToLower() == "on" && roomSetup.Touchpanel.StandbyTimeout != 0 && Scheduling.SS_Active)
-                        
+                    tp.ExtenderSystemReservedSigs.StandbyTimeout.UShortValue = roomSetup.Touchpanel.StandbyTimeout;
+
+                    if (roomSetup.Touchpanel.ScreenSaver.ToLower() == "on" && roomSetup.Touchpanel.StandbyTimeout != 0 && Scheduling.SS_Active)
+                    {
+                        tp.ExtenderScreenSaverReservedSigs.ScreenSaverImageUrl.StringValue = roomSetup.Touchpanel.ImageUrl;
+
+                        tp.ExtenderScreenSaverReservedSigs.ScreensaverOff.BoolValue = false;
+                        tp.ExtenderScreenSaverReservedSigs.ScreensaverOn.BoolValue = true;
+                    }
+
+                    else if ((roomSetup.Touchpanel.ScreenSaver.ToLower() == "off" && !Scheduling.SS_Active) || roomSetup.Touchpanel.StandbyTimeout == 0)
+                    {
+                        tp.ExtenderScreenSaverReservedSigs.ScreensaverOn.BoolValue = false;
+                        tp.ExtenderScreenSaverReservedSigs.ScreensaverOff.BoolValue = true;
+                    }
+                }
+                else if (!args.DeviceOnLine)
                 {
-                    tp.ExtenderScreenSaverReservedSigs.ScreenSaverImageUrl.StringValue = roomSetup.Touchpanel.ImageUrl;
-
-                    tp.ExtenderScreenSaverReservedSigs.ScreensaverOff.BoolValue = false;
-                    tp.ExtenderScreenSaverReservedSigs.ScreensaverOn.BoolValue = true;
-                    
+                    schedule.Alert_Timer("touchpanel", roomSetup.Timeouts.ErrorCheckDelay, $"{currentDevice.Name} Offline at {DateTime.Now}");
                 }
-                else if ((roomSetup.Touchpanel.ScreenSaver.ToLower() == "off" && !Scheduling.SS_Active) || roomSetup.Touchpanel.StandbyTimeout == 0)
-                {
-                    tp.ExtenderScreenSaverReservedSigs.ScreensaverOn.BoolValue = false;
-                    tp.ExtenderScreenSaverReservedSigs.ScreensaverOff.BoolValue = true;
-                }
-                
-            }
-            else
-            {
-                CrestronConsole.PrintLine("Online Status Change: {0} IPID: {1} Status: {2}", currentDevice.Name, currentDevice.ID, args.DeviceOnLine);
-                ErrorLog.Notice("Online Status Change: {0} IPID: {1} Status: {2}", currentDevice.Name, currentDevice.ID, args.DeviceOnLine);
-                    //ErrorEmail.SendEmail("Device Offline", $"{currentDevice.Name} is offline");
-                    //schedule.Alert_Timer("TP_Offline", roomSetup.Timeouts.ErrorCheckDelay);
-                    throw new Exception("Touchpanel Offline");
-
-            }
             }
             catch (Exception e)
-            {   CrestronConsole.PrintLine("caught excemption tp_OnlineStatusChange: {0}", e.Message);
-                Scheduling schedule = new Scheduling(roomSetup, tp, am3200, disp1);
-                schedule.Alert_Timer("touchpanel", roomSetup.Timeouts.ErrorCheckDelay, e );
-            }
-            
-           
+            {
+                CrestronConsole.PrintLine("TP_OnlineStatusChange: {0}", e.Message);
+                ErrorLog.Notice("TP_OnlineStatusChange: {0}", e.Message);
+                Email.SendEmail(RoomSetup.MailSubject + " TP_OnlineStatusChange", e.Message);
+            }  
         }
         private void hdmd_OnlineStatusChange(GenericBase currentDevice, OnlineOfflineEventArgs args)
         {
-            if (args.DeviceOnLine)
+            try
             {
-                if (roomSetup.HuddleRoomSettings.Autoroute.ToLower() == "on")
+                if (args.DeviceOnLine)
                 {
-                   hdmd.AutoRouteOn();
-                }
-                else
-                {
-                    hdmd.AutoRouteOff();
+                    if (roomSetup.HuddleRoomSettings.Autoroute.ToLower() == "on")
+                    {
+                        hdmd.AutoRouteOn();
+                    }
+                    else
+                    {
+                        hdmd.AutoRouteOff();
+                    }
+
+                    if (roomSetup.HuddleRoomSettings.FrontpanelLock.ToLower() == "on")
+                    {
+                        hdmd.EnableFrontPanelLock();
+                    }
+                    else
+                    {
+                        hdmd.DisableFrontPanelLock();
+                    }
+
+                    if (roomSetup.HuddleRoomSettings.FrontpanelLed.ToLower() == "on")
+                    {
+                        hdmd.EnableFrontPanelLed();
+                    }
+                    else
+                    {
+                        hdmd.DisableFrontPanelLed();
+                    }
+
+                    if (Scheduling.errorCounts.TryGetValue("hdmd", out int x) && x > 0)
+                    {
+                        Scheduling.errorCounts["hdmd"] = 0;
+                        Email.SendEmail(RoomSetup.MailSubject, $"{currentDevice.Name} is online {DateTime.Now}");
+                    }
                 }
 
-                if (roomSetup.HuddleRoomSettings.FrontpanelLock.ToLower() == "on")
+                if (args.DeviceOnLine == false)
                 {
-                    hdmd.EnableFrontPanelLock();
-                }
-                else
-                {
-                    hdmd.DisableFrontPanelLock();
-                }
 
-                if (roomSetup.HuddleRoomSettings.FrontpanelLed.ToLower() == "on")
-                {
-                    hdmd.EnableFrontPanelLed();
-                }
-                else
-                {
-                    hdmd.DisableFrontPanelLed();
-
+                    schedule.Alert_Timer("hdmd", roomSetup.Timeouts.ErrorCheckDelay, $"{currentDevice.Name} Offline at {DateTime.Now}");
                 }
             }
-            else 
+            catch (Exception e)
             {
-                CrestronConsole.PrintLine("Online Status Change: {0} IPID: {1} Status: {2}", currentDevice.Name, currentDevice.ID, args.DeviceOnLine);
-                ErrorLog.Notice("Online Status Change: {0} IPID: {1} Status: {2}", currentDevice.Name, currentDevice.ID, args.DeviceOnLine);
+                CrestronConsole.PrintLine("HDMD_OnlineStatusChange: {0}", e.Message);
+                ErrorLog.Notice("HDMD_OnlineStatusChange: {0}", e.Message);
+                Email.SendEmail(RoomSetup.MailSubject + " HDMD_OnlineStatusChange", e.Message);
             }
         }
         private void hdmd_DMSystemChange(GenericBase currentDevice, DMSystemEventArgs args)
@@ -314,7 +317,8 @@ namespace NFAHRooms
                 catch (Exception e)
                 {
                     ErrorLog.Exception("HuddleHandler Error",e);
-                    CrestronConsole.PrintLine($"HuddleHandler Error:  {e.Message}");
+                    CrestronConsole.PrintLine($"HuddleHandler Error:  {e.Message}"); 
+                    Email.SendEmail(RoomSetup.MailSubject, e.Message);
                 }
             }
             else
@@ -323,16 +327,53 @@ namespace NFAHRooms
 
         private void disp1_OnlineStatusChange(GenericBase currentDevice, OnlineOfflineEventArgs args)
         {
-            CrestronConsole.PrintLine("Online Status Change: {0} IPID: {1} Status: {2}", currentDevice.Name, currentDevice.ID, args.DeviceOnLine);
-            ErrorLog.Notice("Online Status Change: {0} IPID: {1} Status: {2}", currentDevice.Name, currentDevice.ID, args.DeviceOnLine);
+            try
+            {
+                if (args.DeviceOnLine)
+                {
+                    if (Scheduling.errorCounts.TryGetValue("tv", out int x) && x > 0)
+                    {
+                        Scheduling.errorCounts["tv"] = 0;
+                        Email.SendEmail(RoomSetup.MailSubject, $"{currentDevice.Name} is online {DateTime.Now}");
+                    }
+                }
+                else if (!args.DeviceOnLine)
+                {
+                    schedule.Alert_Timer("tv", roomSetup.Timeouts.ErrorCheckDelay, $"{currentDevice.Name} Offline at {DateTime.Now}");
+                }
+            }
+            catch (Exception e)
+            {
+                CrestronConsole.PrintLine("Display_OnlineStatusChange: {0}", e.Message);
+                ErrorLog.Notice("Display_OnlineStatusChange: {0}", e.Message);
+                Email.SendEmail(RoomSetup.MailSubject + " Display_OnlineStatusChange", e.Message);
+            }
         }
 
         private void am3200_OnlineStatusChange(GenericBase currentDevice, OnlineOfflineEventArgs args)
         {
-            CrestronConsole.PrintLine("Online Status Change: {0} IPID: {1} Status: {2}", currentDevice.Name, currentDevice.ID, args.DeviceOnLine);
-            ErrorLog.Notice("Online Status Change: {0} IPID: {1} Status: {2}", currentDevice.Name, currentDevice.ID, args.DeviceOnLine);
+            try
+            {
+                if (args.DeviceOnLine)
+                {
+                    if (Scheduling.errorCounts.TryGetValue("airmedia", out int x) && x > 0)
+                    {
+                        Scheduling.errorCounts["airmedia"] = 0;
+                        Email.SendEmail(RoomSetup.MailSubject, $"{currentDevice.Name} is online {DateTime.Now}");
+                    }
+                }
+                else if (!args.DeviceOnLine)
+                {
+                    schedule.Alert_Timer("airmedia", roomSetup.Timeouts.ErrorCheckDelay, $"{currentDevice.Name} Offline at {DateTime.Now}");
+                }
+            }
+            catch (Exception e)
+            {
+                CrestronConsole.PrintLine("AM3200_OnlineStatusChange: {0}", e.Message);
+                ErrorLog.Notice("AM3200_OnlineStatusChange: {0}", e.Message);
+                Email.SendEmail(RoomSetup.MailSubject + " AM3200_OnlineStatusChange", e.Message);
+            }
         }
-
         public void Initialize()
         {   
             try
@@ -366,15 +407,12 @@ namespace NFAHRooms
             {
                 CrestronConsole.PrintLine("Error initializing HuddleHandler: {0}", e.Message);
                 ErrorLog.Error("Error initializing HuddleHandler: {0}", e.Message);
-                _email.SendEmail("Error initializing HuddleHandler", e.Message);
+                Email.SendEmail(RoomSetup.MailSubject + " Error initializing HuddleHandler", e.Message);
             }
         }
 
         private void tp_EXTSSSigChange(DeviceExtender currentDeviceExtender, SigEventArgs args)
         {
-            CrestronConsole.PrintLine("Sig Change: {0} Value: {1}  Type: {2}", args.Sig.Number, args.Sig.StringValue, args.Sig.Type);
-            CrestronConsole.PrintLine($"Prox_Active: {Scheduling.Prox_Active}");
-            
             try
             {
                 if (args.Sig.Type == eSigType.Bool)
@@ -402,10 +440,8 @@ namespace NFAHRooms
             {
                 CrestronConsole.PrintLine("Error in tp_EXTSSSigChange: {0}", e.Message);
                 ErrorLog.Error("Error in tp_EXTSSSigChange: {0}", e.Message);
-                _email.SendEmail("Error in tp_EXTSSSigChange", e.Message);
+                Email.SendEmail(RoomSetup.MailSubject + " Error in tp_EXTSSSigChange", e.Message);
             }
         }
-    }
-            
-            
+    }       
 }

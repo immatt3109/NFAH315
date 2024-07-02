@@ -6,137 +6,129 @@ using System.Net.Mail;
 
 namespace NFAHRooms
 {
-    public class Email
+    public static class Email
     {
         private static string json;
-        //private Email em;
-              
-
-       public void EmailSetup()
+        
+        public static void Initialize()
         {
             LoadEmailSetup();
-            
-            
         }
 
         [JsonProperty("serverADDR")]
-        private string serverADDR { get; set; }
+        public static string serverADDR { get; private set; }
 
         [JsonProperty("serverPORT")]
-        private ushort serverPORT { get; set; }
+        public static ushort serverPORT { get; private set; }
 
         [JsonProperty("serverSecure")]
-        private bool serverSecure { get; set; }
+        public static bool serverSecure { get; private set; }
 
         [JsonProperty("userName")]
-        private string userName { get; set; }
+        public static string userName { get; private set; }
 
         [JsonProperty("userPWD")]
-        private string userPWD { get; set; }
+        public static string userPWD { get; private set; }
 
         [JsonProperty("mailFrom")]
-        private string mailFrom { get; set; }
+        public static string mailFrom { get; private set; }
 
         [JsonProperty("mailTo")]
-        private string mailTo { get; set; }
+        public static string mailTo { get; private set; }
 
         [JsonProperty("mailBody")]
-        private string mailBody { get; set; }
+        public static string mailBody { get; private set; }
 
         [JsonProperty("numAttach")]
-        private ushort numAttach { get; set; }
+        public static ushort numAttach { get; private set; }
 
         [JsonProperty("attachName")]
-        private string attachName { get; set; }
+        public static string attachName { get; private set; }
 
         [JsonProperty("mailCC")]
-        private string mailCC { get; set; }
+        public static string mailCC { get; private set; }
 
-        private void LoadEmailSetup()
+        private static void LoadEmailSetup()
         {
             string EmailFilePath = "/user/email.json";
             
             try
             {
                 using (StreamReader sr = new StreamReader(EmailFilePath, System.Text.Encoding.Default))
+                {
+                    json = sr.ReadToEnd();
+                }
+                var tempEmail = JsonConvert.DeserializeObject<EmailSetup>(json);
 
-                json = sr.ReadToEnd();
-
-                var tempEmail = JsonConvert.DeserializeObject<Email>(json);
-                CrestronConsole.PrintLine(tempEmail.serverADDR);
-                CrestronConsole.PrintLine(tempEmail.serverPORT.ToString());
-                CrestronConsole.PrintLine(tempEmail.serverSecure.ToString());
-                CrestronConsole.PrintLine(tempEmail.userName);
-                CrestronConsole.PrintLine(tempEmail.userPWD);
-                CrestronConsole.PrintLine(tempEmail.mailFrom);
-                CrestronConsole.PrintLine(tempEmail.mailTo);
-                CrestronConsole.PrintLine(tempEmail.mailCC);
-                CrestronConsole.PrintLine(tempEmail.mailBody);
-                CrestronConsole.PrintLine(tempEmail.numAttach.ToString());
-                CrestronConsole.PrintLine(tempEmail.attachName);
-
-                this.serverADDR = tempEmail.serverADDR;
-                this.serverPORT = tempEmail.serverPORT;
-                this.serverSecure = tempEmail.serverSecure;
-                this.userName = tempEmail.userName;
-                this.userPWD = tempEmail.userPWD;
-                this.mailFrom = tempEmail.mailFrom;
-                this.mailTo = tempEmail.mailTo;
-                this.mailBody = tempEmail.mailBody;
-                this.numAttach = tempEmail.numAttach;
-                this.attachName = tempEmail.attachName;
-                this.mailCC = tempEmail.mailCC;
-                
-
-                CrestronConsole.PrintLine($"{this.serverADDR}, {this.serverPORT.ToString()}, {this.serverSecure.ToString()}, {this.userName}, {this.userPWD}, {this.mailFrom}, {this.mailTo}, {this.mailCC}, {this.mailBody}, {this.numAttach.ToString()}, {this.attachName}");
-
+                serverADDR = tempEmail.serverADDR;
+                serverPORT = tempEmail.serverPORT;
+                serverSecure = tempEmail.serverSecure;
+                userName = tempEmail.userName;
+                userPWD = tempEmail.userPWD;
+                mailFrom = tempEmail.mailFrom;
+                mailTo = tempEmail.mailTo;
+                mailBody = tempEmail.mailBody;
+                numAttach = tempEmail.numAttach;
+                attachName = tempEmail.attachName;
+                mailCC = tempEmail.mailCC;
             }
             catch (Exception e)
             {
                 ErrorLog.Error("Error reading email.json: {0}", e.Message);
                 CrestronConsole.PrintLine("Error reading email.json: {0}", e.Message);
+                SendEmail(RoomSetup.MailSubject + " LoadEmailSetup", e.Message);
             }
         }
 
-        public void SendEmail(string MailSub, string MailMessage)
-        {
-            try
-            {
-                CrestronConsole.PrintLine("SendEmail");
-                CrestronConsole.PrintLine("Server");
-                CrestronConsole.PrintLine($"Server: {this.serverADDR}");
-                CrestronConsole.PrintLine("Port");
-                CrestronConsole.PrintLine($"Port: {this.serverPORT}");
-                CrestronConsole.PrintLine($"Secure: {this.serverSecure}");
-                CrestronConsole.PrintLine($"UserName: {this.userName}");
-                CrestronConsole.PrintLine($"Password: {this.userPWD}");
-                CrestronConsole.PrintLine($"MailFrom: {this.mailFrom}");
-                CrestronConsole.PrintLine($"MailTo: {this.mailTo}");
-                CrestronConsole.PrintLine($"MailCC: {this.mailCC}");
-
-                CrestronConsole.PrintLine($"MailBody: {this.mailBody}");
-                CrestronConsole.PrintLine($"NumAttch: {this.numAttach}");
-                CrestronConsole.PrintLine($"AttchName: {this.attachName}");
-            }
-            catch (Exception e)
-            {
-                ErrorLog.Error("Error printing: {0}", e.Message);
-                CrestronConsole.PrintLine("Error printing: {0} {1} {2} ", e.Message, e.StackTrace, e.Source);
-            }
-
-           
+        public static void SendEmail(string MailSub, string MailMessage)
+        {                       
             try 
             { 
-                
-            CrestronMailFunctions.SendMailErrorCodes myErrorCode = new  CrestronMailFunctions.SendMailErrorCodes(); 
-            myErrorCode = CrestronMailFunctions.SendMail(this.serverADDR, this.serverPORT, this.serverSecure, this.userName, this.userPWD, this.mailFrom, this.mailTo, this.mailCC, MailSub, (this.mailBody + MailMessage), this.numAttach, this.attachName);
-            CrestronConsole.PrintLine("Email Error Code = {0}", myErrorCode);        
+                CrestronMailFunctions.SendMailErrorCodes myErrorCode = new  CrestronMailFunctions.SendMailErrorCodes(); 
+                myErrorCode = CrestronMailFunctions.SendMail(serverADDR, serverPORT, serverSecure, userName, userPWD, mailFrom, mailTo, mailCC, MailSub, (mailBody + MailMessage), numAttach, attachName);
             }
             catch (Exception e)
             {
                 ErrorLog.Error("Error sending thisail: {0}", e.Message);
                 CrestronConsole.PrintLine("Error sending thisail: {0}", e.Message);
+                SendEmail(RoomSetup.MailSubject + " SendEmail", e.Message);
             }
+        }
+
+        private class EmailSetup
+        {
+            [JsonProperty("serverADDR")]
+            public string serverADDR { get; set; }
+
+            [JsonProperty("serverPORT")]
+            public ushort serverPORT { get; set; }
+
+            [JsonProperty("serverSecure")]
+            public bool serverSecure { get; set; }
+
+            [JsonProperty("userName")]
+            public string userName { get; set; }
+
+            [JsonProperty("userPWD")]
+            public string userPWD { get; set; }
+
+            [JsonProperty("mailFrom")]
+            public string mailFrom { get; set; }
+
+            [JsonProperty("mailTo")]
+            public string mailTo { get; set; }
+
+            [JsonProperty("mailBody")]
+            public string mailBody { get; set; }
+
+            [JsonProperty("numAttach")]
+            public ushort numAttach { get; set; }
+
+            [JsonProperty("attachName")]
+            public string attachName { get; set; }
+
+            [JsonProperty("mailCC")]
+            public string mailCC { get; set; }
         }
     }
 }

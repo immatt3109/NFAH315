@@ -41,7 +41,7 @@ namespace NFAHRooms
         /// 
 
         private RoomSetup roomSetup;
-        private Email ErrorEmail;
+        //private Email ErrorEmail;
         private Ts1070 tp;
         private Am300 am3200;
         private HdMd4x14kzE hdmd;
@@ -54,8 +54,8 @@ namespace NFAHRooms
 
         public ControlSystem() : base()
         {
-            ErrorEmail = new Email();
-            ErrorEmail.EmailSetup();
+            //ErrorEmail = new Email();
+            //ErrorEmail.EmailSetup();
 
             string configRoomFilePath = "/user/room_setup.json";
             roomSetup = RoomSetup.LoadRoomSetup(configRoomFilePath);
@@ -79,7 +79,7 @@ namespace NFAHRooms
                     disp1 = new CrestronConnectedDisplayV2(0x05, this);
                     am3200 = new Am300(0x06, this);
 
-                    cmd = new CmdLine(roomSetup, ErrorEmail, disp1, hdmd);
+                    cmd = new CmdLine(roomSetup, disp1, hdmd);
                     cmd.AddDevice("tp", new Ts1070Device(tp));
                     cmd.AddDevice("hdmd", new HdMd4x14kzEDevice(hdmd));
                     cmd.AddDevice("disp1", new CrestronConnectedDisplayV2Device(disp1));
@@ -89,7 +89,7 @@ namespace NFAHRooms
                     HDMD hDMD = new HDMD(hdmd);
 
                     huddleHandler.Initialize();
-
+                    Email.Initialize();
                     
 
                     CrestronConsole.PrintLine("Huddle Room Setup");
@@ -124,7 +124,7 @@ namespace NFAHRooms
             {
                 ErrorLog.Error("Error in the constructor: {0}", e.Message);
                 CrestronConsole.PrintLine("Error in the constructor: {0}", e.Message);
-                ErrorEmail.SendEmail(roomSetup.MailSubject, e.Message);
+                Email.SendEmail(RoomSetup.MailSubject, e.Message);
             }
         }
         public void HdmdControls(string param)
@@ -171,7 +171,7 @@ namespace NFAHRooms
             {
                 CrestronConsole.PrintLine("Error in HDMDControls: {0}", e.Message);
                 ErrorLog.Error("Error in HDMDControls: {0}", e.Message);
-                ErrorEmail.SendEmail(roomSetup.MailSubject, e.Message);
+                Email.SendEmail(RoomSetup.MailSubject, e.Message);
             } 
         }
 
@@ -209,7 +209,7 @@ namespace NFAHRooms
             {
                 CrestronConsole.PrintLine("Error in TVControls: {0}", e.Message);
                 ErrorLog.Error("Error in TVControls: {0}", e.Message);
-                ErrorEmail.SendEmail(roomSetup.MailSubject, e.Message);
+                Email.SendEmail(RoomSetup.MailSubject, e.Message);
             }
         }
 
@@ -241,7 +241,7 @@ namespace NFAHRooms
             {
                 CrestronConsole.PrintLine("Error in AMControls: {0}", e.Message);
                 ErrorLog.Error("Error in AMControls: {0}", e.Message);
-                ErrorEmail.SendEmail(roomSetup.MailSubject, e.Message);
+                Email.SendEmail(RoomSetup.MailSubject, e.Message);
             }
         }
 
@@ -278,7 +278,7 @@ namespace NFAHRooms
             {
                 CrestronConsole.PrintLine("Error in TPControls: {0}", e.Message);
                 ErrorLog.Error("Error in TPControls: {0}", e.Message);
-                ErrorEmail.SendEmail(roomSetup.MailSubject, e.Message);
+                Email.SendEmail(RoomSetup.MailSubject, e.Message);
             }
         }
        public void DeviceStatus(string param)
@@ -354,8 +354,8 @@ namespace NFAHRooms
                 dns2 = dns.Substring((FirstComma + 1), (SecondSpace - FirstComma)).Trim();
             }
 
-            Email ErrorEmail = new Email();
-            ErrorEmail.EmailSetup();
+            //Email ErrorEmail = new Email();
+            //ErrorEmail.EmailSetup();
 
             bool NetChange = false;
             try
@@ -422,7 +422,7 @@ namespace NFAHRooms
                 CrestronConsole.PrintLine("Error in InitializeSystem: {0}", e.Message);
                 ErrorLog.Error("Error in InitializeSystem: {0}", e.Message);
                 var error = "Message: " + e.Message + "\r\nStacktrace: " + e.StackTrace;
-                ErrorEmail.SendEmail(roomSetup.MailSubject, error);
+                Email.SendEmail(RoomSetup.MailSubject, error);
             }
             
             if (NetChange)
@@ -431,7 +431,7 @@ namespace NFAHRooms
                     roomSetup.Crestron.Username, roomSetup.Crestron.Password);
             }
                         
-            Scheduling roomscheduler = new Scheduling(roomSetup, tp, am3200, disp1);
+            Scheduling roomscheduler = new Scheduling(roomSetup, tp, am3200, disp1, hdmd);
             roomscheduler.SystemEventGroup = new ScheduledEventGroup("NFAH");
             roomscheduler.SystemEventGroup.ClearAllEvents();
             roomscheduler.AddDailyTimerEvent();
@@ -481,7 +481,7 @@ namespace NFAHRooms
             {
                 CrestronConsole.PrintLine("Error in InitializeSystem: {0}", e.Message);
                 ErrorLog.Error("Error in InitializeSystem: {0}", e.Message);
-                ErrorEmail.SendEmail(roomSetup.MailSubject, e.Message);
+                Email.SendEmail(RoomSetup.MailSubject, e.Message);
             }
         }
 

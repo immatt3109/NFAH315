@@ -13,16 +13,16 @@ namespace NFAHRooms
     internal class CmdLine
     {
         private Dictionary<string, IDevice> devices = new Dictionary<string, IDevice>();
-        private Email errorEmail;
+        //private Email errorEmail;
         private RoomSetup roomSetup;
         private CrestronConnectedDisplayV2 cmddisp1;
         private HdMd4x14kzE hdmd;
             
 
-        public CmdLine(RoomSetup roomSetup, Email errorEmail, CrestronConnectedDisplayV2 cmddisp1, HdMd4x14kzE hdmd)
+        public CmdLine(RoomSetup roomSetup, CrestronConnectedDisplayV2 cmddisp1, HdMd4x14kzE hdmd)
         {
             this.roomSetup = roomSetup;
-            this.errorEmail = errorEmail;
+            //this.errorEmail = errorEmail;
             this.cmddisp1 = cmddisp1;
             this.hdmd = hdmd;
         }
@@ -65,7 +65,7 @@ namespace NFAHRooms
             {   
                 ErrorLog.Error($"Error checking device status: {e.Message}");
                 CrestronConsole.PrintLine($"Error checking device status: {e.Message}");
-                errorEmail.SendEmail(roomSetup.MailSubject, e.Message);
+                Email.SendEmail(RoomSetup.MailSubject, e.Message);
             }
         }
         public void HDMDControls(string cmd, string value, string ip, string username, string pwd)
@@ -133,7 +133,7 @@ namespace NFAHRooms
             {
                 ErrorLog.Error($"Error with HDMD controls: {e.Message}");
                 CrestronConsole.PrintLine($"Error with HDMD controls: {e.Message}");
-                errorEmail.SendEmail(roomSetup.MailSubject, e.Message);
+                Email.SendEmail(RoomSetup.MailSubject, e.Message);
             }
         }
         public void TvControls(string cmd, string value)
@@ -179,7 +179,7 @@ namespace NFAHRooms
             {
                 ErrorLog.Error($"Error with TV controls: {e.Message}");
                 CrestronConsole.PrintLine($"Error with TV controls: {e.Message}");
-                errorEmail.SendEmail(roomSetup.MailSubject, e.Message);
+                Email.SendEmail(RoomSetup.MailSubject, e.Message);
             }
         }
         public void SNTPServer (string server, string ip, string username, string pwd)
@@ -205,7 +205,7 @@ namespace NFAHRooms
             {
                 ErrorLog.Error($"Error resetting SNTP: {e.Message}");
                 CrestronConsole.PrintLine($"Error resetting SNTP: {e.Message}");
-                errorEmail.SendEmail(roomSetup.MailSubject, e.Message);
+                Email.SendEmail(RoomSetup.MailSubject, e.Message);
             }
         }
         public void SNTPEnable(string server, string ip, string username, string pwd)
@@ -227,7 +227,7 @@ namespace NFAHRooms
             {
                 ErrorLog.Error($"Error starting SNTP service: {e.Message}");
                 CrestronConsole.PrintLine($"Error starting SNTP Service: {e.Message}");
-                errorEmail.SendEmail(roomSetup.MailSubject, e.Message);
+                Email.SendEmail(RoomSetup.MailSubject, e.Message);
             }
         }
         public void NetChange(string procip, string username, string pwd, string command, string data)
@@ -278,7 +278,7 @@ namespace NFAHRooms
                 ErrorLog.Error($"Error changing network settings: {e.Message}");
                 CrestronConsole.PrintLine($"Error changing network settings: {e.Message}");
                 string newbody = "Message: " + e.Message + "\n" + "Stack Trace: " + e.StackTrace + "\n" + "Source: " + e.Source;
-                errorEmail.SendEmail(roomSetup.MailSubject, newbody);
+                Email.SendEmail(RoomSetup.MailSubject, newbody);
             }
         }
         public void ProcReboot(string ip, string username, string pwd)
@@ -294,7 +294,7 @@ namespace NFAHRooms
             {
                 ErrorLog.Error($"Error rebooting Processor: {e.Message}");
                 CrestronConsole.PrintLine($"Error rebooting Processor: {e.Message}");
-                errorEmail.SendEmail(roomSetup.MailSubject, e.Message);
+                Email.SendEmail(RoomSetup.MailSubject, e.Message);
             }
         }
         public void AmReboot(string ip, string username, string pwd)
@@ -310,7 +310,7 @@ namespace NFAHRooms
             {
                 ErrorLog.Error($"Error rebooting AM3200: {e.Message}");
                 CrestronConsole.PrintLine($"Error rebooting AM3200: {e.Message}");
-                errorEmail.SendEmail(roomSetup.MailSubject, e.Message);
+                Email.SendEmail(RoomSetup.MailSubject, e.Message);
             }
         }
         public void TpReboot(string ip, string username, string pwd)
@@ -326,7 +326,7 @@ namespace NFAHRooms
             {
                 ErrorLog.Error($"Error rebooting Touchpanel: {e.Message}");
                 CrestronConsole.PrintLine($"Error rebooting Touchpanel: {e.Message}");
-                errorEmail.SendEmail(roomSetup.MailSubject, e.Message);
+                Email.SendEmail(RoomSetup.MailSubject, e.Message);
             }
         }
         public void TpSetup(string ip, string username, string pwd, string command)
@@ -356,7 +356,7 @@ namespace NFAHRooms
             {
                 ErrorLog.Error($"Error setting up Touchpanel: {e.Message}");
                 CrestronConsole.PrintLine($"Error setting up Touchpanel: {e.Message}");
-                errorEmail.SendEmail(roomSetup.MailSubject, e.Message);
+                Email.SendEmail(RoomSetup.MailSubject, e.Message);
             }
         }
         public void AddDevice(string deviceName, IDevice device)
@@ -369,7 +369,7 @@ namespace NFAHRooms
             {
                 ErrorLog.Error($"Error adding device: {e.Message}");
                 CrestronConsole.PrintLine($"Error adding device: {e.Message}");
-                errorEmail.SendEmail(roomSetup.MailSubject, e.Message);
+                Email.SendEmail(RoomSetup.MailSubject, e.Message);
             }   
         }
         public IDevice GetDevice(string deviceName)
@@ -386,7 +386,7 @@ namespace NFAHRooms
             {
                 ErrorLog.Error($"Error getting device: {e.Message}");
                 CrestronConsole.PrintLine($"Error getting device: {e.Message}");
-                errorEmail.SendEmail(roomSetup.MailSubject, e.Message);
+                Email.SendEmail(RoomSetup.MailSubject, e.Message);
                 return null;
             }
         }
