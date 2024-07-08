@@ -357,49 +357,52 @@ namespace NFAHRooms
             //Email ErrorEmail = new Email();
             //ErrorEmail.EmailSetup();
 
-            bool NetChange = false;
+            
             try
-            {   if (dhcp.ToLower() == "on")
+            {
+                
+
+                if (dhcp.ToLower() == "on")
                 {
                     cmd.NetChange(CrestronEthernetHelper.GetEthernetParameter(CrestronEthernetHelper.ETHERNET_PARAMETER_TO_GET.GET_CURRENT_IP_ADDRESS, adapt),
                        roomSetup.Crestron.Username, roomSetup.Crestron.Password, "dhcp", "off");
-                    NetChange = true;
+                    
                 }
                 if (roomSetup.Crestron.ProcessorIp != ip)
-                {   
+                {
                     cmd.NetChange(CrestronEthernetHelper.GetEthernetParameter(CrestronEthernetHelper.ETHERNET_PARAMETER_TO_GET.GET_CURRENT_IP_ADDRESS, adapt),
                         roomSetup.Crestron.Username, roomSetup.Crestron.Password, "ip", roomSetup.Crestron.ProcessorIp);
-                    NetChange = true;
+                    
                 }
                 if (roomSetup.Crestron.HostName != hostname)
-                {   
+                {
                     cmd.NetChange(CrestronEthernetHelper.GetEthernetParameter(CrestronEthernetHelper.ETHERNET_PARAMETER_TO_GET.GET_CURRENT_IP_ADDRESS, adapt),
                         roomSetup.Crestron.Username, roomSetup.Crestron.Password, "host", roomSetup.Crestron.HostName);
-                    NetChange = true;
+                    
                 }
                 if (roomSetup.Crestron.Subnet != sn)
-                {   
+                {
                     cmd.NetChange(CrestronEthernetHelper.GetEthernetParameter(CrestronEthernetHelper.ETHERNET_PARAMETER_TO_GET.GET_CURRENT_IP_ADDRESS, adapt),
                         roomSetup.Crestron.Username, roomSetup.Crestron.Password, "sn", roomSetup.Crestron.Subnet);
-                    NetChange = true;
+                    
                 }
                 if (roomSetup.Crestron.Gateway != gw)
-                {   
+                {
                     cmd.NetChange(CrestronEthernetHelper.GetEthernetParameter(CrestronEthernetHelper.ETHERNET_PARAMETER_TO_GET.GET_CURRENT_IP_ADDRESS, adapt),
                         roomSetup.Crestron.Username, roomSetup.Crestron.Password, "gw", roomSetup.Crestron.Gateway);
-                    NetChange = true;
+                    
                 }
                 if (roomSetup.Crestron.Dns1 != dns1)
-                {   
+                {
                     cmd.NetChange(CrestronEthernetHelper.GetEthernetParameter(CrestronEthernetHelper.ETHERNET_PARAMETER_TO_GET.GET_CURRENT_IP_ADDRESS, adapt),
                         roomSetup.Crestron.Username, roomSetup.Crestron.Password, "dns1", roomSetup.Crestron.Dns1);
                 }
                 if (roomSetup.Crestron.Dns2 != dns2)
-                {   
+                {
                     cmd.NetChange(CrestronEthernetHelper.GetEthernetParameter(CrestronEthernetHelper.ETHERNET_PARAMETER_TO_GET.GET_CURRENT_IP_ADDRESS, adapt),
                         roomSetup.Crestron.Username, roomSetup.Crestron.Password, "dns2", roomSetup.Crestron.Dns2);
                 }
-                
+
                 if (CrestronEnvironment.GetTimeZone().ID != uint.Parse(roomSetup.Crestron.TimezoneId))
                 {
                     CrestronEnvironment.SetTimeZone(int.Parse(roomSetup.Crestron.TimezoneId));
@@ -425,11 +428,7 @@ namespace NFAHRooms
                 Email.SendEmail(RoomSetup.MailSubject, error);
             }
             
-            if (NetChange)
-            {
-                cmd.ProcReboot(CrestronEthernetHelper.GetEthernetParameter(CrestronEthernetHelper.ETHERNET_PARAMETER_TO_GET.GET_CURRENT_IP_ADDRESS, adapt), 
-                    roomSetup.Crestron.Username, roomSetup.Crestron.Password);
-            }
+            
                         
             Scheduling roomscheduler = new Scheduling(roomSetup, tp, am3200, disp1, hdmd);
             roomscheduler.SystemEventGroup = new ScheduledEventGroup("NFAH");
@@ -438,6 +437,7 @@ namespace NFAHRooms
 
             try
             {
+                
                 // Determine what type of room it is:
                 // 1. Huddle Room -> call huddle room setup method
                 // 2. Evertz Room -> call evertz room setup method
