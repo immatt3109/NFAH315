@@ -1,6 +1,6 @@
 {
-"room_type": "huddle_room",
-"mail_subject": "NFAH Room 131D",
+"room_type": "evertz_room",
+"mail_subject": "Test Evertz Room",
 "Crestron":{
 		"SNTP_server":"pool.ntp.org",
 		"Timezone_ID":"010",
@@ -13,26 +13,27 @@
 		"Username":"admin",
 		"Password":"password"},
 "Touchpanel":{
-	"Room_Text":"NFAH Room 131",
+	"Room_Text":"Test Evertz Room",
 	"Proximity":"on",
-	"Screensaver":"on",
+	"Screensaver":"off",
 	"Standby_Timeout": 3,
-	"Image_URL":"http://192.168.1.95/TPAssets/AGSCreenSaver1920x1200.png"
+	"Image_URL":"http://192.168.1.95/TPAssets/AGSCreenSaver1920x1200.png",
+	"Room_Type":"evertz_1"
 	},
   "evertz": {
-    "ip_address": "192.168.1.100",
+    "ip_address": "192.168.1.110",
     "hdmi_output_default_source": {
       "hdmi_out_1": "source_1",
       "hdmi_out_2": "source_2",
       "hdmi_out_3": "source_3"
     },
     "UDP_server": {
-      "udp_port": 5000,
-      "parameters_to_report": [
-        "param1",
-        "param2"
-      ],
-      "allowed_ip_address": "192.168.1.200",
+      "udp_port": 50000,
+      "parameters_to_report": {
+        "param1":"300",
+        "param2":"301"
+      },
+      "allowed_ip_address": "192.168.1.95",
       "read_buffer_size": 2048,
       "server_name": "ResponseServer"
     }
@@ -102,7 +103,7 @@
 	{
 	"EventName": "TP_Screensaver_Off",
       "EventTime": "16:41:00",
-      "Daily": "True",
+      "Daily": "False",
       "WeekDaysOnly": "False",
       "WeekendsOnly": "False",
       "Monday": "False",
@@ -116,7 +117,7 @@
 	{
 	"EventName": "TP_Screensaver_On",
       "EventTime": "16:46:00",
-      "Daily": "True",
+      "Daily": "False",
       "WeekDaysOnly": "False",
       "WeekendsOnly": "False",
       "Monday": "False",

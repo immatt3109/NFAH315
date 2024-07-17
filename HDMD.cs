@@ -9,49 +9,49 @@ using Crestron.SimplSharpPro.DM;
 
 namespace NFAHRooms
 {
-    internal class HDMD
+    public static class HDMD
     {
 
-        private HdMd4x14kzE hdmd;
+        //private static HdMd4x14kzE hdmd;
 
-        public HDMD(HdMd4x14kzE hdmd)
-        {
-            this.hdmd = hdmd;
-        }
+        //public HDMD(HdMd4x14kzE hdmd)
+        //{
+        //    this.hdmd = hdmd;
+        //}
 
-        public void RouteVideo(uint video)
+        public static void RouteVideo(uint video)
         {
             if (video > 0)
             {
-                hdmd.HdmiOutputs[1].VideoOut = hdmd.HdmiInputs[video];
+                ControlSystem.hdmd.HdmiOutputs[1].VideoOut = ControlSystem.hdmd.HdmiInputs[video];
             }
 
             else
-                hdmd.HdmiOutputs[1].VideoOut = null;
+                ControlSystem.hdmd.HdmiOutputs[1].VideoOut = null;
         }
 
-        public void LockPanel(bool status)
+        public static void LockPanel(bool status)
         {
             if (status)
-                hdmd.EnableFrontPanelLock();
+                ControlSystem.hdmd.EnableFrontPanelLock();
             else
-                hdmd.DisableFrontPanelLock();
+                ControlSystem.hdmd.DisableFrontPanelLock();
         }
 
-        public void FrontLED(bool status)
+        public static void FrontLED(bool status)
         {
             if (status)
-                hdmd.EnableFrontPanelLed();
+                ControlSystem.hdmd.EnableFrontPanelLed();
             else
-                hdmd.DisableFrontPanelLed();
+                ControlSystem.hdmd.DisableFrontPanelLed();
         }
 
-        public void AutoRoute(bool status)
+        public static void AutoRoute(bool status)
         {
             if (status)
-                hdmd.AutoRouteOn();
+                ControlSystem.hdmd.AutoRouteOn();
             else
-                hdmd.AutoRouteOff();
+                ControlSystem.hdmd.AutoRouteOff();
         }
     }
 }

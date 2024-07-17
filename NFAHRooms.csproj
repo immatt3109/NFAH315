@@ -136,7 +136,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Constants.cs" />
+    <Compile Include="Evertz.cs" />
+    <Compile Include="EvertzHandler.cs" />
     <Compile Include="HDMD.cs" />
     <Compile Include="CmdLine.cs" />
     <Compile Include="Email.cs" />

@@ -44,7 +44,7 @@ namespace NFAHRooms
 
         public void AddDailyTimerEvent()
         {
-            foreach (var dailyevent in _rsetup.DailyEvents)
+            foreach (var dailyevent in RoomSetup.DailyEvents)
             {
                 string EventName = dailyevent.EventName;
 
@@ -324,7 +324,7 @@ namespace NFAHRooms
         {
             if (schEvent.Name.ToString().Length > 1 && schEvent.Name.ToString().Substring(0, schEvent.Name.ToString().Length - 1).Equals("autoshutdown", StringComparison.OrdinalIgnoreCase))
             {
-                if (_rsetup.RoomType.ToLower() == "huddle_room")
+                if (RoomSetup.RoomType.ToLower() == "huddle_room")
                 {
                     _tv.Power.PowerOff();
                 }
@@ -398,7 +398,7 @@ namespace NFAHRooms
             int delay = data.Delay;
                                     
             bool errorExists = CheckOnlineError(name);
-            if (errorExists && errorCounts[name] <= _rsetup.Timeouts.ErrorThreshold)
+            if (errorExists && errorCounts[name] <= RoomSetup.Timeouts.ErrorThreshold)
             {
                 Email.SendEmail(RoomSetup.MailSubject, ex);
                 Alert_Timer(name, delay, ex);

@@ -7,42 +7,37 @@ using Crestron.SimplSharpPro.DM.AirMedia;
 using Crestron.SimplSharpPro.DM;
 using Crestron.SimplSharpPro.CrestronConnected;
 
-
 namespace NFAHRooms
 {
-    
 
-    public class HuddleHandler
+
+    public class EvertzHandler
     {
         private Ts1070 tp;
-        private HdMd4x14kzE hdmd;
         private Am300 am3200;
-        private CrestronConnectedDisplayV2 disp1;
-        //private HDMD hdmdClass;
+        private RoomViewConnectedDisplay disp1;
         private RoomSetup roomSetup;
         private Scheduling schedule;
-        public HuddleHandler(Ts1070 tp, HdMd4x14kzE hdmd, Am300 am3200, CrestronConnectedDisplayV2 disp1, RoomSetup roomSetup)
+        private Evertz Evertz;
+        public EvertzHandler(Ts1070 tp, Am300 am3200, RoomViewConnectedDisplay disp1, RoomSetup roomSetup)
         {
-            //hdmdClass = new HDMD(hdmd);
             
+
             this.tp = tp;
-            this.hdmd = hdmd;
             this.am3200 = am3200;
             this.disp1 = disp1;
 
             this.tp.SigChange += new SigEventHandler(tp_SigChange);
             this.tp.OnlineStatusChange += new OnlineStatusChangeEventHandler(tp_OnlineStatusChange);
-            this.hdmd.OnlineStatusChange += new OnlineStatusChangeEventHandler(hdmd_OnlineStatusChange);
-            this.hdmd.DMSystemChange += new DMSystemEventHandler(hdmd_DMSystemChange);
             this.disp1.OnlineStatusChange += new OnlineStatusChangeEventHandler(disp1_OnlineStatusChange);
             this.am3200.OnlineStatusChange += new OnlineStatusChangeEventHandler(am3200_OnlineStatusChange);
             this.disp1.BaseEvent += new BaseEventHandler(disp1_BaseEvent);
 
             this.roomSetup = roomSetup;
 
-            schedule = new Scheduling(roomSetup, tp, am3200, disp1, hdmd);
+            //schedule = new Scheduling(roomSetup, tp, am3200, disp1, hdmd);
         }
-                
+
         private void disp1_BaseEvent(GenericBase currentDevice, BaseEventArgs args)
         {
             ///
@@ -50,38 +45,38 @@ namespace NFAHRooms
             ///btnPwrOn = 33,  //If power is off and you want to turn it on, it's this button
             ///btnPwrOnVis = 33 //If power is off this button should be visible
             ///
-
             try
             {
-                if (disp1.Power.PowerOnFeedback.BoolValue && !disp1.Power.PowerOffFeedback.BoolValue)  //Power On
+                if (disp1.PowerOnFeedback.BoolValue)  //Power On
                 {
-                    tp.BooleanInput[((uint)Join.btnPwrOnVis)].BoolValue = false;
-                    //hdmdClass.RouteVideo(((uint)roomSetup.HuddleRoomSettings.DefaultVideoOutput));
-
-                    if (disp1.Video.Source.SourceSelect.UShortValue != 1)
-                        disp1.Video.Source.SourceSelect.UShortValue = 1;
-                    if (hdmd.FrontPanelLockEnabledFeedback.BoolValue && RoomSetup.HuddleRoomSettings.FrontpanelLock == "off")
-                        hdmd.DisableFrontPanelLock();
-                    
+                    tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = false;
+                    disp1.SourceSelectSigs[5].Pulse();
                 }
 
-                if (disp1.Power.PowerOffFeedback.BoolValue && !disp1.Power.PowerOnFeedback.BoolValue) //Power Off
+                if (disp1.PowerOffFeedback.BoolValue) //Power Off
                 {
-                    tp.BooleanInput[((uint)Join.btnPwrOnVis)].BoolValue = true;
-                    //hdmdClass.RouteVideo(0);
-                    HDMD.RouteVideo(0); 
+                    tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = true;
+                }
 
-                    if (hdmd.FrontPanelLockDisabledFeedback.BoolValue)
-                        hdmd.EnableFrontPanelLock();
+                if (!disp1.SourceSelectFeedbackSigs[5].BoolValue)
+                {
+                    disp1.SourceSelectSigs[5].Pulse();
                 }
             }
             catch (Exception e)
             {
-                ErrorLog.Notice($"HuddleHandler Error:  {e.Message}");
-                CrestronConsole.PrintLine($"HuddleHandler Error:  {e.Message}");
+                ErrorLog.Notice($"EvertzHandler Error:  {e.Message}");
+                CrestronConsole.PrintLine($"EvertzHandler Error:  {e.Message}");
                 Email.SendEmail(RoomSetup.MailSubject + " Disp1_BaseEvent", e.Message);
             }
+
         }
+
+        public void tp_ButtonStatus(String SourceNum, String OutputNum)
+        {
+            CrestronConsole.PrintLine($"tp_ButtonStatus Called.  SourceNum: {SourceNum}, OutputNum: {OutputNum}");
+        }
+
         private void tp_SigChange(BasicTriList currentDevice, SigEventArgs args)
         {
             try
@@ -98,64 +93,67 @@ namespace NFAHRooms
                                 {
                                     switch (args.Sig.Number)
                                     {
-                                        case 20:
+                                        case 120:
                                             {
-                                                HDMD.RouteVideo(2);
-                                                //hdmdClass.RouteVideo(2);
-                                                if (disp1.Video.Source.SourceSelect.UShortValue != 1)
-                                                        disp1.Video.Source.SourceSelect.UShortValue = 1;
                                                 
-                                                if (disp1.Power.PowerOffFeedback.BoolValue)
-                                                    disp1.Power.PowerOn();
+                                                if (disp1.PowerOnFeedback.BoolValue)
+                                                {
+                                                    //if (disp1.Video.Source.SourceSelect.UShortValue != 1)
+                                                    //    disp1.Video.Source.SourceSelect.UShortValue = 1;
+                                                    //hdmdClass.RouteVideo(2);
+                                                }
+                                                break;
+                                            }
+                                        case 121:
+                                            {
                                                 
+                                                if (disp1.PowerOnFeedback.BoolValue)
+                                                {
+                                                    //if (disp1.Video.Source.SourceSelect.UShortValue != 1)
+                                                    //    disp1.Video.Source.SourceSelect.UShortValue = 1;
+                                                    //hdmdClass.RouteVideo(3);
+                                                }
                                                 break;
                                             }
-                                        case 21:
+                                        case 122:
                                             {
-                                                HDMD.RouteVideo(3);
-                                                //hdmdClass.RouteVideo(3);
-                                                if (disp1.Video.Source.SourceSelect.UShortValue != 1)
-                                                    disp1.Video.Source.SourceSelect.UShortValue = 1;
-
-                                                if (disp1.Power.PowerOffFeedback.BoolValue)
-                                                    disp1.Power.PowerOn();
-
-                                                break;
-                                            }
-                                        case 22:
-                                            {
-                                                HDMD.RouteVideo(1);
-                                                //hdmdClass.RouteVideo(1);
-                                                if (disp1.Video.Source.SourceSelect.UShortValue != 1)
-                                                    disp1.Video.Source.SourceSelect.UShortValue = 1;
-
-                                                if (disp1.Power.PowerOffFeedback.BoolValue)
-                                                    disp1.Power.PowerOn();
-
-                                                break;
-                                            }
-                                        case 33:  //Power On
-                                            {   
-                                                break;
-                                            }
-                                        case 30:
-                                            {
-                                                break;
-                                            }
-                                        case 31:
-                                            {
-                                                break;
-                                            }
-                                        case 32:
-                                            {
-                                                break;
-                                            }
-                                        case 23:  //Power Off
-                                            {
-                                                disp1.Power.PowerOff();
-                                                //hdmdClass.RouteVideo(0);
-                                                HDMD.RouteVideo(0);
                                                 
+                                                if (disp1.PowerOnFeedback.BoolValue)
+                                                {
+                                                    //if (disp1.Video.Source.SourceSelect.UShortValue != 1)
+                                                    //    disp1.Video.Source.SourceSelect.UShortValue = 1;
+                                                    //hdmdClass.RouteVideo(1);
+                                                }
+                                                break;
+                                            }
+                                        case ((uint)Join.btn1_PwrOn):  //Power On
+                                            {
+                                                if (disp1.PowerOffFeedback.BoolValue)
+                                                {
+                                                    disp1.PowerOn();
+                                                //    if (disp1.Video.Source.SourceSelect.UShortValue != 1)
+                                                //        disp1.Video.Source.SourceSelect.UShortValue = 1;
+                                                }
+                                                break;
+                                            }
+                                        case 130:
+                                            {
+                                                break;
+                                            }
+                                        case 131:
+                                            {
+                                                break;
+                                            }
+                                        case 132:
+                                            {
+                                                break;
+                                            }
+                                        case ((uint)Join.btn1_PwrOff):  //Power Off
+                                            {
+                                                if (disp1.PowerOnFeedback.BoolValue)
+                                                {
+                                                    disp1.PowerOff();
+                                                }
                                                 break;
                                             }
                                         default:
@@ -175,8 +173,8 @@ namespace NFAHRooms
             }
             catch (Exception e)
             {
-                ErrorLog.Notice($"HuddleHandler Error:  {e.Message}");
-                CrestronConsole.PrintLine($"HuddleHandler Error:  { e.Message}");
+                ErrorLog.Notice($"EvertzHandler Error:  {e.Message}");
+                CrestronConsole.PrintLine($"EvertzHandler Error:  {e.Message}");
                 Email.SendEmail(RoomSetup.MailSubject + " TP_SigChange", e.Message);
             }
         }
@@ -218,121 +216,14 @@ namespace NFAHRooms
                 CrestronConsole.PrintLine("TP_OnlineStatusChange: {0}", e.Message);
                 ErrorLog.Notice("TP_OnlineStatusChange: {0}", e.Message);
                 Email.SendEmail(RoomSetup.MailSubject + " TP_OnlineStatusChange", e.Message);
-            }  
-        }
-        private void hdmd_OnlineStatusChange(GenericBase currentDevice, OnlineOfflineEventArgs args)
-        {
-            try
-            {
-                if (args.DeviceOnLine)
-                {
-                    if (RoomSetup.HuddleRoomSettings.Autoroute.ToLower() == "on")
-                    {
-                        hdmd.AutoRouteOn();
-                    }
-                    else
-                    {
-                        hdmd.AutoRouteOff();
-                    }
-
-                    if (RoomSetup.HuddleRoomSettings.FrontpanelLock.ToLower() == "on")
-                    {
-                        hdmd.EnableFrontPanelLock();
-                    }
-                    else
-                    {
-                        hdmd.DisableFrontPanelLock();
-                    }
-
-                    if (RoomSetup.HuddleRoomSettings.FrontpanelLed.ToLower() == "on")
-                    {
-                        hdmd.EnableFrontPanelLed();
-                    }
-                    else
-                    {
-                        hdmd.DisableFrontPanelLed();
-                    }
-
-                    if (Scheduling.errorCounts.TryGetValue("hdmd", out int x) && x > 0)
-                    {
-                        Scheduling.errorCounts["hdmd"] = 0;
-                        Email.SendEmail(RoomSetup.MailSubject, $"{currentDevice.Name} is online {DateTime.Now}");
-                    }
-                }
-
-                if (args.DeviceOnLine == false)
-                {
-
-                    schedule.Alert_Timer("hdmd", RoomSetup.Timeouts.ErrorCheckDelay, $"{currentDevice.Name} Offline at {DateTime.Now}");
-                }
-            }
-            catch (Exception e)
-            {
-                CrestronConsole.PrintLine("HDMD_OnlineStatusChange: {0}", e.Message);
-                ErrorLog.Notice("HDMD_OnlineStatusChange: {0}", e.Message);
-                Email.SendEmail(RoomSetup.MailSubject + " HDMD_OnlineStatusChange", e.Message);
             }
         }
-        private void hdmd_DMSystemChange(GenericBase currentDevice, DMSystemEventArgs args)
-        { 
-            if (hdmd.HdmiOutputs[1].VideoOutFeedback != null)
-            {
-                CrestronConsole.PrintLine("HdmiOutputs[1].VideoOutFeedback.Number: {0}", hdmd.HdmiOutputs[1].VideoOutFeedback.Number);
-                try
-                {   switch (hdmd.HdmiOutputs[1].VideoOutFeedback.Number)
-                    {
-                        case 1:
-                            {
-                                tp.BooleanInput[((uint)Join.btnPCOnVis)].BoolValue = false;
-                                tp.BooleanInput[((uint)Join.btnAirMediaOnVis)].BoolValue = false;
-                                tp.BooleanInput[((uint)Join.btnAuxOnVis)].BoolValue = true;
-                                break;
-                            }
-                        case 2:
-                            {
-                                tp.BooleanInput[((uint)Join.btnPCOnVis)].BoolValue = true;
-                                tp.BooleanInput[((uint)Join.btnAirMediaOnVis)].BoolValue = false;
-                                tp.BooleanInput[((uint)Join.btnAuxOnVis)].BoolValue = false;
-                                break;
-                            }
-                        case 3:
-                            {
-                                tp.BooleanInput[((uint)Join.btnPCOnVis)].BoolValue = false;
-                                tp.BooleanInput[((uint)Join.btnAirMediaOnVis)].BoolValue = true;
-                                tp.BooleanInput[((uint)Join.btnAuxOnVis)].BoolValue = false;
-                                break;
-                            }
-                        case 0:
-                            {
-                                tp.BooleanInput[((uint)Join.btnPCOnVis)].BoolValue = false;
-                                tp.BooleanInput[((uint)Join.btnAirMediaOnVis)].BoolValue = false;
-                                tp.BooleanInput[((uint)Join.btnAuxOnVis)].BoolValue = false;
-                                break;
-                            }
-
-                        default:
-                            break;
-                    }
-                }
-                catch (Exception e)
-                {
-                    ErrorLog.Exception("HuddleHandler Error",e);
-                    CrestronConsole.PrintLine($"HuddleHandler Error:  {e.Message}"); 
-                    Email.SendEmail(RoomSetup.MailSubject, e.Message);
-                }
-            }
-            if (hdmd.HdmiOutputs[1].VideoOutFeedback == null)
-            {
-                tp.BooleanInput[((uint)Join.btnPCOnVis)].BoolValue = false;
-                tp.BooleanInput[((uint)Join.btnAirMediaOnVis)].BoolValue = false;
-                tp.BooleanInput[((uint)Join.btnAuxOnVis)].BoolValue = false;
-            }
-        }
+        
 
         private void disp1_OnlineStatusChange(GenericBase currentDevice, OnlineOfflineEventArgs args)
         {
             try
-            {
+            {CrestronConsole.PrintLine("Display_OnlineStatusChange");
                 if (args.DeviceOnLine)
                 {
                     if (Scheduling.errorCounts.TryGetValue("tv", out int x) && x > 0)
@@ -379,9 +270,9 @@ namespace NFAHRooms
             }
         }
         public void Initialize()
-        {   
+        {
             try
-            {
+            {CrestronConsole.PrintLine("Initializing EvertzHandler");
                 tp.ExtenderSystemReservedSigs.Use();
                 tp.ExtenderSystemReservedSigs.DeviceExtenderSigChange += tp_EXTSSSigChange;
                 tp.ExtenderScreenSaverReservedSigs.Use();
@@ -393,10 +284,6 @@ namespace NFAHRooms
                 if (tp.Register() != eDeviceRegistrationUnRegistrationResponse.Success)
                     throw new Exception(tp.RegistrationFailureReason.ToString());
 
-                if (hdmd.Register() != eDeviceRegistrationUnRegistrationResponse.Success)
-                    throw new Exception(hdmd.RegistrationFailureReason.ToString());
-
-
                 if (disp1.Register() != eDeviceRegistrationUnRegistrationResponse.Success)
                     throw new Exception(disp1.RegistrationFailureReason.ToString());
 
@@ -404,16 +291,44 @@ namespace NFAHRooms
                     throw new Exception(am3200.RegistrationFailureReason.ToString());
 
                 tp.StringInput[((uint)Join.lblRoomName)].StringValue = RoomSetup.Touchpanel.RoomText;
-                hdmd.HdmiOutputs[1].HdmiOutputPort.DisableAutomaticPowerSettings();
                 am3200.HdmiOut.Resolution = CommonStreamingSupport.eScreenResolutions.Resolution1080p60Hz;
-                tp.ExtenderButtonToolbarReservedSigs.HideButtonToolbar();
-                tp.ExtenderSystemReservedSigs.LcdBrightnessAutoOff();
+
+                switch (RoomSetup.Touchpanel.TP_RoomType.ToLower())
+                {
+                    case "evertz_1":
+                        CrestronConsole.PrintLine("Evertz Room Setup 1");
+                        tp.BooleanInput[((uint)Join.pg1Proj)].BoolValue = true;
+                        tp.BooleanInput[((uint)Join.pg2Proj)].BoolValue = false;
+                        tp.BooleanInput[((uint)Join.pg3Display)].BoolValue = false;
+                        break;
+                    case "evertz_2":
+                        CrestronConsole.PrintLine("Evertz Room Setup 2");
+                        tp.BooleanInput[((uint)Join.pg1Proj)].BoolValue = false;
+                        tp.BooleanInput[((uint)Join.pg2Proj)].BoolValue = true;
+                        tp.BooleanInput[((uint)Join.pg3Display)].BoolValue = false;
+                        break;
+                    case "evertz_3":
+                        CrestronConsole.PrintLine("Evertz Room Setup 3");
+                        tp.BooleanInput[((uint)Join.pg1Proj)].BoolValue = false;
+                        tp.BooleanInput[((uint)Join.pg2Proj)].BoolValue = false;
+                        tp.BooleanInput[((uint)Join.pg3Display)].BoolValue = true;
+                        break;
+                }
+
+                Evertz = new Evertz();
+                Evertz.Initialize();
+                CrestronConsole.PrintLine("Evertz Initialize Called?");
+
+                
+                
+
+
             }
             catch (Exception e)
             {
-                CrestronConsole.PrintLine("Error initializing HuddleHandler: {0}", e.Message);
-                ErrorLog.Error("Error initializing HuddleHandler: {0}", e.Message);
-                Email.SendEmail(RoomSetup.MailSubject + " Error initializing HuddleHandler", e.Message);
+                CrestronConsole.PrintLine("Error initializing EvertzHandler: {0}", e.Message);
+                ErrorLog.Error("Error initializing EvertzHandler: {0}", e.Message);
+                Email.SendEmail(RoomSetup.MailSubject + " Error initializing EvertzHandler", e.Message);
             }
         }
 
@@ -449,5 +364,5 @@ namespace NFAHRooms
                 Email.SendEmail(RoomSetup.MailSubject + " Error in tp_EXTSSSigChange", e.Message);
             }
         }
-    }       
+    }
 }

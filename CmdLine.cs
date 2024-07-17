@@ -27,13 +27,13 @@ namespace NFAHRooms
             this.hdmd = hdmd;
         }
         
-        public void CheckDeviceStatus(String device, RoomSetup roomSetup)
+        public void CheckDeviceStatus(String device)
         {
             var devicetype = GetDevice(device);
             
             try
             {                   
-                if (roomSetup.RoomType == "huddle_room")
+                if (RoomSetup.RoomType == "huddle_room")
                 {
                     if (devices.ContainsKey(device))
                     {

@@ -11,34 +11,34 @@ namespace NFAHRooms
         private static string json;
 
         [JsonProperty("room_type")]
-        public string RoomType { get; set; }
+        public static string RoomType { get; set; }
 
         [JsonProperty("mail_subject")]
         public static string MailSubject { get; set; }
         [JsonProperty("Crestron")]
-        public CrestronConfiguration Crestron { get; set; }
+        public static CrestronConfiguration Crestron { get; set; }
         [JsonProperty("Touchpanel")]
-        public TouchpanelConfiguration Touchpanel { get; set; }
+        public static TouchpanelConfiguration Touchpanel { get; set; }
         [JsonProperty("evertz")]
-        public EvertzConfiguration Evertz { get; set; }
+        public static EvertzConfiguration Evertz { get; set; }
 
         [JsonProperty("sony_cameras")]
-        public SonyCameraConfig SonyCameras { get; set; }
+        public static SonyCameraConfig SonyCameras { get; set; }
 
         [JsonProperty("microphones")]
-        public List<Microphone> Microphones { get; set; }
+        public static List<Microphone> Microphones { get; set; }
 
         [JsonProperty("huddle_room_settings")]
-        public HuddleRoomSettings HuddleRoomSettings { get; set; }
+        public static HuddleRoomSettings HuddleRoomSettings { get; set; }
 
         [JsonProperty("DailyEvents")]
-        public List<DailyEvent> DailyEvents { get; set; }
+        public static List<DailyEvent> DailyEvents { get; set; }
 
         [JsonProperty("timeouts")]
-        public TimeoutConfig Timeouts { get; set; }
+        public static TimeoutConfig Timeouts { get; set; }
 
         [JsonProperty("nvx_settings")]
-        public NvxSettings NvxSettings { get; set; }
+        public static NvxSettings NvxSettings { get; set; }
 
         public static RoomSetup LoadRoomSetup(string filepath)
         {
@@ -97,6 +97,8 @@ namespace NFAHRooms
         public ushort StandbyTimeout { get; set; }
         [JsonProperty("Image_URL")]
         public string ImageUrl { get; set; }
+        [JsonProperty("Room_Type")]
+        public string TP_RoomType { get; set; }
     }
     public class EvertzConfiguration
     {
@@ -116,7 +118,7 @@ namespace NFAHRooms
         public int UdpPort { get; set; }
 
         [JsonProperty("parameters_to_report")]
-        public List<string> ParametersToReport { get; set; }
+        public ParametersToReport ParametersToReport { get; set; }
 
         [JsonProperty("allowed_ip_address")]
         public string AllowedIpAddress { get; set; }
@@ -126,6 +128,14 @@ namespace NFAHRooms
 
         [JsonProperty("server_name")]
         public string ServerName { get; set; }
+    }
+    
+    public class ParametersToReport
+    {
+        [JsonProperty("param1")]
+        public string param1 { get; set; }
+        [JsonProperty("param2")]
+        public string param2 { get; set; }
     }
 
     public class SonyCameraConfig
