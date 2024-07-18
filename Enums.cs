@@ -108,5 +108,30 @@
         btn3_PwrOn = 336,       //If power is off and you want to turn it on, it's this button
         btn3_PwrOnVis = 336     //If power is off this button should be visible
     }
+
+    public enum EvertzOutputs
+    {
+        out_VidConf = 0,
+        out_Proj1 = 1,
+        out_Proj2 = 2,
+        out_Proj3 = 3,
+        out_ExtDisplay = 0,
+        
+        out_Disp3 = 3,
+        out_Disp2 = 2,
+        out_Disp1 = 1
+    }
+
+    public enum EvertzInputs
+    {
+        in_PCMain = 1,
+        in_PCExtDesk = 2,
+        in_DocCam = 3,
+        in_AirMedia = 4,
+        in_Aux = 5,
+        in_TeachCam = 6,
+        in_StudentCam = 7,
+        in_DS = 8
+    }
 }
 

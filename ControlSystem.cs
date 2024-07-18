@@ -44,10 +44,11 @@ namespace NFAHRooms
 
         private RoomSetup roomSetup;
         public static Ts1070 tp;
-        private Am300 am3200;
+        public static Am300 am3200;
         public static HdMd4x14kzE hdmd;
-        private CrestronConnectedDisplayV2 disp1;
-        private readonly CmdLine cmd;
+        public static CrestronConnectedDisplayV2 disp1;
+        public static RoomViewConnectedDisplay proj1;
+        //private readonly CmdLine cmd;
         
 
         
@@ -104,12 +105,13 @@ namespace NFAHRooms
                 {
                     
                     tp = new Ts1070(0x03, this);
-                    RoomViewConnectedDisplay proj1 = new RoomViewConnectedDisplay(0x05, this);
-                   am3200 = new Am300(0x06, this);
+                    proj1 = new RoomViewConnectedDisplay(0x05, this);
+                    am3200 = new Am300(0x06, this);
 
-                    EvertzHandler evertzHandler = new EvertzHandler(tp, am3200, proj1, roomSetup);
+                    //EvertzHandler evertzHandler = new EvertzHandler(tp, am3200, proj1, roomSetup);
 
-                    evertzHandler.Initialize();
+                    //evertzHandler.Initialize();
+                    EvertzHandler.Initialize();
                     Email.Initialize();
                    
                     

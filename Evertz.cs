@@ -11,10 +11,9 @@ using Crestron.SimplSharpPro.UI;
 
 namespace NFAHRooms
 {
-    public class Evertz
+    public static class Evertz
     {
-        //RoomSetup roomSetup = new RoomSetup();
-        private Crestron.SimplSharp.CrestronSockets.UDPServer ResponseServer;
+        private static Crestron.SimplSharp.CrestronSockets.UDPServer ResponseServer;
 
         public class EvertzResponse
         {
@@ -31,10 +30,10 @@ namespace NFAHRooms
             [JsonProperty("method")]
             public string Method { get; set; }
             [JsonProperty("params")]
-            public Param[] Params { get; set; }
+            public List <Params> UDPParameters { get; set; }
         }
 
-        public class Param
+        public class Params
         {
             [JsonProperty("data")]
             public string Data { get; set; }
@@ -42,7 +41,7 @@ namespace NFAHRooms
             public string Varid { get; set; }
         }
 
-        public class EvertzServer
+        private class EvertzServer
         {
             [JsonProperty("id")]
             public int Id { get; set; }
@@ -54,7 +53,7 @@ namespace NFAHRooms
             public Notify Notify { get; set; }
         }
 
-        public class Notify
+        private class Notify
         {
             [JsonProperty("ip")]
             public string Ip { get; set; }
@@ -69,13 +68,13 @@ namespace NFAHRooms
             public string Protocol { get; set; }
         }
 
-        public class Data
+        private class Data
         {
             [JsonProperty("server")]
             public EvertzServer Server { get; set; }
         }
 
-        public class ServerResponse
+        private class ServerResponse
         {
             [JsonProperty("data")]
             public Data Data { get; set; }
@@ -87,7 +86,7 @@ namespace NFAHRooms
             public string Error { get; set; }
         }
 
-        public async Task<string> SetEvertzData(string Parameter, string Index, string Value)
+        public static async Task<string> SetEvertzData(string Parameter, string Index, string Value)
 
         {
                        
@@ -114,7 +113,7 @@ namespace NFAHRooms
 
         }
 
-        public async Task<string> GetEvertzData(string Parameter, string Index)
+        public static async Task<string> GetEvertzData(string Parameter, string Index)
         {
             string url = "http://" + RoomSetup.Evertz.IpAddress + "/v.api/apis/EV/GET/parameter/" + Parameter + "." + Index;
 
@@ -135,13 +134,13 @@ namespace NFAHRooms
                 }
             }
         }
-        public void ParseResponse(string response)
+        private static void ParseResponse(string response)
         {
             EvertzResponse jsonobj = Newtonsoft.Json.JsonConvert.DeserializeObject<EvertzResponse>(response);
             CrestronConsole.PrintLine($"ID: {jsonobj.ID} Value: {jsonobj.Value}");
         }
 
-        public void NewEvertzServer()
+        private static void NewEvertzServer()
         {
 
             string DelServerURL = "http://" + RoomSetup.Evertz.IpAddress + "/v.api/apis/EV/SERVERDEL/server/1";
@@ -222,7 +221,7 @@ namespace NFAHRooms
             }
         }
 
-        public void Initialize()
+        public static void Initialize()
         {
             try
             {
@@ -235,40 +234,67 @@ namespace NFAHRooms
             }
         }
 
-        private void UDPServerReceiveCallback(Crestron.SimplSharp.CrestronSockets.UDPServer server, int numberOfBytesReceived)
+        private static void UDPServerReceiveCallback(Crestron.SimplSharp.CrestronSockets.UDPServer server, int numberOfBytesReceived)
         {CrestronConsole.PrintLine("UDP Data Received: {0}", numberOfBytesReceived);
-            if (numberOfBytesReceived > 0)
+            try
             {
-                byte[] receivedBytes = new byte[numberOfBytesReceived];
-                Array.Copy(server.IncomingDataBuffer, receivedBytes, numberOfBytesReceived);
-                string data = System.Text.Encoding.ASCII.GetString(receivedBytes);
-                var x = ParseUDPResponse(data);
-                
-                CrestronConsole.PrintLine("UDP Data Received: {0}", data);
+                if (numberOfBytesReceived > 0)
+                {
+                    byte[] receivedBytes = new byte[numberOfBytesReceived];
+                    Array.Copy(server.IncomingDataBuffer, receivedBytes, numberOfBytesReceived);
+                    string data = System.Text.Encoding.ASCII.GetString(receivedBytes);
+                    var x = ParseUDPResponse(data);
+
+                    CrestronConsole.PrintLine("UDP Data Received: {0}", data);
+                }
+            }
+            catch (Exception e)
+            {
+                ErrorLog.Error("Error in UDPServerReceiveCallback: {0}", e.Message);
+                CrestronConsole.PrintLine("Error in UDPServerReceiveCallback: {0}", e.Message);
             }
             ResponseServer.ReceiveDataAsync(UDPServerReceiveCallback);
         }
 
-        private UDPResponse ParseUDPResponse(string response)
+        private static UDPResponse ParseUDPResponse(string response)
         {
-            UDPResponse jsonobj = Newtonsoft.Json.JsonConvert.DeserializeObject<UDPResponse>(response);
-            CrestronConsole.PrintLine($"Varid: {jsonobj.Params[0].Varid} Data: {jsonobj.Params[0].Data}");
-            string index = ParseIndex(jsonobj.Params[0].Varid);
-            CrestronConsole.PrintLine($"Index: {index} Value: {jsonobj.Params[0].Data}");
-
-            return jsonobj;
+            try
+            {
+                UDPResponse jsonobj = Newtonsoft.Json.JsonConvert.DeserializeObject<UDPResponse>(response);
+                CrestronConsole.PrintLine($"Varid: {jsonobj.UDPParameters[0].Varid} Data: {jsonobj.UDPParameters[0].Data}");
+                string index = ParseIndex(jsonobj.UDPParameters[0].Varid.ToString());
+                CrestronConsole.PrintLine($"Index: {index} Value: {jsonobj.UDPParameters[0].Data}");
+                CrestronConsole.PrintLine($"jsonobj: {jsonobj}");
+                EvertzHandler.tp_ButtonStatus(index, jsonobj.UDPParameters[0].Data);
+                return jsonobj;
+            }
+            catch (Exception e)
+            {
+                ErrorLog.Error("Error in ParseUDPResponse: {0}", e.Message);
+                CrestronConsole.PrintLine("Error in ParseUDPResponse: {0}", e.Message);
+                return null;
+            }
         }
 
-        private string ParseIndex(string input)
+        private static string ParseIndex(string input)
         {
-            string[] parts = input.Split('.', '@');
-            if (parts.Length >= 3)
+            try
             {
-                return parts[1]; // The part after the decimal and before the '@'
+                string[] parts = input.Split('.', '@');
+                if (parts.Length >= 3)
+                {
+                    return parts[1]; // The part after the decimal and before the '@'
+                }
+                else
+                {
+                    return null; // The input string did not have the expected format
+                }
             }
-            else
+            catch (Exception e)
             {
-                return null; // The input string did not have the expected format
+                ErrorLog.Error("Error in ParseIndex: {0}", e.Message);
+                CrestronConsole.PrintLine("Error in ParseIndex: {0}", e.Message);
+                return null;
             }
 
         }
