@@ -12,7 +12,12 @@ namespace NFAHRooms
 
         [JsonProperty("room_type")]
         public static string RoomType { get; set; }
-
+        [JsonProperty("display_1")]
+        public static string Display1 { get; set; }
+        [JsonProperty("display_2")]
+        public static string Display2 { get; set; }
+        [JsonProperty("display_3")]
+        public static string Display3 { get; set; }
         [JsonProperty("mail_subject")]
         public static string MailSubject { get; set; }
         [JsonProperty("Crestron")]
@@ -50,7 +55,7 @@ namespace NFAHRooms
                 using (StreamReader sr = new StreamReader(filepath, System.Text.Encoding.Default))
 
                     json = sr.ReadToEnd();
-                
+
                 return JsonConvert.DeserializeObject<RoomSetup>(json);
             }
             catch (Exception e)
@@ -68,18 +73,6 @@ namespace NFAHRooms
         public string SntpServer { get; set; }
         [JsonProperty("Timezone_ID")]
         public string TimezoneId { get; set; }
-        [JsonProperty("Processor_IP")]
-        public string ProcessorIp { get; set; }
-        [JsonProperty("Host_Name")]
-        public string HostName { get; set; }
-        [JsonProperty("Subnet")]
-        public string Subnet { get; set; }
-        [JsonProperty("DNS1")]
-        public string Dns1 { get; set; }
-        [JsonProperty("DNS2")]
-        public string Dns2 { get; set; }
-        [JsonProperty("Gateway")]
-        public string Gateway { get; set; }
         [JsonProperty("Username")]
         public string Username { get; set; }
         [JsonProperty("Password")]
@@ -106,10 +99,21 @@ namespace NFAHRooms
         public string IpAddress { get; set; }
 
         [JsonProperty("hdmi_output_default_source")]
-        public Dictionary<string, string> HdmiOutputDefaultSource { get; set; }
+        public DefEvertzOuts DefEvertzOut { get; set; }
 
         [JsonProperty("UDP_server")]
         public UDPServer UDP_Server { get; set; }
+    }
+    public class DefEvertzOuts
+    {
+        [JsonProperty("out_1")]
+        public int Out1 { get; set; }
+        [JsonProperty("out_2")]
+        public int Out2 { get; set; }
+        [JsonProperty("out_3")]
+        public int Out3 { get; set; }
+        [JsonProperty("out_4")]
+        public int Out4 { get; set; }
     }
 
     public class UDPServer
@@ -185,9 +189,6 @@ namespace NFAHRooms
 
     public class HuddleRoomSettings
     {
-        [JsonProperty("default_video_output")]
-        public int DefaultVideoOutput { get; set; }
-
         [JsonProperty("frontpanel_lock")]
         public string FrontpanelLock { get; set; }
 

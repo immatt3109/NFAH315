@@ -131,7 +131,13 @@
         in_Aux = 5,
         in_TeachCam = 6,
         in_StudentCam = 7,
-        in_DS = 8
+        in_DS = 8,
+        in_Blank = 0
+    }
+
+    public enum SonyProjInputs
+    {
+        ProjHDMI = 5,
     }
 }
 

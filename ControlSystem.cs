@@ -6,69 +6,34 @@ using Crestron.SimplSharpPro.UI;
 using Crestron.SimplSharpPro.DM.AirMedia;
 using Crestron.SimplSharpPro.DM;
 using Crestron.SimplSharpPro.CrestronConnected;         	// For Generic Device Support
-using Crestron.SimplSharpPro.DeviceSupport;
-using Crestron.SimplSharp.CrestronIO;
-using Newtonsoft.Json;
-using System.Collections.Generic;
 using Crestron.SimplSharp.Scheduler;
-using Crestron.SimplSharp.Ssh;
-using Independentsoft.Exchange;
-using Newtonsoft.Json.Linq;
-using Crestron.SimplSharp.Net;
-using System.Diagnostics;
-using Crestron.SimplSharp.CrestronAuthentication;
-using System.Linq;
-
-
+using Crestron.SimplSharpPro.DeviceSupport;
 
 
 namespace NFAHRooms
-{
-
-    public class ControlSystem : CrestronControlSystem
+{    public class ControlSystem : CrestronControlSystem
     {
-        /// <summary>
-        /// ControlSystem Constructor. Starting point for the SIMPL#Pro program.
-        /// Use the constructor to:
-        /// * Initialize the maximum number of threads (max = 400)
-        /// * Register devices
-        /// * Register event handlers
-        /// * Add Console Commands
-        /// 
-        /// Please be aware that the constructor needs to exit quickly; if it doesn't
-        /// exit in time, the SIMPL#Pro program will exit.
-        /// 
-        /// You cannot send / receive data in the constructor
-        /// </summary>
-        /// 
-
-        private RoomSetup roomSetup;
+        //private RoomSetup roomSetup;
         public static Ts1070 tp;
         public static Am300 am3200;
         public static HdMd4x14kzE hdmd;
         public static CrestronConnectedDisplayV2 disp1;
+        public static CrestronConnectedDisplayV2 disp2;
+        public static CrestronConnectedDisplayV2 disp3;
         public static RoomViewConnectedDisplay proj1;
+        public static RoomViewConnectedDisplay proj2;
+        public static RoomViewConnectedDisplay proj3;
         //private readonly CmdLine cmd;
         
-
-        
-
-
-        
-
         public ControlSystem() : base()
         {
-            
             string configRoomFilePath = "/user/room_setup.json";
-            roomSetup = RoomSetup.LoadRoomSetup(configRoomFilePath);
-            
+            RoomSetup.LoadRoomSetup(configRoomFilePath);
             
             try
             {
                 Thread.MaxNumberOfUserThreads = 20;
-                               
-
-                //Subscribe to the controller events (System, Program, and Ethernet)
+                 
                 CrestronEnvironment.SystemEventHandler += new SystemEventHandler(_ControllerSystemEventHandler);
                 CrestronEnvironment.ProgramStatusEventHandler += new ProgramStatusEventHandler(_ControllerProgramEventHandler);
                 CrestronEnvironment.EthernetEventHandler += new EthernetEventHandler(_ControllerEthernetEventHandler);
@@ -79,62 +44,48 @@ namespace NFAHRooms
                     hdmd = new HdMd4x14kzE(0x04, this);
                     disp1 = new CrestronConnectedDisplayV2(0x05, this);
                     am3200 = new Am300(0x06, this);
-
-                    //cmd = new CmdLine(roomSetup, disp1, hdmd);
-                    //cmd.AddDevice("tp", new Ts1070Device(tp));
-                    //cmd.AddDevice("hdmd", new HdMd4x14kzEDevice(hdmd));
-                    //cmd.AddDevice("disp1", new CrestronConnectedDisplayV2Device(disp1));
-                    //cmd.AddDevice("am3200", new Am300Device(am3200));
+                  
+                    HuddleHandler huddleHandler = new HuddleHandler(tp, hdmd, am3200, disp1);
                     
-                    HuddleHandler huddleHandler = new HuddleHandler(tp, hdmd, am3200, disp1, roomSetup);
-                    //HDMD hDMD = new HDMD(hdmd);
-
                     huddleHandler.Initialize();
-                    Email.Initialize();
-                                        
-                    CrestronEnvironment.SetTimeZone(Convert.ToInt32(RoomSetup.Crestron.TimezoneId));
-                    SNTP.Server = RoomSetup.Crestron.SntpServer;
-
-                    
-                    
-
                     CrestronConsole.PrintLine("Huddle Room Setup");
-                    
                 }
                 else if (RoomSetup.RoomType.ToLower() == "evertz_room")
-                {
-                    
+                {                    
                     tp = new Ts1070(0x03, this);
-                    proj1 = new RoomViewConnectedDisplay(0x05, this);
                     am3200 = new Am300(0x06, this);
 
-                    //EvertzHandler evertzHandler = new EvertzHandler(tp, am3200, proj1, roomSetup);
+                    if (RoomSetup.Display1 == "proj")
+                        proj1 = new RoomViewConnectedDisplay(0x05, this);
 
-                    //evertzHandler.Initialize();
+                    if (RoomSetup.Display2 == "proj")
+                        proj2 = new RoomViewConnectedDisplay(0x15, this);
+
+                    if (RoomSetup.Display3 == "proj")
+                        proj3 = new RoomViewConnectedDisplay(0x25, this);
+
+                    if (RoomSetup.Display1 == "tv")
+                        disp1 = new CrestronConnectedDisplayV2(0x05, this);
+
+                    if (RoomSetup.Display2 == "disp")
+                        disp2 = new CrestronConnectedDisplayV2(0x15, this);
+
+                    if (RoomSetup.Display3 == "disp")
+                        disp3 = new CrestronConnectedDisplayV2(0x25, this);
+
                     EvertzHandler.Initialize();
-                    Email.Initialize();
-                   
                     
                     CrestronConsole.PrintLine("Evertz Room Setup");
-                    //EvertzRoomSetup();
                 }
                 else if (RoomSetup.RoomType.ToLower() == "nvx_room")
                 {
                     CrestronConsole.PrintLine("NVX Room Setup");
-                    //NvxRoomSetup();
                 }
                 else
                 {
                     CrestronConsole.PrintLine("Room Type not found");
                     throw new Exception("Room Type not found.  huddle_room/evertz_room/nvx_room");
                 }
-
-                //CrestronConsole.AddNewConsoleCommand(DeviceStatus, "status", "Check Crestron Device Online Status", ConsoleAccessLevelEnum.AccessOperator);
-                //CrestronConsole.AddNewConsoleCommand(AlertTest, "AlertTest", "Test Timer Alerts", ConsoleAccessLevelEnum.AccessOperator);
-                //CrestronConsole.AddNewConsoleCommand(HdmdControls,"HDMD", "Controls for HDMD", ConsoleAccessLevelEnum.AccessOperator);  
-                //CrestronConsole.AddNewConsoleCommand(TVControls, "TV", "Controls for Display", ConsoleAccessLevelEnum.AccessOperator);
-                //CrestronConsole.AddNewConsoleCommand(AMControls, "AM", "Controls for AirMedia", ConsoleAccessLevelEnum.AccessOperator);
-                //CrestronConsole.AddNewConsoleCommand(TPControls, "TP", "Controls for Touchpanel", ConsoleAccessLevelEnum.AccessOperator);
 
                 
             }
@@ -145,213 +96,29 @@ namespace NFAHRooms
                 Email.SendEmail(RoomSetup.MailSubject, e.Message);
             }
         }
-        //public void HdmdControls(string param)
-        //{
-        //    try
-        //    {
-        //        var ip = hdmd.ConnectedIpList[0].DeviceIpAddress;
 
-        //        if (string.IsNullOrEmpty(param) || param == "?")
-        //        {
-        //            CrestronConsole.PrintLine("Valid usage is 'HDMD' <cmd> <value>\r\nValid < cmd > parameters: led, lock, route, reboot\r\nValid <led> values: on, off\r\n" +
-        //                "Valid <lock> values: on,off\r\n" + "Valid <route> values: 1,2,3,4\r\n" + "ex. <HDMD led on> or HDMD route 1\r\n");
-        //            return;
-        //        }
-
-        //        if (param.ToLower() == "reboot")
-        //        {
-        //            string cmdvalue = param;
-        //            string val = null;
-        //            cmd.HDMDControls(cmdvalue, val, ip, RoomSetup.Crestron.Username, RoomSetup.Crestron.Password);
-        //            return;
-        //        }               
-
-        //        if (!param.Contains(" "))
-        //        {
-        //            CrestronConsole.PrintLine("Error.  Valid usage is 'HDMD' <cmd> <value>");
-        //            return;
-        //        }
-
-        //        var data = param.Split(' ');
-
-        //        if (data.Length != 2)
-        //        {
-        //            CrestronConsole.PrintLine("Error.  Valid usage is 'HDMD' <cmd> <value>");
-        //            return;
-        //        }
-                
-        //        var command = data[0];
-        //        var value = data[1];
-                 
-        //        cmd.HDMDControls(command, value, ip, RoomSetup.Crestron.Username, RoomSetup.Crestron.Password);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        CrestronConsole.PrintLine("Error in HDMDControls: {0}", e.Message);
-        //        ErrorLog.Error("Error in HDMDControls: {0}", e.Message);
-        //        Email.SendEmail(RoomSetup.MailSubject, e.Message);
-        //    } 
-        //}
-
-        //public void TVControls(string param)
-        //{
-        //    try
-        //    {
-        //        if (string.IsNullOrEmpty(param) || param == "?")
-        //        {
-        //            CrestronConsole.PrintLine("Valid usage is TV <cmd> <value>\r\nValid <cmd> parameters: pwr, hdmi\r\nValid <pwr> values: on, off\r\n" +
-        //                "Valid <hdmi> values: 1, 2, 3, 4\r\n" + "ex. <TV pwr on> or TV hdmi 1\r\n" );
-        //            return;
-        //        }
-
-        //        if (!param.Contains(" "))
-        //        {
-        //            CrestronConsole.PrintLine("Error.  Valid usage is 'TV' <cmd> <value>");
-        //            return;
-        //        }
-
-        //        var data = param.Split(' ');
-
-        //        if (data.Length != 2)
-        //        {
-        //            CrestronConsole.PrintLine("Error.  Valid usage is 'TV' <cmd> <value>");
-        //            return;
-        //        }
-                             
-        //        var command = data[0];
-        //        var value = data[1];
-                
-        //        cmd.TvControls(command, value);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        CrestronConsole.PrintLine("Error in TVControls: {0}", e.Message);
-        //        ErrorLog.Error("Error in TVControls: {0}", e.Message);
-        //        Email.SendEmail(RoomSetup.MailSubject, e.Message);
-        //    }
-        //}
-
-        //public void AMControls(string param)
-        //{
-        //    try
-        //    {
-        //        if (string.IsNullOrEmpty(param) || param == "?")
-        //        {
-        //            CrestronConsole.PrintLine("Valid usage is AM <cmd>\r\nValid <cmd> values: reboot\r\n");
-        //            return;
-        //        }
-
-        //        if (param.ToLower() == "reboot" && am3200.IsOnline)
-        //        {
-        //            var ip = am3200.ConnectedIpList[0].DeviceIpAddress;
-        //            cmd.AmReboot(ip, RoomSetup.Crestron.Username, RoomSetup.Crestron.Password);
-        //        }
-        //        else if (!am3200.IsOnline)
-        //        {
-        //            CrestronConsole.PrintLine("AM-3200 is Offline.  Cannot reboot");
-        //        }
-        //        else
-        //        {
-        //            CrestronConsole.PrintLine("Error.\r\nValid usage is 'AM' <cmd>\r\nValid <cmd> values: reboot\r\n");
-        //        }
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        CrestronConsole.PrintLine("Error in AMControls: {0}", e.Message);
-        //        ErrorLog.Error("Error in AMControls: {0}", e.Message);
-        //        Email.SendEmail(RoomSetup.MailSubject, e.Message);
-        //    }
-        //}
-
-        //public void TPControls(string param)
-        //{
-        //    try
-        //    {
-        //        if (string.IsNullOrEmpty(param) || param == "?")
-        //        {
-        //            CrestronConsole.PrintLine("Valid usage is TPControls <cmd>\r\nValid <cmd> values: reboot, setup or exitsetup\r\n");
-        //            return;
-        //        }
-
-        //        if (param.ToLower() == "reboot"  && tp.IsOnline)
-        //        {
-        //            var ip = tp.ConnectedIpList[0].DeviceIpAddress;
-        //            cmd.TpReboot(ip, RoomSetup.Crestron.Username, RoomSetup.Crestron.Password);
-        //        }
-        //        else if ((param.ToLower() == "setup" || (param.ToLower() == "exit")&& tp.IsOnline))
-        //        {
-        //            var ip = tp.ConnectedIpList[0].DeviceIpAddress;
-        //            cmd.TpSetup(ip, RoomSetup.Crestron.Username, RoomSetup.Crestron.Password, param);
-        //        }
-        //        else if (!tp.IsOnline)
-        //        {
-        //            CrestronConsole.PrintLine("Touchpanel is Offline.  Cannot reboot");
-        //        }
-        //        else
-        //        {
-        //            CrestronConsole.PrintLine("Error.\r\nValid usage is 'TPControls' <cmd>\r\nValid <cmd> values: reboot\r\n");
-        //        }
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        CrestronConsole.PrintLine("Error in TPControls: {0}", e.Message);
-        //        ErrorLog.Error("Error in TPControls: {0}", e.Message);
-        //        Email.SendEmail(RoomSetup.MailSubject, e.Message);
-        //    }
-        //}
-       //public void DeviceStatus(string param)
-       //{
-       //     cmd.CheckDeviceStatus(param);            
-       //}
-
-        //private void AlertTest(string param)
-        //{
-        //    try
-        //    {
-        //        if (string.IsNullOrEmpty(param))
-        //        {
-        //            CrestronConsole.PrintLine("Error.  Valid usage is 'AlertTest' <name> <time>");
-        //            return;
-        //        }
-
-        //        if (!param.Contains(","))
-        //        {
-        //            CrestronConsole.PrintLine("Error.  Valid usage is 'AlertTest' <name> <time>");
-        //            return;
-        //        }
-
-        //        var data = param.Split(',');
-
-        //        if (data.Length != 2)
-        //        {
-        //            CrestronConsole.PrintLine("Error.  Valid usage is 'AlertTest' <name> <time>");
-        //            return;
-        //        }
-
-        //        var name = data[0];
-        //        var time = data[1];
-                
-        //        CrestronConsole.PrintLine("Alert Test: {0} {1}", name, time);
-        //        //Scheduling Alert = new Scheduling(roomSetup);
-        //        //Alert.Alert_Timer(name, Convert.ToInt32(time));
-               
-
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        CrestronConsole.PrintLine("Error in AlertTest: {0}", e.Message);
-        //        ErrorLog.Error("Error in AlertTest: {0}", e.Message);
-                
-        //    }
-        //}
         public override void InitializeSystem()
         {
-            Scheduling roomscheduler = new Scheduling(roomSetup, tp, am3200, disp1, hdmd);
-            roomscheduler.SystemEventGroup = new ScheduledEventGroup("NFAH");
-            roomscheduler.SystemEventGroup.ClearAllEvents();
-            roomscheduler.AddDailyTimerEvent();
+            try
+            {   SNTP.Server = RoomSetup.Crestron.SntpServer;
+                SNTP.Enable();
 
-            
+                CrestronEnvironment.SetTimeZone(Convert.ToInt32(RoomSetup.Crestron.TimezoneId));
+                
+                Email.Initialize();
+
+                Scheduling.SystemEventGroup = new ScheduledEventGroup("NFAH");
+                Scheduling.SystemEventGroup.ClearAllEvents();
+                Scheduling.AddDailyTimerEvent();
+
+                am3200.HdmiOut.Resolution = CommonStreamingSupport.eScreenResolutions.Resolution1080p60Hz;
+            }
+            catch (Exception e)
+            {
+                ErrorLog.Error("Error in InitializeSystem: {0}", e.Message);
+                CrestronConsole.PrintLine("Error in InitializeSystem: {0}", e.Message);
+                Email.SendEmail(RoomSetup.MailSubject, e.Message);
+            }
         }
 
         /// <summary>

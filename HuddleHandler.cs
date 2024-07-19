@@ -19,9 +19,9 @@ namespace NFAHRooms
         private Am300 am3200;
         private CrestronConnectedDisplayV2 disp1;
         //private HDMD hdmdClass;
-        private RoomSetup roomSetup;
-        private Scheduling schedule;
-        public HuddleHandler(Ts1070 tp, HdMd4x14kzE hdmd, Am300 am3200, CrestronConnectedDisplayV2 disp1, RoomSetup roomSetup)
+        //private RoomSetup roomSetup;
+        //private Scheduling schedule;
+        public HuddleHandler(Ts1070 tp, HdMd4x14kzE hdmd, Am300 am3200, CrestronConnectedDisplayV2 disp1)
         {
             //hdmdClass = new HDMD(hdmd);
             
@@ -38,9 +38,9 @@ namespace NFAHRooms
             this.am3200.OnlineStatusChange += new OnlineStatusChangeEventHandler(am3200_OnlineStatusChange);
             this.disp1.BaseEvent += new BaseEventHandler(disp1_BaseEvent);
 
-            this.roomSetup = roomSetup;
+            //this.roomSetup = roomSetup;
 
-            schedule = new Scheduling(roomSetup, tp, am3200, disp1, hdmd);
+            //schedule = new Scheduling();
         }
                 
         private void disp1_BaseEvent(GenericBase currentDevice, BaseEventArgs args)
@@ -210,7 +210,7 @@ namespace NFAHRooms
                 }
                 else if (!args.DeviceOnLine)
                 {
-                    schedule.Alert_Timer("touchpanel", RoomSetup.Timeouts.ErrorCheckDelay, $"{currentDevice.Name} Offline at {DateTime.Now}");
+                    Scheduling.Alert_Timer("touchpanel", RoomSetup.Timeouts.ErrorCheckDelay, $"{currentDevice.Name} Offline at {DateTime.Now}");
                 }
             }
             catch (Exception e)
@@ -263,7 +263,7 @@ namespace NFAHRooms
                 if (args.DeviceOnLine == false)
                 {
 
-                    schedule.Alert_Timer("hdmd", RoomSetup.Timeouts.ErrorCheckDelay, $"{currentDevice.Name} Offline at {DateTime.Now}");
+                    Scheduling.Alert_Timer("hdmd", RoomSetup.Timeouts.ErrorCheckDelay, $"{currentDevice.Name} Offline at {DateTime.Now}");
                 }
             }
             catch (Exception e)
@@ -343,7 +343,7 @@ namespace NFAHRooms
                 }
                 else if (!args.DeviceOnLine)
                 {
-                    schedule.Alert_Timer("tv", RoomSetup.Timeouts.ErrorCheckDelay, $"{currentDevice.Name} Offline at {DateTime.Now}");
+                    Scheduling.Alert_Timer("tv", RoomSetup.Timeouts.ErrorCheckDelay, $"{currentDevice.Name} Offline at {DateTime.Now}");
                 }
             }
             catch (Exception e)
@@ -368,7 +368,7 @@ namespace NFAHRooms
                 }
                 else if (!args.DeviceOnLine)
                 {
-                    schedule.Alert_Timer("airmedia", RoomSetup.Timeouts.ErrorCheckDelay, $"{currentDevice.Name} Offline at {DateTime.Now}");
+                    Scheduling.Alert_Timer("airmedia", RoomSetup.Timeouts.ErrorCheckDelay, $"{currentDevice.Name} Offline at {DateTime.Now}");
                 }
             }
             catch (Exception e)
@@ -403,11 +403,11 @@ namespace NFAHRooms
                 if (am3200.Register() != eDeviceRegistrationUnRegistrationResponse.Success)
                     throw new Exception(am3200.RegistrationFailureReason.ToString());
 
-                tp.StringInput[((uint)Join.lblRoomName)].StringValue = RoomSetup.Touchpanel.RoomText;
+                //tp.StringInput[((uint)Join.lblRoomName)].StringValue = RoomSetup.Touchpanel.RoomText;
                 hdmd.HdmiOutputs[1].HdmiOutputPort.DisableAutomaticPowerSettings();
-                am3200.HdmiOut.Resolution = CommonStreamingSupport.eScreenResolutions.Resolution1080p60Hz;
-                tp.ExtenderButtonToolbarReservedSigs.HideButtonToolbar();
-                tp.ExtenderSystemReservedSigs.LcdBrightnessAutoOff();
+                //am3200.HdmiOut.Resolution = CommonStreamingSupport.eScreenResolutions.Resolution1080p60Hz;
+                //tp.ExtenderButtonToolbarReservedSigs.HideButtonToolbar();
+                //tp.ExtenderSystemReservedSigs.LcdBrightnessAutoOff();
             }
             catch (Exception e)
             {

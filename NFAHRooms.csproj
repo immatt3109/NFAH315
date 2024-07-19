@@ -139,7 +139,6 @@
     <Compile Include="Evertz.cs" />
     <Compile Include="EvertzHandler.cs" />
     <Compile Include="HDMD.cs" />
-    <Compile Include="CmdLine.cs" />
     <Compile Include="Email.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="HuddleHandler.cs" />
