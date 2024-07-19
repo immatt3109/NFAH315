@@ -226,7 +226,7 @@ namespace NFAHRooms
             try
             {
                NewEvertzServer();
-                CrestronConsole.PrintLine("Evertz Server Initialized");
+               CrestronConsole.PrintLine("Evertz Server Initialized");
             }
             catch (Exception e)
             {

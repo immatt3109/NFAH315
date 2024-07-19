@@ -142,6 +142,42 @@ namespace NFAHRooms
                                 break;
                         }
                         break;
+                case "0":
+                    tp_ClearButtonStatus(((uint)EvertzOutputs.out_VTC).ToString());
+                    
+                    switch (Input)
+                    {
+                        case "1":
+                            ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCPCOn)].BoolValue = true;
+                            ControlSystem.tp.UShortInput[((ushort)Join.btn_VTCOpenVal)].UShortValue = ((ushort)Join.mode_VTCPC);
+                            break;
+                        case "2":
+                            ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCEXTOn)].BoolValue = true;
+                            ControlSystem.tp.UShortInput[((ushort)Join.btn_VTCOpenVal)].UShortValue = ((ushort)Join.mode_VTCEXT);
+                            break;
+                        case "3":
+                            ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCDocCamOn)].BoolValue = true;
+                            ControlSystem.tp.UShortInput[((ushort)Join.btn_VTCOpenVal)].UShortValue = ((ushort)Join.mode_VTCDocCam);
+                            break;
+                        case "4":
+                            ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCAirMediaOn)].BoolValue = true;
+                            ControlSystem.tp.UShortInput[((ushort)Join.btn_VTCOpenVal)].UShortValue = ((ushort)Join.mode_VTCAirMedia);
+                            break;
+                        case "5":
+                            ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCAuxOn)].BoolValue = true;
+                            ControlSystem.tp.UShortInput[((ushort)Join.btn_VTCOpenVal)].UShortValue = ((ushort)Join.mode_VTCAux);
+                            break;
+                        case "6":
+                            ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCTeachCamOn)].BoolValue = true;
+                            ControlSystem.tp.UShortInput[((ushort)Join.btn_VTCOpenVal)].UShortValue = ((ushort)Join.mode_VTCTeachCam);
+                            break;
+                        case "7":
+                            ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCStudentCamOn)].BoolValue = true;
+                            ControlSystem.tp.UShortInput[((ushort)Join.btn_VTCOpenVal)].UShortValue = ((ushort)Join.mode_VTCStudentCam);
+                            break;
+                            
+                    }
+                    break;
             }
         }
         private static void tp_ClearButtonStatus(String Output)
@@ -171,6 +207,15 @@ namespace NFAHRooms
                     ControlSystem.tp.BooleanInput[((uint)Join.btn3_AirMediaOn)].BoolValue = false;
                     ControlSystem.tp.BooleanInput[((uint)Join.btn3_AuxOn)].BoolValue = false;
                     ControlSystem.tp.BooleanInput[((uint)Join.btn3_DSPwrOn)].BoolValue = false;
+                    break;
+                case "0":
+                    ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCPCOn)].BoolValue = false;
+                    ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCEXTOn)].BoolValue = false;
+                    ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCDocCamOn)].BoolValue = false;
+                    ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCAirMediaOn)].BoolValue = false;
+                    ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCAuxOn)].BoolValue = false;
+                    ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCTeachCamOn)].BoolValue = false;
+                    ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCStudentCamOn)].BoolValue = false;
                     break;
             }
             
@@ -356,6 +401,51 @@ namespace NFAHRooms
                                         case ((uint)Join.btn3_PwrOff):  //Power Off
                                             {
                                                 await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj3).ToString(), ((uint)EvertzInputs.in_Blank).ToString());
+                                                break;
+                                            }
+                                        case ((uint)Join.btn_VTCOpen):
+                                            {
+                                                ControlSystem.tp.BooleanInput[((uint)Join.pgVTC)].BoolValue = true;
+                                                break;
+                                            }
+                                        case ((uint)Join.btn_VTCClose):
+                                            {
+                                                ControlSystem.tp.BooleanInput[((uint)Join.pgVTC)].BoolValue = false;
+                                                break;
+                                            }
+                                        case ((uint)Join.btn_VTCPCOff):
+                                            {
+                                                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_VTC).ToString(), ((uint)EvertzInputs.in_PCMain).ToString());
+                                                break;
+                                            }
+                                        case ((uint)Join.btn_VTCEXTOff):
+                                            {
+                                                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_VTC).ToString(), ((uint)EvertzInputs.in_PCExtDesk).ToString());
+                                                break;
+                                            }
+                                        case ((uint)Join.btn_VTCDocCamOff):
+                                            {
+                                                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_VTC).ToString(), ((uint)EvertzInputs.in_DocCam).ToString());
+                                                break;
+                                            }
+                                        case ((uint)Join.btn_VTCAirMediaOff):
+                                            {
+                                                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_VTC).ToString(), ((uint)EvertzInputs.in_AirMedia).ToString());
+                                                break;
+                                            }
+                                        case ((uint)Join.btn_VTCAuxOff):
+                                            {
+                                                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_VTC).ToString(), ((uint)EvertzInputs.in_Aux).ToString());
+                                                break;
+                                            }
+                                        case ((uint)Join.btn_VTCTeachCamOff):
+                                            {
+                                                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_VTC).ToString(), ((uint)EvertzInputs.in_TeachCam).ToString());
+                                                break;
+                                            }
+                                        case ((uint)Join.btn_VTCStudentCamOff):
+                                            {
+                                                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_VTC).ToString(), ((uint)EvertzInputs.in_StudentCam).ToString());
                                                 break;
                                             }
 
@@ -774,7 +864,7 @@ namespace NFAHRooms
             }
         }
 
-        public static void Initialize()
+        public static async void Initialize()
         {
             try
             {
@@ -878,6 +968,7 @@ namespace NFAHRooms
                 ControlSystem.tp.ExtenderSystemReservedSigs.LcdBrightnessAutoOff();
                
                 Evertz.Initialize();
+                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_VTC).ToString(), ((uint)EvertzInputs.in_TeachCam).ToString());
             }
             catch (Exception e)
             {

@@ -23,6 +23,7 @@
         pg1Proj = 12,
         pg2Proj = 13,
         pg3Display = 14,
+        pgVTC = 15,
 
         btn1_PCOff = 120,
         btn1_PCOn = 130,
@@ -106,17 +107,58 @@
 
         btn3_PwrOff = 326,      //If power is on and you want to turn it off, it's this button
         btn3_PwrOn = 336,       //If power is off and you want to turn it on, it's this button
-        btn3_PwrOnVis = 336     //If power is off this button should be visible
+        btn3_PwrOnVis = 336,     //If power is off this button should be visible
+
+        btn_VTCOpen = 51,
+        btn_VTCClose = 50,
+        btn_VTCOpenVal = 5,
+
+        mode_VTCPC = 0,
+        mode_VTCEXT = 1,
+        mode_VTCDocCam = 2,
+        mode_VTCAux = 3,
+        mode_VTCTeachCam = 4,
+        mode_VTCStudentCam = 5,
+        mode_VTCAirMedia = 6,
+        mode_VTCDS = 7,
+
+        btn_VTCPCOff = 420,
+        btn_VTCPCOn = 430,
+        btn_VTCPCOnVis = 430,
+
+        btn_VTCEXTOff = 421,
+        btn_VTCEXTOn = 431,
+        btn_VTCEXTOnVis = 431,
+
+        btn_VTCDocCamOff = 422,
+        btn_VTCDocCamOn = 432,
+        btn_VTCDocCamOnVis = 432,
+
+        btn_VTCAirMediaOff = 423,
+        btn_VTCAirMediaOn = 433,
+        btn_VTCAirMediaOnVis = 433,
+
+        btn_VTCAuxOff = 424,
+        btn_VTCAuxOn = 434,
+        btn_VTCAuxOnVis = 434,
+
+        btn_VTCTeachCamOff = 427,
+        btn_VTCTeachCamOn = 437,
+        btn_VTCTeachCamOnVis = 437,
+
+        btn_VTCStudentCamOff = 428,
+        btn_VTCStudentCamOn = 438,
+        btn_VTCStudentCamOnVis = 438
+
     }
 
     public enum EvertzOutputs
     {
-        out_VidConf = 0,
+        out_VTC = 0,
         out_Proj1 = 1,
         out_Proj2 = 2,
         out_Proj3 = 3,
-        out_ExtDisplay = 0,
-        
+                
         out_Disp3 = 3,
         out_Disp2 = 2,
         out_Disp1 = 1
