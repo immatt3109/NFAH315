@@ -2,11 +2,6 @@
 using Crestron.SimplSharp;                          	// For Basic SIMPL# Classes
 using Crestron.SimplSharpPro;                       	// For Basic SIMPL#Pro classes
 using Crestron.SimplSharpPro.DeviceSupport;
-using Crestron.SimplSharpPro.UI;
-using Crestron.SimplSharpPro.DM.AirMedia;
-using Crestron.SimplSharpPro.DM;
-using Crestron.SimplSharpPro.CrestronConnected;
-using Independentsoft.Email.Mime;
 
 namespace NFAHRooms
 {
@@ -24,27 +19,24 @@ namespace NFAHRooms
             ///
             try
             {
-                if (ControlSystem.proj1.PowerOnFeedback.BoolValue)  //Power On
+                if (ControlSystem.disp1.Power.PowerOnFeedback.BoolValue && !ControlSystem.disp1.Power.PowerOffFeedback.BoolValue)  //Power On
                 {
-                    ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = false;
-                    ControlSystem.proj1.SourceSelectSigs[5].Pulse();
+                    ControlSystem.tp.BooleanInput[((uint)Join.btnPwrOnVis)].BoolValue = false;
+
+                    if (ControlSystem.disp1.Video.Source.SourceSelect.UShortValue != 1)
+                        ControlSystem.disp1.Video.Source.SourceSelect.UShortValue = 1;
                 }
 
-                if (ControlSystem.proj1.PowerOffFeedback.BoolValue) //Power Off
+                if (ControlSystem.disp1.Power.PowerOffFeedback.BoolValue && !ControlSystem.disp1.Power.PowerOnFeedback.BoolValue) //Power Off
                 {
-                    ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = true;
-                }
-
-                if (!ControlSystem.proj1.SourceSelectFeedbackSigs[5].BoolValue)
-                {
-                    ControlSystem.proj1.SourceSelectSigs[5].Pulse();
+                    ControlSystem.tp.BooleanInput[((uint)Join.btnPwrOnVis)].BoolValue = true;
                 }
             }
             catch (Exception e)
             {
-                ErrorLog.Notice($"EvertzHandler Error:  {e.Message}");
-                CrestronConsole.PrintLine($"EvertzHandler Error:  {e.Message}");
-                Email.SendEmail(RoomSetup.MailSubject + " Disp1_BaseEvent", e.Message);
+                ErrorLog.Notice($"EvertzHandler disp1_BaseEvent Error:  {e.Message}");
+                CrestronConsole.PrintLine($"EvertzHandler disp1_BaseEvent Error:  {e.Message}");
+                Email.SendEmail(RoomSetup.MailSubject + " EvertzHandler disp1_BaseEvent Error", e.Message);
             }
 
         }
@@ -54,84 +46,102 @@ namespace NFAHRooms
             switch (Output)
             {
                 case "1":
-                        tp_ClearButtonStatus(((uint)EvertzOutputs.out_Proj1).ToString());
-                        
+                    tp_ClearButtonStatus(((uint)EvertzOutputs.out_Proj1).ToString());
+                        if (Input != "0")
+                        {
+                            SetOutput(101);
+                        }
                         switch (Input)
                         {
                             case "1":
-                            ControlSystem.tp.BooleanInput[((uint)Join.btn1_PCOn)].BoolValue = true;
+                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_PCOn)].BoolValue = true;
                                 break;
                             case "2":
-                            ControlSystem.tp.BooleanInput[((uint)Join.btn1_ExtDeskOn)].BoolValue = true;
+                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_ExtDeskOn)].BoolValue = true;
                                 break;
                             case "3":
-                            ControlSystem.tp.BooleanInput[((uint)Join.btn1_DocCamOn)].BoolValue = true;
+                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_DocCamOn)].BoolValue = true;
                                 break;
                             case "4":
-                            ControlSystem.tp.BooleanInput[((uint)Join.btn1_AirMediaOn)].BoolValue = true;
+                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_AirMediaOn)].BoolValue = true;
                                 break;
                             case "5":
-                            ControlSystem.tp.BooleanInput[((uint)Join.btn1_AuxOn)].BoolValue = true;
+                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_AuxOn)].BoolValue = true;
                                 break;
                             case "8":
-                            ControlSystem.tp.BooleanInput[((uint)Join.btn1_DSPwrOn)].BoolValue = true;
+                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_DSPwrOn)].BoolValue = true;
                                 break;
                             case "0":
                                 if (ControlSystem.proj1.PowerOnFeedback.BoolValue)
                                     ControlSystem.proj1.PowerOff();
-                            break;
+                                break;
                         }
-                    break;
+                        break;
+                    
                 case "2":
                     tp_ClearButtonStatus(((uint)EvertzOutputs.out_Proj2).ToString());
-
+                    if (Input != "0")
+                    {
+                        SetOutput(201);
+                    }
                         switch (Input)
                         {
                             case "1":
-                            ControlSystem.tp.BooleanInput[((uint)Join.btn2_PCOn)].BoolValue = true;
-                                break;
-                        case "2":
-                            ControlSystem.tp.BooleanInput[((uint)Join.btn2_ExtDeskOn)].BoolValue = true;
-                                break;
-                        case "3":
-                            ControlSystem.tp.BooleanInput[((uint)Join.btn2_DocCamOn)].BoolValue = true;
-                                break;
-                        case "4":
-                            ControlSystem.tp.BooleanInput[((uint)Join.btn2_AirMediaOn)].BoolValue = true;
-                                break;
-                        case "5":
-                            ControlSystem.tp.BooleanInput[((uint)Join.btn2_AuxOn)].BoolValue = true;
-                                break;
-                        case "8":
-                            ControlSystem.tp.BooleanInput[((uint)Join.btn2_DSPwrOn)].BoolValue = true;
-                                break;
-                        }
-                    break;
-                case "3":
-                    tp_ClearButtonStatus(((uint)EvertzOutputs.out_Proj3).ToString());
-
-                        switch (Input)
-                        {
-                            case "1":
-                            ControlSystem.tp.BooleanInput[((uint)Join.btn3_PCOn)].BoolValue = true;
+                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_PCOn)].BoolValue = true;
                                 break;
                             case "2":
-                            ControlSystem.tp.BooleanInput[((uint)Join.btn3_ExtDeskOn)].BoolValue = true;
+                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_ExtDeskOn)].BoolValue = true;
                                 break;
                             case "3":
-                            ControlSystem.tp.BooleanInput[((uint)Join.btn3_DocCamOn)].BoolValue = true;
+                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_DocCamOn)].BoolValue = true;
                                 break;
                             case "4":
-                            ControlSystem.tp.BooleanInput[((uint)Join.btn3_AirMediaOn)].BoolValue = true;
+                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_AirMediaOn)].BoolValue = true;
                                 break;
                             case "5":
-                            ControlSystem.tp.BooleanInput[((uint)Join.btn3_AuxOn)].BoolValue = true;
+                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_AuxOn)].BoolValue = true;
                                 break;
                             case "8":
-                            ControlSystem.tp.BooleanInput[((uint)Join.btn3_DSPwrOn)].BoolValue = true;
+                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_DSPwrOn)].BoolValue = true;
                                 break;
-                            }
-                    break;
+                            case "0":
+                                if (ControlSystem.proj2.PowerOnFeedback.BoolValue)
+                                    ControlSystem.proj2.PowerOff();
+                                break;
+                        }
+                        break;
+                case "3":
+                    tp_ClearButtonStatus(((uint)EvertzOutputs.out_Proj3).ToString());
+                    if (Input != "0")
+                    {
+                        SetOutput(301);
+                    }
+                        switch (Input)
+                        {
+                            case "1":
+                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_PCOn)].BoolValue = true;
+                                break;
+                            case "2":
+                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_ExtDeskOn)].BoolValue = true;
+                                break;
+                            case "3":
+                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_DocCamOn)].BoolValue = true;
+                                break;
+                            case "4":
+                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_AirMediaOn)].BoolValue = true;
+                                break;
+                            case "5":
+                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_AuxOn)].BoolValue = true;
+                                break;
+                            case "8":
+                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_DSPwrOn)].BoolValue = true;
+                                break;
+                            case "0":
+                                if (ControlSystem.proj3.PowerOnFeedback.BoolValue)
+                                    ControlSystem.proj3.PowerOff();
+                                break;
+                        }
+                        break;
             }
         }
         private static void tp_ClearButtonStatus(String Output)
@@ -377,7 +387,7 @@ namespace NFAHRooms
             {
                 if (ControlSystem.proj1.PowerOffFeedback.BoolValue)
                     ControlSystem.proj1.PowerOn();
-
+                
                 if (!ControlSystem.proj1.SourceSelectFeedbackSigs[((uint)SonyProjInputs.ProjHDMI)].BoolValue)
                     ControlSystem.proj1.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
             }
@@ -405,6 +415,8 @@ namespace NFAHRooms
             {
                 if (args.DeviceOnLine)
                 {
+                    
+
                     if (Scheduling.errorCounts.TryGetValue("touchpanel", out int x) && x > 0)
                     {
                         Scheduling.errorCounts["touchpanel"] = 0;
@@ -421,15 +433,16 @@ namespace NFAHRooms
                         ControlSystem.tp.ExtenderScreenSaverReservedSigs.ScreensaverOn.BoolValue = true;
                     }
 
-                    else if ((RoomSetup.Touchpanel.ScreenSaver.ToLower() == "off" && !Scheduling.SS_Active) || RoomSetup.Touchpanel.StandbyTimeout == 0)
+                    if ((RoomSetup.Touchpanel.ScreenSaver.ToLower() == "off" && !Scheduling.SS_Active) || RoomSetup.Touchpanel.StandbyTimeout == 0)
                     {
                         ControlSystem.tp.ExtenderScreenSaverReservedSigs.ScreensaverOn.BoolValue = false;
                         ControlSystem.tp.ExtenderScreenSaverReservedSigs.ScreensaverOff.BoolValue = true;
                     }
 
                     
-                    ControlSystem.tp.ExtenderButtonToolbarReservedSigs.HideButtonToolbar();
-                    ControlSystem.tp.ExtenderSystemReservedSigs.LcdBrightnessAutoOff();
+                    
+                    
+
                 }
                 else if (!args.DeviceOnLine)
                 {
@@ -496,268 +509,269 @@ namespace NFAHRooms
         }
         private static void proj1_OnlineStatusChange(GenericBase currentDevice, OnlineOfflineEventArgs args)
         {
-            return;
-            //try
-            //{
-            //    if (args.DeviceOnLine)
-            //    {
-            //        if (Scheduling.errorCounts.TryGetValue("proj1", out int x) && x > 0)
-            //        {
-            //            Scheduling.errorCounts["proj1"] = 0;
-            //            Email.SendEmail(RoomSetup.MailSubject, $"{currentDevice.Name} is online {DateTime.Now}");
-            //        }
-            //    }
-            //    else if (!args.DeviceOnLine)
-            //    {
-            //        Scheduling.Alert_Timer("proj1", RoomSetup.Timeouts.ErrorCheckDelay, $"{currentDevice.Name} Offline at {DateTime.Now}");
-            //    }
-            //}
-            //catch (Exception e)
-            //{
-            //    CrestronConsole.PrintLine("Proj1_OnlineStatusChange: {0}", e.Message);
-            //    ErrorLog.Notice("Proj1_OnlineStatusChange: {0}", e.Message);
-            //    Email.SendEmail(RoomSetup.MailSubject + " Proj1_OnlineStatusChange", e.Message);
-            //}
+            try
+            {
+                CrestronConsole.PrintLine("Display_OnlineStatusChange");
+                if (args.DeviceOnLine)
+                {
+                    if (Scheduling.errorCounts.TryGetValue("proj", out int x) && x > 0)
+                    {
+                        Scheduling.errorCounts["tv"] = 0;
+                        Email.SendEmail(RoomSetup.MailSubject, $"{currentDevice.Name} is online {DateTime.Now}");
+                    }
+                }
+                else if (!args.DeviceOnLine)
+                {
+                    Scheduling.Alert_Timer("tv", RoomSetup.Timeouts.ErrorCheckDelay, $"{currentDevice.Name} Offline at {DateTime.Now}");
+                }
+            }
+            catch (Exception e)
+            {
+                CrestronConsole.PrintLine("Display_OnlineStatusChange: {0}", e.Message);
+                ErrorLog.Notice("Display_OnlineStatusChange: {0}", e.Message);
+                Email.SendEmail(RoomSetup.MailSubject + " Display_OnlineStatusChange", e.Message);
+            }
         }
         private static void proj1_BaseEvent(GenericBase currentDevice, BaseEventArgs args)
         {
-            return;
-            //try
-            //{
-            //    if (ControlSystem.proj1.PowerOnFeedback.BoolValue)  //Power On
-            //    {
-            //        ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = false;
-            //        ControlSystem.proj1.SourceSelectSigs[5].Pulse();
-            //    }
+            try
+            {
+                if (ControlSystem.proj1.PowerOnFeedback.BoolValue)  //Power On
+                {
+                    ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = false;
+                    ControlSystem.proj1.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
+                }
 
-            //    if (ControlSystem.proj1.PowerOffFeedback.BoolValue) //Power Off
-            //    {
-            //        ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = true;
-            //    }
+                if (ControlSystem.proj1.PowerOffFeedback.BoolValue) //Power Off
+                {
+                    ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = true;
+                }
 
-            //    if (!ControlSystem.proj1.SourceSelectFeedbackSigs[5].BoolValue)
-            //    {
-            //        ControlSystem.proj1.SourceSelectSigs[5].Pulse();
-            //    }
-            //}
-            //catch (Exception e)
-            //{
-            //    ErrorLog.Notice($"EvertzHandler Error:  {e.Message}");
-            //    CrestronConsole.PrintLine($"EvertzHandler Error:  {e.Message}");
-            //    Email.SendEmail(RoomSetup.MailSubject + " Proj1_BaseEvent", e.Message);
-            //}
+                if (!ControlSystem.proj1.SourceSelectFeedbackSigs[((uint)SonyProjInputs.ProjHDMI)].BoolValue)
+                {
+                    ControlSystem.proj1.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
+                }
+            }
+            catch (Exception e)
+            {
+                ErrorLog.Notice($"EvertzHandler proj1_BaseEvent Error:  {e.Message}");
+                CrestronConsole.PrintLine($"EvertzHandler proj1_BaseEvent Error  {e.Message}");
+                Email.SendEmail(RoomSetup.MailSubject + " proj2_BaseEvent", e.Message);
+            }
         }
         private static void proj2_OnlineStatusChange(GenericBase currentDevice, OnlineOfflineEventArgs args)
         {
-            return;
-            //try
-            //{
-            //    if (args.DeviceOnLine)
-            //    {
-            //        if (Scheduling.errorCounts.TryGetValue("proj2", out int x) && x > 0)
-            //        {
-            //            Scheduling.errorCounts["proj2"] = 0;
-            //            Email.SendEmail(RoomSetup.MailSubject, $"{currentDevice.Name} is online {DateTime.Now}");
-            //        }
-            //    }
-            //    else if (!args.DeviceOnLine)
-            //    {
-            //        Scheduling.Alert_Timer("proj2", RoomSetup.Timeouts.ErrorCheckDelay, $"{currentDevice.Name} Offline at {DateTime.Now}");
-            //    }
-            //}
-            //catch (Exception e)
-            //{
-            //    CrestronConsole.PrintLine("Proj2_OnlineStatusChange: {0}", e.Message);
-            //    ErrorLog.Notice("Proj2_OnlineStatusChange: {0}", e.Message);
-            //    Email.SendEmail(RoomSetup.MailSubject + " Proj2_OnlineStatusChange", e.Message);
-            //}
+            try
+            {
+                CrestronConsole.PrintLine("Display_OnlineStatusChange");
+                if (args.DeviceOnLine)
+                {
+                    if (Scheduling.errorCounts.TryGetValue("proj", out int x) && x > 0)
+                    {
+                        Scheduling.errorCounts["tv"] = 0;
+                        Email.SendEmail(RoomSetup.MailSubject, $"{currentDevice.Name} is online {DateTime.Now}");
+                    }
+                }
+                else if (!args.DeviceOnLine)
+                {
+                    Scheduling.Alert_Timer("tv", RoomSetup.Timeouts.ErrorCheckDelay, $"{currentDevice.Name} Offline at {DateTime.Now}");
+                }
+            }
+            catch (Exception e)
+            {
+                CrestronConsole.PrintLine("Display_OnlineStatusChange: {0}", e.Message);
+                ErrorLog.Notice("Display_OnlineStatusChange: {0}", e.Message);
+                Email.SendEmail(RoomSetup.MailSubject + " Display_OnlineStatusChange", e.Message);
+            }
         }
         private static void proj2_BaseEvent(GenericBase currentDevice, BaseEventArgs args)
         {
-            return;
-            //try
-            //{
-            //    if (ControlSystem.proj2.PowerOnFeedback.BoolValue)  //Power On
-            //    {
-            //        ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = false;
-            //        ControlSystem.proj2.SourceSelectSigs[5].Pulse();
-            //    }
+            try
+            {
+                if (ControlSystem.proj2.PowerOnFeedback.BoolValue)  //Power On
+                {
+                    ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = false;
+                    ControlSystem.proj2.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
+                }
 
-            //    if (ControlSystem.proj2.PowerOffFeedback.BoolValue) //Power Off
-            //    {
-            //        ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = true;
-            //    }
+                if (ControlSystem.proj2.PowerOffFeedback.BoolValue) //Power Off
+                {
+                    ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = true;
+                }
 
-            //    if (!ControlSystem.proj2.SourceSelectFeedbackSigs[5].BoolValue)
-            //    {
-            //        ControlSystem.proj2.SourceSelectSigs[5].Pulse();
-            //    }
-            //}
-            //catch (Exception e)
-            //{
-            //    ErrorLog.Notice($"EvertzHandler Error:  {e.Message}");
-            //    CrestronConsole.PrintLine($"EvertzHandler Error:  {e.Message}");
-            //    Email.SendEmail(RoomSetup.MailSubject + " Proj2_BaseEvent", e.Message);
-            //}
+                if (!ControlSystem.proj2.SourceSelectFeedbackSigs[((uint)SonyProjInputs.ProjHDMI)].BoolValue)
+                {
+                    ControlSystem.proj2.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
+                }
+            }
+            catch (Exception e)
+            {
+                ErrorLog.Notice($"EvertzHandler proj2_BaseEvent Error:  {e.Message}");
+                CrestronConsole.PrintLine($"EvertzHandler proj2_BaseEvent Error  {e.Message}");
+                Email.SendEmail(RoomSetup.MailSubject + " proj2_BaseEvent", e.Message);
+            }
         }
         private static void proj3_OnlineStatusChange(GenericBase currentDevice, OnlineOfflineEventArgs args)
         {
-            return;
-            //try
-            //{
-            //    if (args.DeviceOnLine)
-            //    {
-            //        if (Scheduling.errorCounts.TryGetValue("proj3", out int x) && x > 0)
-            //        {
-            //            Scheduling.errorCounts["proj3"] = 0;
-            //            Email.SendEmail(RoomSetup.MailSubject, $"{currentDevice.Name} is online {DateTime.Now}");
-            //        }
-            //    }
-            //    else if (!args.DeviceOnLine)
-            //    {
-            //        Scheduling.Alert_Timer("proj3", RoomSetup.Timeouts.ErrorCheckDelay, $"{currentDevice.Name} Offline at {DateTime.Now}");
-            //    }
-            //}
-            //catch (Exception e)
-            //{
-            //    CrestronConsole.PrintLine("Proj3_OnlineStatusChange: {0}", e.Message);
-            //    ErrorLog.Notice("Proj3_OnlineStatusChange: {0}", e.Message);
-            //    Email.SendEmail(RoomSetup.MailSubject + " Proj3_OnlineStatusChange", e.Message);
-            //}
+            try
+            {
+                CrestronConsole.PrintLine("Display_OnlineStatusChange");
+                if (args.DeviceOnLine)
+                {
+                    if (Scheduling.errorCounts.TryGetValue("proj", out int x) && x > 0)
+                    {
+                        Scheduling.errorCounts["tv"] = 0;
+                        Email.SendEmail(RoomSetup.MailSubject, $"{currentDevice.Name} is online {DateTime.Now}");
+                    }
+                }
+                else if (!args.DeviceOnLine)
+                {
+                    Scheduling.Alert_Timer("tv", RoomSetup.Timeouts.ErrorCheckDelay, $"{currentDevice.Name} Offline at {DateTime.Now}");
+                }
+            }
+            catch (Exception e)
+            {
+                CrestronConsole.PrintLine("Display_OnlineStatusChange: {0}", e.Message);
+                ErrorLog.Notice("Display_OnlineStatusChange: {0}", e.Message);
+                Email.SendEmail(RoomSetup.MailSubject + " Display_OnlineStatusChange", e.Message);
+            }
         }
         private static void proj3_BaseEvent(GenericBase currentDevice, BaseEventArgs args)
         {
-            return;
-            //try
-            //{
-            //    if (ControlSystem.proj3.PowerOnFeedback.BoolValue)  //Power On
-            //    {
-            //        ControlSystem.tp.BooleanInput[((uint)Join.btn3_PwrOnVis)].BoolValue = false;
-            //        ControlSystem.proj3.SourceSelectSigs[5].Pulse();
-            //    }
+            try
+            {
+                if (ControlSystem.proj3.PowerOnFeedback.BoolValue)  //Power On
+                {
+                    ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = false;
+                    ControlSystem.proj3.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
+                }
 
-            //    if (ControlSystem.proj3.PowerOffFeedback.BoolValue) //Power Off
-            //    {
-            //        ControlSystem.tp.BooleanInput[((uint)Join.btn3_PwrOnVis)].BoolValue = true;
-            //    }
+                if (ControlSystem.proj3.PowerOffFeedback.BoolValue) //Power Off
+                {
+                    ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = true;
+                }
 
-            //    if (!ControlSystem.proj3.SourceSelectFeedbackSigs[5].BoolValue)
-            //    {
-            //        ControlSystem.proj3.SourceSelectSigs[5].Pulse();
-            //    }
-            //}
-            //catch (Exception e)
-            //{
-            //    ErrorLog.Notice($"EvertzHandler Error:  {e.Message}");
-            //    CrestronConsole.PrintLine($"EvertzHandler Error:  {e.Message}");
-            //    Email.SendEmail(RoomSetup.MailSubject + " Proj3_BaseEvent", e.Message);
-            //}
+                if (!ControlSystem.proj3.SourceSelectFeedbackSigs[((uint)SonyProjInputs.ProjHDMI)].BoolValue)
+                {
+                    ControlSystem.proj3.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
+                }
+            }
+            catch (Exception e)
+            {
+                ErrorLog.Notice($"EvertzHandler proj3_BaseEvent Error:  {e.Message}");
+                CrestronConsole.PrintLine($"EvertzHandler proj3_BaseEvent Error  {e.Message}");
+                Email.SendEmail(RoomSetup.MailSubject + " proj3_BaseEvent", e.Message);
+            }
         }
         private static void disp2_OnlineStatusChange(GenericBase currentDevice, OnlineOfflineEventArgs args)
         {
-            return;
-            //try
-            //{
-            //    if (args.DeviceOnLine)
-            //    {
-            //        if (Scheduling.errorCounts.TryGetValue("tv", out int x) && x > 0)
-            //        {
-            //            Scheduling.errorCounts["tv"] = 0;
-            //            Email.SendEmail(RoomSetup.MailSubject, $"{currentDevice.Name} is online {DateTime.Now}");
-            //        }
-            //    }
-            //    else if (!args.DeviceOnLine)
-            //    {
-            //        Scheduling.Alert_Timer("tv", RoomSetup.Timeouts.ErrorCheckDelay, $"{currentDevice.Name} Offline at {DateTime.Now}");
-            //    }
-            //}
-            //catch (Exception e)
-            //{
-            //    CrestronConsole.PrintLine("Display_OnlineStatusChange: {0}", e.Message);
-            //    ErrorLog.Notice("Display_OnlineStatusChange: {0}", e.Message);
-            //    Email.SendEmail(RoomSetup.MailSubject + " Display_OnlineStatusChange", e.Message);
-            //}
+            try
+            {
+                CrestronConsole.PrintLine("Display_OnlineStatusChange");
+                if (args.DeviceOnLine)
+                {
+                    if (Scheduling.errorCounts.TryGetValue("tv", out int x) && x > 0)
+                    {
+                        Scheduling.errorCounts["tv"] = 0;
+                        Email.SendEmail(RoomSetup.MailSubject, $"{currentDevice.Name} is online {DateTime.Now}");
+                    }
+                }
+                else if (!args.DeviceOnLine)
+                {
+                    Scheduling.Alert_Timer("tv", RoomSetup.Timeouts.ErrorCheckDelay, $"{currentDevice.Name} Offline at {DateTime.Now}");
+                }
+            }
+            catch (Exception e)
+            {
+                CrestronConsole.PrintLine("Display_OnlineStatusChange: {0}", e.Message);
+                ErrorLog.Notice("Display_OnlineStatusChange: {0}", e.Message);
+                Email.SendEmail(RoomSetup.MailSubject + " Display_OnlineStatusChange", e.Message);
+            }
         }
         private static void disp2_BaseEvent(GenericBase currentDevice, BaseEventArgs args)
         {
-            return;
-            //try
-            //{
-            //    if (ControlSystem.disp2.PowerOnFeedback.BoolValue)  //Power On
-            //    {
-            //        ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = false;
-            //        ControlSystem.disp2.SourceSelectSigs[5].Pulse();
-            //    }
+            try
+            {
+                if (ControlSystem.disp2.Power.PowerOnFeedback.BoolValue && !ControlSystem.disp2.Power.PowerOffFeedback.BoolValue)  //Power On
+                {
+                    ControlSystem.tp.BooleanInput[((uint)Join.btnPwrOnVis)].BoolValue = false;
 
-            //    if (ControlSystem.disp2.PowerOffFeedback.BoolValue) //Power Off
-            //    {
-            //        ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = true;
-            //    }
+                    if (ControlSystem.disp2.Video.Source.SourceSelect.UShortValue != 1)
+                        ControlSystem.disp2.Video.Source.SourceSelect.UShortValue = 1;
+                    if (ControlSystem.hdmd.FrontPanelLockEnabledFeedback.BoolValue && RoomSetup.HuddleRoomSettings.FrontpanelLock == "off")
+                        ControlSystem.hdmd.DisableFrontPanelLock();
+                }
 
-            //    if (!ControlSystem.disp2.SourceSelectFeedbackSigs[5].BoolValue)
-            //    {
-            //        ControlSystem.disp2.SourceSelectSigs[5].Pulse();
-            //    }
-            //}
-            //catch (Exception e)
-            //{
-            //    ErrorLog.Notice($"EvertzHandler Error:  {e.Message}");
-            //    CrestronConsole.PrintLine($"EvertzHandler Error:  {e.Message}");
-            //    Email.SendEmail(RoomSetup.MailSubject + " Disp2_BaseEvent", e.Message);
-            //}
+                if (ControlSystem.disp2.Power.PowerOffFeedback.BoolValue && !ControlSystem.disp2.Power.PowerOnFeedback.BoolValue) //Power Off
+                {
+                    ControlSystem.tp.BooleanInput[((uint)Join.btnPwrOnVis)].BoolValue = true;
+                    HDMD.RouteVideo(0);
+
+                    if (ControlSystem.hdmd.FrontPanelLockDisabledFeedback.BoolValue)
+                        ControlSystem.hdmd.EnableFrontPanelLock();
+                }
+            }
+            catch (Exception e)
+            {
+                ErrorLog.Notice($"EvertzHandler disp2_BaseEvent Error:  {e.Message}");
+                CrestronConsole.PrintLine($"EvertzHandler disp2_BaseEvent Error:  {e.Message}");
+                Email.SendEmail(RoomSetup.MailSubject + " EvertzHandler disp2_BaseEvent Error", e.Message);
+            }
         }
         private static void disp3_OnlineStatusChange(GenericBase currentDevice, OnlineOfflineEventArgs args)
         {
-            return;
-            //try
-            //{
-            //    if (args.DeviceOnLine)
-            //    {
-            //        if (Scheduling.errorCounts.TryGetValue("tv", out int x) && x > 0)
-            //        {
-            //            Scheduling.errorCounts["tv"] = 0;
-            //            Email.SendEmail(RoomSetup.MailSubject, $"{currentDevice.Name} is online {DateTime.Now}");
-            //        }
-            //    }
-            //    else if (!args.DeviceOnLine)
-            //    {
-            //        Scheduling.Alert_Timer("tv", RoomSetup.Timeouts.ErrorCheckDelay, $"{currentDevice.Name} Offline at {DateTime.Now}");
-            //    }
-            //}
-            //catch (Exception e)
-            //{
-            //    CrestronConsole.PrintLine("Display_OnlineStatusChange: {0}", e.Message);
-            //    ErrorLog.Notice("Display_OnlineStatusChange: {0}", e.Message);
-            //    Email.SendEmail(RoomSetup.MailSubject + " Display_OnlineStatusChange", e.Message);
-            //}
+            try
+            {
+                CrestronConsole.PrintLine("Display_OnlineStatusChange");
+                if (args.DeviceOnLine)
+                {
+                    if (Scheduling.errorCounts.TryGetValue("tv", out int x) && x > 0)
+                    {
+                        Scheduling.errorCounts["tv"] = 0;
+                        Email.SendEmail(RoomSetup.MailSubject, $"{currentDevice.Name} is online {DateTime.Now}");
+                    }
+                }
+                else if (!args.DeviceOnLine)
+                {
+                    Scheduling.Alert_Timer("tv", RoomSetup.Timeouts.ErrorCheckDelay, $"{currentDevice.Name} Offline at {DateTime.Now}");
+                }
+            }
+            catch (Exception e)
+            {
+                CrestronConsole.PrintLine("Display_OnlineStatusChange: {0}", e.Message);
+                ErrorLog.Notice("Display_OnlineStatusChange: {0}", e.Message);
+                Email.SendEmail(RoomSetup.MailSubject + " Display_OnlineStatusChange", e.Message);
+            }
         }
         private static void disp3_BaseEvent(GenericBase currentDevice, BaseEventArgs args)
         {
-            return;
-            //try
-            //{
-            //    if (ControlSystem.disp3.PowerOnFeedback.BoolValue)  //Power On
-            //    {
-            //        ControlSystem.tp.BooleanInput[((uint)Join.btn3_PwrOnVis)].BoolValue = false;
-            //        ControlSystem.disp3.SourceSelectSigs[5].Pulse();
-            //    }
+            try
+            {
+                if (ControlSystem.disp3.Power.PowerOnFeedback.BoolValue && !ControlSystem.disp3.Power.PowerOffFeedback.BoolValue)  //Power On
+                {
+                    ControlSystem.tp.BooleanInput[((uint)Join.btnPwrOnVis)].BoolValue = false;
 
-            //    if (ControlSystem.disp3.PowerOffFeedback.BoolValue) //Power Off
-            //    {
-            //        ControlSystem.tp.BooleanInput[((uint)Join.btn3_PwrOnVis)].BoolValue = true;
-            //    }
+                    if (ControlSystem.disp3.Video.Source.SourceSelect.UShortValue != 1)
+                        ControlSystem.disp3.Video.Source.SourceSelect.UShortValue = 1;
+                    if (ControlSystem.hdmd.FrontPanelLockEnabledFeedback.BoolValue && RoomSetup.HuddleRoomSettings.FrontpanelLock == "off")
+                        ControlSystem.hdmd.DisableFrontPanelLock();
+                }
 
-            //    if (!ControlSystem.disp3.SourceSelectFeedbackSigs[5].BoolValue)
-            //    {
-            //        ControlSystem.disp3.SourceSelectSigs[5].Pulse();
-            //    }
-            //}
-            //catch (Exception e)
-            //{
-            //    ErrorLog.Notice($"EvertzHandler Error:  {e.Message}");
-            //    CrestronConsole.PrintLine($"EvertzHandler Error:  {e.Message}");
-            //    Email.SendEmail(RoomSetup.MailSubject + " Disp3_BaseEvent", e.Message);
-            //}
+                if (ControlSystem.disp3.Power.PowerOffFeedback.BoolValue && !ControlSystem.disp3.Power.PowerOnFeedback.BoolValue) //Power Off
+                {
+                    ControlSystem.tp.BooleanInput[((uint)Join.btnPwrOnVis)].BoolValue = true;
+                    HDMD.RouteVideo(0);
+
+                    if (ControlSystem.hdmd.FrontPanelLockDisabledFeedback.BoolValue)
+                        ControlSystem.hdmd.EnableFrontPanelLock();
+                }
+            }
+            catch (Exception e)
+            {
+                ErrorLog.Notice($"EvertzHandler disp3_BaseEvent Error:  {e.Message}");
+                CrestronConsole.PrintLine($"EvertzHandler disp3_BaseEvent Error:  {e.Message}");
+                Email.SendEmail(RoomSetup.MailSubject + " EvertzHandler disp3_BaseEvent Error", e.Message);
+            }
         }
 
         public static void Initialize()
@@ -785,9 +799,9 @@ namespace NFAHRooms
                     throw new Exception(ControlSystem.am3200.RegistrationFailureReason.ToString());
 
                     ControlSystem.am3200.OnlineStatusChange += new OnlineStatusChangeEventHandler(am3200_OnlineStatusChange);
-
+                
                 if (RoomSetup.Display1 == "proj")
-                { 
+                {
                     if (ControlSystem.proj1.Register() != eDeviceRegistrationUnRegistrationResponse.Success)
                         throw new Exception(ControlSystem.proj1.RegistrationFailureReason.ToString());
 
@@ -861,8 +875,8 @@ namespace NFAHRooms
                 }
 
                 ControlSystem.tp.StringInput[((uint)Join.lblRoomName)].StringValue = RoomSetup.Touchpanel.RoomText;
-
-
+                ControlSystem.tp.ExtenderSystemReservedSigs.LcdBrightnessAutoOff();
+               
                 Evertz.Initialize();
             }
             catch (Exception e)

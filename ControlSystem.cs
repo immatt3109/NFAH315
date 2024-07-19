@@ -67,10 +67,10 @@ namespace NFAHRooms
                     if (RoomSetup.Display1 == "tv")
                         disp1 = new CrestronConnectedDisplayV2(0x05, this);
 
-                    if (RoomSetup.Display2 == "disp")
+                    if (RoomSetup.Display2 == "tv")
                         disp2 = new CrestronConnectedDisplayV2(0x15, this);
 
-                    if (RoomSetup.Display3 == "disp")
+                    if (RoomSetup.Display3 == "tv")
                         disp3 = new CrestronConnectedDisplayV2(0x25, this);
 
                     EvertzHandler.Initialize();
