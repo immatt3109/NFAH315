@@ -146,9 +146,6 @@ namespace NFAHRooms
     {
         [JsonProperty("common_properties")]
         public SonyCameraCommonProperties CommonProperties { get; set; }
-
-        [JsonProperty("cameras")]
-        public List<SonyCamera> Cameras { get; set; }
     }
 
     public class SonyCameraCommonProperties
@@ -158,29 +155,17 @@ namespace NFAHRooms
 
         [JsonProperty("password")]
         public string Password { get; set; }
-
-        [JsonProperty("cam_url")]
-        public string  CamURL { get; set; }
-
-        [JsonProperty("image_name")]
-        public string IMGName { get; set; }
-        
-        [JsonProperty("storage_location")]
-        public string StorageLocation { get; set; }
-
+                
         [JsonProperty("pan")]
         public string Pan { get; set; }
 
         [JsonProperty("zoom")]
         public string Zoom { get; set; }
+        [JsonProperty("teacher_IP")]
+        public string TeacherIP { get; set; }
+        [JsonProperty("student_IP")]
+        public string StudentIP { get; set; }
     }
-
-    public class SonyCamera
-    {
-        [JsonProperty("ip_address")]
-        public string IpAddress { get; set; }
-    }
-       
     public class Microphone
     {
         [JsonProperty("ip_address")]

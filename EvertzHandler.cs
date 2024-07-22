@@ -2,6 +2,8 @@
 using Crestron.SimplSharp;                          	// For Basic SIMPL# Classes
 using Crestron.SimplSharpPro;                       	// For Basic SIMPL#Pro classes
 using Crestron.SimplSharpPro.DeviceSupport;
+using System.Threading;
+using static Crestron.SimplSharpPro.DM.Audio;
 
 namespace NFAHRooms
 {
@@ -9,9 +11,11 @@ namespace NFAHRooms
 
     public static class EvertzHandler
     {
+        static CTimer _timer;
         
         private static void disp1_BaseEvent(GenericBase currentDevice, BaseEventArgs args)
         {
+            CrestronConsole.PrintLine("disp1_BaseEvent");
             ///
             ///btnPwrOff = 23,  //If power is on and you want to turn it off, it's this button
             ///btnPwrOn = 33,  //If power is off and you want to turn it on, it's this button
@@ -21,7 +25,7 @@ namespace NFAHRooms
             {
                 if (ControlSystem.disp1.Power.PowerOnFeedback.BoolValue && !ControlSystem.disp1.Power.PowerOffFeedback.BoolValue)  //Power On
                 {
-                    ControlSystem.tp.BooleanInput[((uint)Join.btnPwrOnVis)].BoolValue = false;
+                    ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = false;
 
                     if (ControlSystem.disp1.Video.Source.SourceSelect.UShortValue != 1)
                         ControlSystem.disp1.Video.Source.SourceSelect.UShortValue = 1;
@@ -29,7 +33,8 @@ namespace NFAHRooms
 
                 if (ControlSystem.disp1.Power.PowerOffFeedback.BoolValue && !ControlSystem.disp1.Power.PowerOnFeedback.BoolValue) //Power Off
                 {
-                    ControlSystem.tp.BooleanInput[((uint)Join.btnPwrOnVis)].BoolValue = true;
+                    ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = true;
+                    tp_ButtonStatus(((uint)EvertzOutputs.out_Disp1).ToString(), ((uint)EvertzInputs.in_Blank).ToString());
                 }
             }
             catch (Exception e)
@@ -51,6 +56,7 @@ namespace NFAHRooms
                         {
                             SetOutput(101);
                         }
+                        CrestronConsole.PrintLine("tp_Clearbuttonstatus 1:  Input: {0}", Input);
                         switch (Input)
                         {
                             case "1":
@@ -72,8 +78,18 @@ namespace NFAHRooms
                                 ControlSystem.tp.BooleanInput[((uint)Join.btn1_DSPwrOn)].BoolValue = true;
                                 break;
                             case "0":
-                                if (ControlSystem.proj1.PowerOnFeedback.BoolValue)
-                                    ControlSystem.proj1.PowerOff();
+                            CrestronConsole.PrintLine("tp_Clearbuttonstatus case 0");
+                            if (RoomSetup.Display1 == "proj")
+                                {
+                                    if (ControlSystem.proj1.PowerOnFeedback.BoolValue)
+                                        ControlSystem.proj1.PowerOff();
+                                }
+                                else if (RoomSetup.Display1 == "tv")
+                                {
+                                CrestronConsole.PrintLine("TV Power Off");
+                                    if (ControlSystem.disp1.Power.PowerOnFeedback.BoolValue)
+                                        ControlSystem.disp1.Power.PowerOff();
+                                }
                                 break;
                         }
                         break;
@@ -105,10 +121,18 @@ namespace NFAHRooms
                                 ControlSystem.tp.BooleanInput[((uint)Join.btn2_DSPwrOn)].BoolValue = true;
                                 break;
                             case "0":
+                            if (RoomSetup.Display2 == "proj")
+                            {
                                 if (ControlSystem.proj2.PowerOnFeedback.BoolValue)
                                     ControlSystem.proj2.PowerOff();
-                                break;
-                        }
+                            }
+                            else if (RoomSetup.Display2 == "tv")
+                            {
+                                if (ControlSystem.disp2.Power.PowerOnFeedback.BoolValue)
+                                    ControlSystem.disp2.Power.PowerOff();
+                            }
+                            break;
+                    }
                         break;
                 case "3":
                     tp_ClearButtonStatus(((uint)EvertzOutputs.out_Proj3).ToString());
@@ -137,9 +161,17 @@ namespace NFAHRooms
                                 ControlSystem.tp.BooleanInput[((uint)Join.btn3_DSPwrOn)].BoolValue = true;
                                 break;
                             case "0":
+                            if (RoomSetup.Display3 == "proj")
+                            {
                                 if (ControlSystem.proj3.PowerOnFeedback.BoolValue)
                                     ControlSystem.proj3.PowerOff();
-                                break;
+                            }
+                            else if (RoomSetup.Display3 == "tv")
+                            {
+                                if (ControlSystem.disp3.Power.PowerOnFeedback.BoolValue)
+                                    ControlSystem.disp3.Power.PowerOff();
+                            }
+                            break;
                         }
                         break;
                 case "0":
@@ -280,8 +312,16 @@ namespace NFAHRooms
                                             }
                                         case ((uint)Join.btn1_PwrOn):  //Power On
                                             {
-                                                if (ControlSystem.proj1.PowerOffFeedback.BoolValue)
-                                                    SetOutput((uint)Join.btn1_PwrOn);
+                                                if (RoomSetup.Display1 == "proj")
+                                                {
+                                                    if (ControlSystem.proj1.PowerOffFeedback.BoolValue)
+                                                        SetOutput((uint)Join.btn1_PwrOn);
+                                                }
+                                                else if (RoomSetup.Display1 == "tv")
+                                                {
+                                                    if (ControlSystem.disp1.Power.PowerOffFeedback.BoolValue)
+                                                        SetOutput((uint)Join.btn1_PwrOn);
+                                                }
                                                 break;
                                             }
                                         case ((uint)Join.btn1_PwrOff):  //Power Off
@@ -448,11 +488,420 @@ namespace NFAHRooms
                                                 await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_VTC).ToString(), ((uint)EvertzInputs.in_StudentCam).ToString());
                                                 break;
                                             }
+                                        case (uint)Join.btn_Up:
+                                            if (ControlSystem.tp.BooleanInput[((uint)Join.mode_TeachCamVisibile)].BoolValue)
+                                            {
+                                                _ = Sony.SendRequest(Sony.urls["Teach_MoveUP"]);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_UpVis)].BoolValue = true;
+                                            }
+                                            else if (ControlSystem.tp.BooleanInput[((uint)Join.mode_StuCamVisibile)].BoolValue)
+                                            {
+                                                _ = Sony.SendRequest(Sony.urls["Student_MoveUP"]);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_UpVis)].BoolValue = true;
+                                            }
+                                            break;
+                                        case (uint)Join.btn_Down:
+                                            if (ControlSystem.tp.BooleanInput[((uint)Join.mode_TeachCamVisibile)].BoolValue)
+                                            {
+                                                _ = Sony.SendRequest(Sony.urls["Teach_MoveDOWN"]);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_DownVis)].BoolValue = true;
+                                            }
+                                            else if (ControlSystem.tp.BooleanInput[((uint)Join.mode_StuCamVisibile)].BoolValue)
+                                            {
+                                                _ = Sony.SendRequest(Sony.urls["Student_MoveDOWN"]);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_DownVis)].BoolValue = true;
+                                            }
+                                            break;
+                                        case (uint)Join.btn_Left:
+                                            if (ControlSystem.tp.BooleanInput[((uint)Join.mode_TeachCamVisibile)].BoolValue)
+                                            {
+                                                _ = Sony.SendRequest(Sony.urls["Teach_MoveLEFT"]);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_LeftVis)].BoolValue = true;
+                                            }
+                                            else if (ControlSystem.tp.BooleanInput[((uint)Join.mode_StuCamVisibile)].BoolValue)
+                                            {
+                                                _ = Sony.SendRequest(Sony.urls["Student_MoveLEFT"]);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_LeftVis)].BoolValue = true;
+                                            }
+                                            break;
+                                        case (uint)Join.btn_Right:
+                                            if (ControlSystem.tp.BooleanInput[((uint)Join.mode_TeachCamVisibile)].BoolValue)
+                                            {
+                                                _ = Sony.SendRequest(Sony.urls["Teach_MoveRIGHT"]);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_RightVis)].BoolValue = true;
+                                            }
+                                            else if (ControlSystem.tp.BooleanInput[((uint)Join.mode_StuCamVisibile)].BoolValue)
+                                            {
+                                                _ = Sony.SendRequest(Sony.urls["Student_MoveRIGHT"]);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_RightVis)].BoolValue = true;
+                                            }
+                                            break;
+                                        case (uint)Join.btn_UpRight:
+                                            if (ControlSystem.tp.BooleanInput[((uint)Join.mode_TeachCamVisibile)].BoolValue)
+                                            {
+                                                _ = Sony.SendRequest(Sony.urls["Teach_MoveUPRIGHT"]);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_UpRightVis)].BoolValue = true;
+                                            }
+                                            else if (ControlSystem.tp.BooleanInput[((uint)Join.mode_StuCamVisibile)].BoolValue)
+                                            {
+                                                _ = Sony.SendRequest(Sony.urls["Student_MoveUPRIGHT"]);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_UpRightVis)].BoolValue = true;
+                                            }
+                                            break;
+                                        case (uint)Join.btn_DownRight:
+                                            if (ControlSystem.tp.BooleanInput[((uint)Join.mode_TeachCamVisibile)].BoolValue)
+                                            {
+                                                _ = Sony.SendRequest(Sony.urls["Teach_MoveDOWNRIGHT"]);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_DownRightVis)].BoolValue = true;
+                                            }
+                                            else if (ControlSystem.tp.BooleanInput[((uint)Join.mode_StuCamVisibile)].BoolValue)
+                                            {
+                                                _ = Sony.SendRequest(Sony.urls["Student_MoveDOWNRIGHT"]);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_DownRightVis)].BoolValue = true;
+                                            }
+                                            break;
+                                        case (uint)Join.btn_UpLeft:
+                                            if (ControlSystem.tp.BooleanInput[((uint)Join.mode_TeachCamVisibile)].BoolValue)
+                                            {
+                                                _ = Sony.SendRequest(Sony.urls["Teach_MoveUPLEFT"]);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_UpLeftVis)].BoolValue = true;
+                                            }
+                                            else if (ControlSystem.tp.BooleanInput[((uint)Join.mode_StuCamVisibile)].BoolValue)
+                                            {
+                                                _ = Sony.SendRequest(Sony.urls["Student_MoveUPLEFT"]);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_UpLeftVis)].BoolValue = true;
+                                            }
+                                            break;
+                                        case (uint)Join.btn_DownLeft:
+                                            if (ControlSystem.tp.BooleanInput[((uint)Join.mode_TeachCamVisibile)].BoolValue)
+                                            {
+                                                _ = Sony.SendRequest(Sony.urls["Teach_MoveDOWNLEFT"]);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_DownLeftVis)].BoolValue = true;
+                                            }
+                                            else if (ControlSystem.tp.BooleanInput[((uint)Join.mode_StuCamVisibile)].BoolValue)
+                                            {
+                                                _ = Sony.SendRequest(Sony.urls["Student_MoveDOWNLEFT"]);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_DownLeftVis)].BoolValue = true;
+                                            }
+                                            break;
+                                        case (uint)Join.btn_ZoomIn:
+                                            if (ControlSystem.tp.BooleanInput[((uint)Join.mode_TeachCamVisibile)].BoolValue)
+                                            {
+                                                _ = Sony.SendRequest(Sony.urls["Teach_ZoomIN"]);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_ZoomInVis)].BoolValue = true; 
+                                            }
+                                            else if (ControlSystem.tp.BooleanInput[((uint)Join.mode_StuCamVisibile)].BoolValue)
+                                            {
+                                                _ = Sony.SendRequest(Sony.urls["Student_ZoomIN"]);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_ZoomInVis)].BoolValue = true;
+                                            }
+                                            break;
+                                        case (uint)Join.btn_ZoomOut:
+                                            if (ControlSystem.tp.BooleanInput[((uint)Join.mode_TeachCamVisibile)].BoolValue)
+                                            {
+                                                _ = Sony.SendRequest(Sony.urls["Teach_ZoomOUT"]);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_ZoomOutVis)].BoolValue = true;
+                                            }
+                                            else if (ControlSystem.tp.BooleanInput[((uint)Join.mode_StuCamVisibile)].BoolValue)
+                                            {
+                                                _ = Sony.SendRequest(Sony.urls["Student_ZoomOUT"]);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_ZoomOutVis)].BoolValue = true;
+                                            }
+                                            break;
+                                        case (uint)Join.btn_StudentCamControl:
+
+                                            ControlSystem.tp.BooleanInput[((uint)Join.mode_StuCamVisibile)].BoolValue = true;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.mode_TeachCamVisibile)].BoolValue = false;
+                                            ControlSystem.tp.StringInput[((uint)Join.serial_Stream)].StringValue = Constants.rtsp + RoomSetup.SonyCameras.CommonProperties.StudentIP + Constants.rtspStream;
+                                            break;
+
+                                        case (uint)Join.btn_TeachCamControl:
+
+                                            ControlSystem.tp.BooleanInput[((uint)Join.mode_StuCamVisibile)].BoolValue = false;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.mode_TeachCamVisibile)].BoolValue = true;
+                                            ControlSystem.tp.StringInput[((uint)Join.serial_Stream)].StringValue = Constants.rtsp + RoomSetup.SonyCameras.CommonProperties.TeacherIP + Constants.rtspStream;
+                                            break;
+                                        case ((uint)Join.btn_TPreset1):
+                                            CrestronConsole.PrintLine("TPreset1");
+                                            _timer = new CTimer(Sony.TimerCallback, "TPS1", 5000);
+
+                                            break;
+                                        case ((uint)Join.btn_TPreset2):
+                                            _timer = new CTimer(Sony.TimerCallback, "TPS2", 5000);
+                                            break;
+                                        case ((uint)Join.btn_TPreset3):
+                                            _timer = new CTimer(Sony.TimerCallback, "TPS3", 5000);
+                                            break;
+                                        case ((uint)Join.btn_SPreset1):
+                                            _timer = new CTimer(Sony.TimerCallback, "SPS1", 5000);
+                                            break;
+                                        case ((uint)Join.btn_SPreset2):
+                                            _timer = new CTimer(Sony.TimerCallback, "SPS2", 5000);
+                                            break;
+                                        case ((uint)Join.btn_SPreset3):
+                                            _timer = new CTimer(Sony.TimerCallback, "SPS3", 5000);
+                                            break;
+                                        case ((uint)Join.btn_AIOff):
+                                                _ = Sony.SendRequest(Sony.urls["AI_ON"]);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_AIOnVis)].BoolValue = true;
+                                                _ = Sony.SendRequest(Sony.urls["Lay_Ctr"]);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutCtrOnVis)].BoolValue = true;
+                                                _ = Sony.SendRequest(Sony.urls["Lay_Top"]);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutTopOnVis)].BoolValue = true;
+                                                break;
+                                        case ((uint)Join.btn_AIOn):
+                                            _ = Sony.SendRequest(Sony.urls["AI_OFF"]);
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn_AIOnVis)].BoolValue = false;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutCtrOnVis)].BoolValue = false;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutTopOnVis)].BoolValue = false;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutFullOnVis)].BoolValue = false;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutHeadOnVis)].BoolValue = false;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutLeftOnVis)].BoolValue = false;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutRightOnVis)].BoolValue = false;
+                                            break;
+                                        case ((uint)Join.btn_LayoutCtrOff):
+                                            _ = Sony.SendRequest(Sony.urls["Lay_Ctr"]);
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutCtrOnVis)].BoolValue = true;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutLeftOnVis)].BoolValue = false;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutRightOnVis)].BoolValue = false;
+                                            break;
+                                        case ((uint)Join.btn_LayoutLeftOff):
+                                            _ = Sony.SendRequest(Sony.urls["Lay_Left"]);
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutCtrOnVis)].BoolValue = false;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutLeftOnVis)].BoolValue = true;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutRightOnVis)].BoolValue = false;
+                                            break;
+                                        case ((uint)Join.btn_LayoutRightOff):
+                                            _ = Sony.SendRequest(Sony.urls["Lay_Right"]);
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutCtrOnVis)].BoolValue = false;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutLeftOnVis)].BoolValue = false;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutRightOnVis)].BoolValue = true;
+                                            break;
+                                        case ((uint)Join.btn_LayoutFullOff):
+                                            _ = Sony.SendRequest(Sony.urls["AI_OFF"]);
+                                            Thread.Sleep(1000);
+                                            _ = Sony.SendRequest(Sony.urls["Lay_Full"]);
+                                            Thread.Sleep(1000);
+                                            _ = Sony.SendRequest(Sony.urls["AI_ON"]);
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutTopOnVis)].BoolValue = false;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutFullOnVis)].BoolValue = true;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutHeadOnVis)].BoolValue = false;
+                                            break;
+                                        case ((uint)Join.btn_LayoutTopOff):
+                                            _ = Sony.SendRequest(Sony.urls["AI_OFF"]);
+                                            Thread.Sleep(1000);
+                                            _ = Sony.SendRequest(Sony.urls["Lay_Top"]);
+                                            Thread.Sleep(1000);
+                                            _ = Sony.SendRequest(Sony.urls["AI_ON"]);
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutTopOnVis)].BoolValue = true;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutFullOnVis)].BoolValue = false;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutHeadOnVis)].BoolValue = false;
+                                            break;
+                                        case ((uint)Join.btn_LayoutHeadOff):
+                                            _ = Sony.SendRequest(Sony.urls["AI_OFF"]);
+                                            Thread.Sleep(1000);
+                                            _ = Sony.SendRequest(Sony.urls["Lay_Head"]);
+                                            Thread.Sleep(1000);
+                                            _ = Sony.SendRequest(Sony.urls["AI_ON"]);
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutTopOnVis)].BoolValue = false;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutFullOnVis)].BoolValue = false;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutHeadOnVis)].BoolValue = true;
+                                            break;
+
+
+                                            
+                                            
 
                                         default:
                                             break;
                                     }
                                 }
+                                else if (!args.Sig.BoolValue)
+                                {
+                                    switch (args.Sig.Number)
+                                    {
+                                        case (uint)Join.btn_Up:
+
+                                            if (ControlSystem.tp.BooleanInput[((uint)Join.mode_TeachCamVisibile)].BoolValue)
+                                            {
+                                                _ = Sony.SendRequest(Sony.urls["Teach_StopPTZ"]);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_UpVis)].BoolValue = false;
+                                            }
+                                            else if (ControlSystem.tp.BooleanInput[((uint)Join.mode_StuCamVisibile)].BoolValue)
+                                            {
+                                                _ = Sony.SendRequest(Sony.urls["Student_StopPTZ"]);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_UpVis)].BoolValue = false;
+                                            }
+                                            break;
+                                        case (uint)Join.btn_Down:
+
+                                            if (ControlSystem.tp.BooleanInput[((uint)Join.mode_TeachCamVisibile)].BoolValue)
+                                            {
+                                                _ = Sony.SendRequest(Sony.urls["Teach_StopPTZ"]);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_DownVis)].BoolValue = false;
+                                            }
+                                            else if (ControlSystem.tp.BooleanInput[((uint)Join.mode_StuCamVisibile)].BoolValue)
+                                            {
+                                                _ = Sony.SendRequest(Sony.urls["Student_StopPTZ"]);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_DownVis)].BoolValue = false;
+                                            }
+                                            break;
+                                        case (uint)Join.btn_Left:
+                                            if (ControlSystem.tp.BooleanInput[((uint)Join.mode_TeachCamVisibile)].BoolValue)
+                                            {
+                                                _ = Sony.SendRequest(Sony.urls["Teach_StopPTZ"]);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_LeftVis)].BoolValue = false;
+                                            }
+                                            else if (ControlSystem.tp.BooleanInput[((uint)Join.mode_StuCamVisibile)].BoolValue)
+                                            {
+                                                _ = Sony.SendRequest(Sony.urls["Student_StopPTZ"]);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_LeftVis)].BoolValue = false;
+                                            }
+                                            break;
+                                        case (uint)Join.btn_Right:
+                                            if (ControlSystem.tp.BooleanInput[((uint)Join.mode_TeachCamVisibile)].BoolValue)
+                                            {
+                                                _ = Sony.SendRequest(Sony.urls["Teach_StopPTZ"]);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_RightVis)].BoolValue = false;
+                                            }
+                                            else if (ControlSystem.tp.BooleanInput[((uint)Join.mode_StuCamVisibile)].BoolValue)
+                                            {
+                                                _ = Sony.SendRequest(Sony.urls["Student_StopPTZ"]);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_RightVis)].BoolValue = false;
+                                            }
+                                            break;
+                                        case (uint)Join.btn_UpRight:
+                                            if (ControlSystem.tp.BooleanInput[((uint)Join.mode_TeachCamVisibile)].BoolValue)
+                                            {
+                                                _ = Sony.SendRequest(Sony.urls["Teach_StopPTZ"]);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_UpRightVis)].BoolValue = false;
+                                            }
+                                            else if (ControlSystem.tp.BooleanInput[((uint)Join.mode_StuCamVisibile)].BoolValue)
+                                            {
+                                                _ = Sony.SendRequest(Sony.urls["Student_StopPTZ"]);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_UpRightVis)].BoolValue = false;
+                                            }
+                                            break;
+                                        case (uint)Join.btn_DownRight:
+                                            if (ControlSystem.tp.BooleanInput[((uint)Join.mode_TeachCamVisibile)].BoolValue)
+                                            {
+                                                _ = Sony.SendRequest(Sony.urls["Teach_StopPTZ"]);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_DownRightVis)].BoolValue = false;
+                                            }
+                                            else if (ControlSystem.tp.BooleanInput[((uint)Join.mode_StuCamVisibile)].BoolValue)
+                                            {
+                                                _ = Sony.SendRequest(Sony.urls["Student_StopPTZ"]);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_DownRightVis)].BoolValue = false;
+                                            }
+                                            break;
+                                        case (uint)Join.btn_UpLeft:
+                                            if (ControlSystem.tp.BooleanInput[((uint)Join.mode_TeachCamVisibile)].BoolValue)
+                                            {
+                                                _ = Sony.SendRequest(Sony.urls["Teach_StopPTZ"]);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_UpLeftVis)].BoolValue = false;
+                                            }
+                                            else if (ControlSystem.tp.BooleanInput[((uint)Join.mode_StuCamVisibile)].BoolValue)
+                                            {
+                                                _ = Sony.SendRequest(Sony.urls["Student_StopPTZ"]);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_UpLeftVis)].BoolValue = false;
+                                            }
+                                            break;
+                                        case (uint)Join.btn_DownLeft:
+                                            if (ControlSystem.tp.BooleanInput[((uint)Join.mode_TeachCamVisibile)].BoolValue)
+                                            {
+                                                _ = Sony.SendRequest(Sony.urls["Teach_StopPTZ"]);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_DownLeftVis)].BoolValue = false;
+                                            }
+                                            else if (ControlSystem.tp.BooleanInput[((uint)Join.mode_StuCamVisibile)].BoolValue)
+                                            {
+                                                _ = Sony.SendRequest(Sony.urls["Student_StopPTZ"]);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_DownLeftVis)].BoolValue = false;
+                                            }
+                                            break;
+                                        case (uint)Join.btn_ZoomIn:
+                                            if (ControlSystem.tp.BooleanInput[((uint)Join.mode_TeachCamVisibile)].BoolValue)
+                                            {
+                                                _ = Sony.SendRequest(Sony.urls["Teach_StopZoom"]);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_ZoomInVis)].BoolValue = false;
+                                            }
+                                            else if (ControlSystem.tp.BooleanInput[((uint)Join.mode_StuCamVisibile)].BoolValue)
+                                            {
+                                                _ = Sony.SendRequest(Sony.urls["Student_StopZoom"]);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_ZoomInVis)].BoolValue = false;
+                                            }
+                                            break;
+                                        case (uint)Join.btn_ZoomOut:
+                                            if (ControlSystem.tp.BooleanInput[((uint)Join.mode_TeachCamVisibile)].BoolValue)
+                                            {
+                                                _ = Sony.SendRequest(Sony.urls["Teach_StopZoom"]);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_ZoomOutVis)].BoolValue = false;
+                                            }
+                                            else if (ControlSystem.tp.BooleanInput[((uint)Join.mode_StuCamVisibile)].BoolValue)
+                                            {
+                                                _ = Sony.SendRequest(Sony.urls["Student_StopZoom"]);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_ZoomOutVis)].BoolValue = false;
+                                            }
+                                            break;
+                                        case ((uint)Join.btn_TPreset1):
+                                            CrestronConsole.PrintLine("Activate Preset 1");
+                                            if (_timer != null)
+                                            {
+                                                _timer.Stop();
+                                                _timer = null;
+
+                                                _ = Sony.SendRequest(Sony.urls["Teach_Preset1"]);
+                                            }
+                                            break;
+                                        case ((uint)Join.btn_TPreset2):
+                                            if (_timer != null)
+                                            {
+                                                _timer.Stop();
+                                                _timer = null;
+
+                                                _ = Sony.SendRequest(Sony.urls["Teach_Preset2"]);
+                                            }
+                                            break;
+                                        case ((uint)Join.btn_TPreset3):
+                                            if (_timer != null)
+                                            {
+                                                _timer.Stop();
+                                                _timer = null;
+
+                                                _ = Sony.SendRequest(Sony.urls["Teach_Preset3"]);
+                                            }
+                                            break;
+                                        case ((uint)Join.btn_SPreset1):
+                                            if (_timer != null)
+                                            {
+                                                _timer.Stop();
+                                                _timer = null;
+
+                                                _ = Sony.SendRequest(Sony.urls["Student_Preset1"]);
+                                            }
+                                            break;
+                                        case ((uint)Join.btn_SPreset2):
+                                            if (_timer != null)
+                                            {
+                                                _timer.Stop();
+                                                _timer = null;
+
+                                                _ = Sony.SendRequest(Sony.urls["Student_Preset2"]);
+                                            }
+                                            break;
+                                        case ((uint)Join.btn_SPreset3):
+                                            if (_timer != null)
+                                            {
+                                                _timer.Stop();
+                                                _timer = null;
+
+                                                _ = Sony.SendRequest(Sony.urls["Student_Preset3"]);
+                                            }
+                                            break;
+                                        default:
+                                            break;
+                                    } 
+                                }
+
                                 break;
                             }
                         case eSigType.UShort:
@@ -475,27 +924,60 @@ namespace NFAHRooms
         {
             if (OutputNum > 100 && OutputNum < 200)
             {
-                if (ControlSystem.proj1.PowerOffFeedback.BoolValue)
-                    ControlSystem.proj1.PowerOn();
-                
-                if (!ControlSystem.proj1.SourceSelectFeedbackSigs[((uint)SonyProjInputs.ProjHDMI)].BoolValue)
-                    ControlSystem.proj1.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
+                if (RoomSetup.Display1 == "proj")
+                {
+                    if (ControlSystem.proj1.PowerOffFeedback.BoolValue)
+                        ControlSystem.proj1.PowerOn();
+
+                    if (!ControlSystem.proj1.SourceSelectFeedbackSigs[((uint)SonyProjInputs.ProjHDMI)].BoolValue)
+                        ControlSystem.proj1.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
+                } 
+                else if (RoomSetup.Display1 == "tv")
+                {
+                    if (ControlSystem.disp1.Power.PowerOffFeedback.BoolValue)
+                        ControlSystem.disp1.Power.PowerOn();
+
+                    if (ControlSystem.disp1.Video.Source.SourceSelect.UShortValue != 1)
+                        ControlSystem.disp1.Video.Source.SourceSelect.UShortValue = 1;
+                }
             }
             if (OutputNum > 200 && OutputNum < 300)
             {
-                if (ControlSystem.proj2.PowerOffFeedback.BoolValue)
-                    ControlSystem.proj2.PowerOn();
+                if (RoomSetup.Display2 == "proj")
+                {
+                    if (ControlSystem.proj2.PowerOffFeedback.BoolValue)
+                        ControlSystem.proj2.PowerOn();
 
-                if (!ControlSystem.proj2.SourceSelectFeedbackSigs[((uint)SonyProjInputs.ProjHDMI)].BoolValue)
-                    ControlSystem.proj2.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
+                    if (!ControlSystem.proj2.SourceSelectFeedbackSigs[((uint)SonyProjInputs.ProjHDMI)].BoolValue)
+                        ControlSystem.proj2.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
+                }
+                else if (RoomSetup.Display2 == "tv")
+                {
+                    if (ControlSystem.disp2.Power.PowerOffFeedback.BoolValue)
+                        ControlSystem.disp2.Power.PowerOn();
+
+                    if (ControlSystem.disp2.Video.Source.SourceSelect.UShortValue != 1)
+                        ControlSystem.disp2.Video.Source.SourceSelect.UShortValue = 1;
+                }
             }
             if (OutputNum > 300 && OutputNum < 400)
             {
-                if (ControlSystem.proj3.PowerOffFeedback.BoolValue)
-                    ControlSystem.proj3.PowerOn();
+                if (RoomSetup.Display3 == "proj")
+                {
+                    if (ControlSystem.proj3.PowerOffFeedback.BoolValue)
+                        ControlSystem.proj3.PowerOn();
 
-                if (!ControlSystem.proj3.SourceSelectFeedbackSigs[((uint)SonyProjInputs.ProjHDMI)].BoolValue)
-                    ControlSystem.proj3.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
+                    if (!ControlSystem.proj3.SourceSelectFeedbackSigs[((uint)SonyProjInputs.ProjHDMI)].BoolValue)
+                        ControlSystem.proj3.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
+                }
+                else if (RoomSetup.Display2 == "tv")
+                {
+                    if (ControlSystem.disp3.Power.PowerOffFeedback.BoolValue)
+                        ControlSystem.disp3.Power.PowerOn();
+
+                    if (ControlSystem.disp3.Video.Source.SourceSelect.UShortValue != 1)
+                        ControlSystem.disp3.Video.Source.SourceSelect.UShortValue = 1;
+                }
             }
 
         }
@@ -624,23 +1106,29 @@ namespace NFAHRooms
         }
         private static void proj1_BaseEvent(GenericBase currentDevice, BaseEventArgs args)
         {
+            CrestronConsole.PrintLine($"PowerStatusFeedback: {ControlSystem.proj1.PowerStatusFeedback.StringValue}");
             try
             {
-                if (ControlSystem.proj1.PowerOnFeedback.BoolValue)  //Power On
+                if (ControlSystem.proj1.PowerOnFeedback.BoolValue )  //Power On
                 {
                     ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = false;
                     ControlSystem.proj1.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
                 }
 
-                if (ControlSystem.proj1.PowerOffFeedback.BoolValue) //Power Off
+                if (ControlSystem.proj1.PowerOffFeedback.BoolValue ) //Power Off
                 {
                     ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = true;
+                    
+
+
                 }
 
                 if (!ControlSystem.proj1.SourceSelectFeedbackSigs[((uint)SonyProjInputs.ProjHDMI)].BoolValue)
                 {
                     ControlSystem.proj1.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
                 }
+
+                
             }
             catch (Exception e)
             {
@@ -687,6 +1175,7 @@ namespace NFAHRooms
                 if (ControlSystem.proj2.PowerOffFeedback.BoolValue) //Power Off
                 {
                     ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = true;
+                    
                 }
 
                 if (!ControlSystem.proj2.SourceSelectFeedbackSigs[((uint)SonyProjInputs.ProjHDMI)].BoolValue)
@@ -739,6 +1228,7 @@ namespace NFAHRooms
                 if (ControlSystem.proj3.PowerOffFeedback.BoolValue) //Power Off
                 {
                     ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = true;
+                    
                 }
 
                 if (!ControlSystem.proj3.SourceSelectFeedbackSigs[((uint)SonyProjInputs.ProjHDMI)].BoolValue)
@@ -784,21 +1274,18 @@ namespace NFAHRooms
             {
                 if (ControlSystem.disp2.Power.PowerOnFeedback.BoolValue && !ControlSystem.disp2.Power.PowerOffFeedback.BoolValue)  //Power On
                 {
-                    ControlSystem.tp.BooleanInput[((uint)Join.btnPwrOnVis)].BoolValue = false;
+                    ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = false;
 
                     if (ControlSystem.disp2.Video.Source.SourceSelect.UShortValue != 1)
                         ControlSystem.disp2.Video.Source.SourceSelect.UShortValue = 1;
-                    if (ControlSystem.hdmd.FrontPanelLockEnabledFeedback.BoolValue && RoomSetup.HuddleRoomSettings.FrontpanelLock == "off")
-                        ControlSystem.hdmd.DisableFrontPanelLock();
+                    
                 }
 
                 if (ControlSystem.disp2.Power.PowerOffFeedback.BoolValue && !ControlSystem.disp2.Power.PowerOnFeedback.BoolValue) //Power Off
                 {
-                    ControlSystem.tp.BooleanInput[((uint)Join.btnPwrOnVis)].BoolValue = true;
-                    HDMD.RouteVideo(0);
-
-                    if (ControlSystem.hdmd.FrontPanelLockDisabledFeedback.BoolValue)
-                        ControlSystem.hdmd.EnableFrontPanelLock();
+                    ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = true;
+                    tp_ButtonStatus(((uint)EvertzOutputs.out_Disp2).ToString(), ((uint)EvertzInputs.in_Blank).ToString());
+                                        
                 }
             }
             catch (Exception e)
@@ -839,21 +1326,18 @@ namespace NFAHRooms
             {
                 if (ControlSystem.disp3.Power.PowerOnFeedback.BoolValue && !ControlSystem.disp3.Power.PowerOffFeedback.BoolValue)  //Power On
                 {
-                    ControlSystem.tp.BooleanInput[((uint)Join.btnPwrOnVis)].BoolValue = false;
+                    ControlSystem.tp.BooleanInput[((uint)Join.btn3_PwrOnVis)].BoolValue = false;
 
                     if (ControlSystem.disp3.Video.Source.SourceSelect.UShortValue != 1)
                         ControlSystem.disp3.Video.Source.SourceSelect.UShortValue = 1;
-                    if (ControlSystem.hdmd.FrontPanelLockEnabledFeedback.BoolValue && RoomSetup.HuddleRoomSettings.FrontpanelLock == "off")
-                        ControlSystem.hdmd.DisableFrontPanelLock();
+                    
                 }
 
                 if (ControlSystem.disp3.Power.PowerOffFeedback.BoolValue && !ControlSystem.disp3.Power.PowerOnFeedback.BoolValue) //Power Off
                 {
-                    ControlSystem.tp.BooleanInput[((uint)Join.btnPwrOnVis)].BoolValue = true;
-                    HDMD.RouteVideo(0);
+                    ControlSystem.tp.BooleanInput[((uint)Join.btn3_PwrOnVis)].BoolValue = true;
+                    tp_ButtonStatus(((uint)EvertzOutputs.out_Disp3).ToString(), ((uint)EvertzInputs.in_Blank).ToString());
 
-                    if (ControlSystem.hdmd.FrontPanelLockDisabledFeedback.BoolValue)
-                        ControlSystem.hdmd.EnableFrontPanelLock();
                 }
             }
             catch (Exception e)
@@ -905,6 +1389,10 @@ namespace NFAHRooms
 
                     ControlSystem.disp1.OnlineStatusChange += new OnlineStatusChangeEventHandler(disp1_OnlineStatusChange);
                     ControlSystem.disp1.BaseEvent += new BaseEventHandler(disp1_BaseEvent);
+
+                    CrestronConsole.PrintLine("Display 1 Registered");
+
+                   
                 }
 
                 if (RoomSetup.Display2 == "proj")
@@ -942,6 +1430,7 @@ namespace NFAHRooms
                     ControlSystem.disp3.BaseEvent += new BaseEventHandler(disp3_BaseEvent);
                 }
                 
+                //Determine which Touchpanel Layout to use
                 switch (RoomSetup.Touchpanel.TP_RoomType.ToLower())
                 {
                     case "evertz_1":
@@ -964,11 +1453,51 @@ namespace NFAHRooms
                         break;
                 }
 
+                string IP = CrestronEthernetHelper.GetEthernetParameter(CrestronEthernetHelper.ETHERNET_PARAMETER_TO_GET.GET_CURRENT_IP_ADDRESS, 0);
+
                 ControlSystem.tp.StringInput[((uint)Join.lblRoomName)].StringValue = RoomSetup.Touchpanel.RoomText;
                 ControlSystem.tp.ExtenderSystemReservedSigs.LcdBrightnessAutoOff();
-               
+                Sony.MakeDictionary();
+                ControlSystem.tp.BooleanInput[((uint)Join.mode_TeachCamVisibile)].BoolValue = true;
+                ControlSystem.tp.BooleanInput[((uint)Join.mode_StuCamVisibile)].BoolValue = false;
+                ControlSystem.tp.StringInput[((uint)Join.serial_Stream)].StringValue = Constants.rtsp + RoomSetup.SonyCameras.CommonProperties.TeacherIP + Constants.rtspStream;
+                ControlSystem.tp.UShortInput[((uint)Join.analog_StreamType)].UShortValue = ((ushort)Join.mode_H264);
+
+                ControlSystem.tp.StringInput[((uint)Join.serial_TPS1)].StringValue = Constants.http + IP + Constants.PresetHTMLFolder + "1" + Constants.PresetFileSuffix;
+                ControlSystem.tp.StringInput[((uint)Join.serial_TPS2)].StringValue = Constants.http + IP + Constants.PresetHTMLFolder + "2" + Constants.PresetFileSuffix;
+                ControlSystem.tp.StringInput[((uint)Join.serial_TPS3)].StringValue = Constants.http + IP + Constants.PresetHTMLFolder + "3" + Constants.PresetFileSuffix;
+                ControlSystem.tp.StringInput[((uint)Join.serial_SPS1)].StringValue = Constants.http + IP + Constants.PresetHTMLFolder + "4" + Constants.PresetFileSuffix;
+                ControlSystem.tp.StringInput[((uint)Join.serial_SPS2)].StringValue = Constants.http + IP + Constants.PresetHTMLFolder + "5" + Constants.PresetFileSuffix;
+                ControlSystem.tp.StringInput[((uint)Join.serial_SPS3)].StringValue = Constants.http + IP + Constants.PresetHTMLFolder + "6" + Constants.PresetFileSuffix;
+                CrestronConsole.PrintLine($"Image Path: {ControlSystem.tp.StringInput[((uint)Join.serial_TPS1)].StringValue}");
                 Evertz.Initialize();
-                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_VTC).ToString(), ((uint)EvertzInputs.in_TeachCam).ToString());
+
+                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_VTC).ToString(), ((uint)EvertzInputs.in_Blank).ToString());
+                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param2, ((uint)EvertzOutputs.Dante1).ToString(), ((uint)EvertzInputs.HDMI_Audio1).ToString());
+                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param2, ((uint)EvertzOutputs.Dante2).ToString(), ((uint)EvertzInputs.HDMI_Audio2).ToString());
+                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param2, ((uint)EvertzOutputs.Dante3).ToString(), ((uint)EvertzInputs.HDMI_Audio3).ToString());
+                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param2, ((uint)EvertzOutputs.Dante4).ToString(), ((uint)EvertzInputs.HDMI_Audio4).ToString());
+                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param2, ((uint)EvertzOutputs.Dante5).ToString(), ((uint)EvertzInputs.HDMI_Audio5).ToString());
+                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param2, ((uint)EvertzOutputs.Dante6).ToString(), ((uint)EvertzInputs.HDMI_Audio6).ToString());
+                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param2, ((uint)EvertzOutputs.Dante7).ToString(), ((uint)EvertzInputs.HDMI_Audio7).ToString());
+                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param2, ((uint)EvertzOutputs.Dante8).ToString(), ((uint)EvertzInputs.HDMI_Audio8).ToString());
+
+                if (RoomSetup.Evertz.DefEvertzOut.Out1 >= 0)
+                {
+                    await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_VTC).ToString(), RoomSetup.Evertz.DefEvertzOut.Out1.ToString());
+                }
+                if (RoomSetup.Evertz.DefEvertzOut.Out2 >= 0)
+                {
+                    await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj1).ToString(), RoomSetup.Evertz.DefEvertzOut.Out2.ToString());
+                }
+                if (RoomSetup.Evertz.DefEvertzOut.Out3 >= 0)
+                {
+                    await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj2).ToString(), RoomSetup.Evertz.DefEvertzOut.Out3.ToString());
+                }
+                if (RoomSetup.Evertz.DefEvertzOut.Out4 >= 0)
+                {
+                    await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_EXTDisplay).ToString(), RoomSetup.Evertz.DefEvertzOut.Out4.ToString());
+                }
             }
             catch (Exception e)
             {

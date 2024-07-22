@@ -1,4 +1,4 @@
-{
+ {
 "room_type": "evertz_room",
 "display_1": "proj",
 "display_2": null,
@@ -20,10 +20,10 @@
   "evertz": {
     "ip_address": "192.168.1.110",
     "hdmi_output_default_source": {
-      "out_1": -1,
+      "out_1": 6,
       "out_2": -1,
       "out_3": -1,
-	  "out_4": -1
+	  "out_4": 2
     },
     "UDP_server": {
       "udp_port": 50000,
@@ -38,24 +38,14 @@
   },
   "sony_cameras": {
     "common_properties": {
-      "username": "user",
-      "password": "password",
-      "cam_url": "/presets/",
-      "image_name": "presetimg",
-      "storage_location": "/html/img/",
+      "username": "crestron",
+      "password": "NfaH2024!",
       "pan": 10,
-      "zoom": 5
+      "zoom": 5,
+	  "teacher_IP":"192.168.1.85",
+	  "student_IP":"192.168.1.151"}
     },
-    "cameras": [
-      {
-        "ip_address": "192.168.1.150"
-      },
-      {
-        "ip_address": "192.168.1.151"
-      }
-    ]
-  },
-  "microphones": [
+"microphones": [
     {
       "ip_address": "192.168.1.175"
     },
@@ -162,4 +152,4 @@
     "dm_server_processor_ip": "192.168.1.125",
     "assigned_ipid": "0x22"
   }
-}
+  }

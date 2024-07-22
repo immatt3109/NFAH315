@@ -19,7 +19,7 @@
         btnPwrOnVis = 33,   //If power is off this button should be visible
     
         lblRoomName = 10,
-        
+                
         pg1Proj = 12,
         pg2Proj = 13,
         pg3Display = 14,
@@ -148,11 +148,87 @@
 
         btn_VTCStudentCamOff = 428,
         btn_VTCStudentCamOn = 438,
-        btn_VTCStudentCamOnVis = 438
+        btn_VTCStudentCamOnVis = 438,
+
+        btn_UpLeft = 600,
+        btn_UpLeftVis = 600,
+        btn_Up = 601,
+        btn_UpVis = 601,
+        btn_UpRight = 602,
+        btn_UpRightVis = 602,
+        btn_Right = 603,
+        btn_RightVis = 603,
+        btn_DownRight = 604,
+        btn_DownRightVis = 604,
+        btn_Down = 605,
+        btn_DownVis = 605,
+        btn_DownLeft = 606,
+        btn_DownLeftVis = 606,
+        btn_Left = 607,
+        btn_LeftVis = 607,
+
+        btn_ZoomIn = 520,
+        btn_ZoomInVis = 520,
+
+        btn_ZoomOut = 521,
+        btn_ZoomOutVis = 521,
+
+        btn_StudentCamControl = 522,
+        mode_StuCamVisibile = 552,
+
+        btn_TeachCamControl = 523,
+        mode_TeachCamVisibile = 553,
+
+        btn_TPreset1 = 501,
+        btn_TPreset2 = 502,
+        btn_TPreset3 = 503,
+
+        btn_SPreset1 = 511,
+        btn_SPreset2 = 512,
+        btn_SPreset3 = 513,
+
+        serial_Stream = 5,
+        analog_StreamType = 100,
+        mode_H264 = 11,
+        serial_TPS1 = 501,
+        serial_TPS2 = 502,
+        serial_TPS3 = 503,
+
+        serial_SPS1 = 511,
+        serial_SPS2 = 512,
+        serial_SPS3 = 513,
+
+        btn_AIOff = 720,
+        btn_AIOn = 730,
+        btn_AIOnVis = 730,
+
+        btn_LayoutLeftOff = 721,
+        btn_LayoutLeftOn = 731,
+        btn_LayoutLeftOnVis = 731,
+
+        btn_LayoutCtrOff = 722,
+        btn_LayoutCtrOn = 732,
+        btn_LayoutCtrOnVis = 732,
+
+        btn_LayoutRightOff = 723,
+        btn_LayoutRightOn = 733,
+        btn_LayoutRightOnVis = 733,
+
+        btn_LayoutFullOff = 724,
+        btn_LayoutFullOn = 734,
+        btn_LayoutFullOnVis = 734,
+
+        btn_LayoutTopOff = 725,
+        btn_LayoutTopOn = 735,
+        btn_LayoutTopOnVis = 735,
+
+        btn_LayoutHeadOff = 726,
+        btn_LayoutHeadOn = 736,
+        btn_LayoutHeadOnVis = 736,
+
 
     }
-
-    public enum EvertzOutputs
+        public enum EvertzOutputs
     {
         out_VTC = 0,
         out_Proj1 = 1,
@@ -161,7 +237,20 @@
                 
         out_Disp3 = 3,
         out_Disp2 = 2,
-        out_Disp1 = 1
+        out_Disp1 = 1,
+
+        out_EXTDisplay =3,
+
+        Dante1 = 7,
+        Dante2 = 8,
+        Dante3 = 9,
+        Dante4 = 10,
+        Dante5 = 27,
+        Dante6 = 28,
+        Dante7 = 29,
+        Dante8 = 30,
+
+        
     }
 
     public enum EvertzInputs
@@ -174,7 +263,16 @@
         in_TeachCam = 6,
         in_StudentCam = 7,
         in_DS = 8,
-        in_Blank = 0
+        in_Blank = 0,
+
+        HDMI_Audio1 = 5,
+        HDMI_Audio2 = 6,
+        HDMI_Audio3 = 7,
+        HDMI_Audio4 = 8,
+        HDMI_Audio5 = 9,
+        HDMI_Audio6 = 10,
+        HDMI_Audio7 = 11,
+        HDMI_Audio8 = 12,
     }
 
     public enum SonyProjInputs

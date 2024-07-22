@@ -13,7 +13,6 @@ using Crestron.SimplSharpPro.DeviceSupport;
 namespace NFAHRooms
 {    public class ControlSystem : CrestronControlSystem
     {
-        //private RoomSetup roomSetup;
         public static Ts1070 tp;
         public static Am300 am3200;
         public static HdMd4x14kzE hdmd;
@@ -23,8 +22,7 @@ namespace NFAHRooms
         public static RoomViewConnectedDisplay proj1;
         public static RoomViewConnectedDisplay proj2;
         public static RoomViewConnectedDisplay proj3;
-        //private readonly CmdLine cmd;
-        
+                
         public ControlSystem() : base()
         {
             string configRoomFilePath = "/user/room_setup.json";
@@ -102,11 +100,14 @@ namespace NFAHRooms
             try
             {   SNTP.Server = RoomSetup.Crestron.SntpServer;
                 SNTP.Enable();
-
                 CrestronEnvironment.SetTimeZone(Convert.ToInt32(RoomSetup.Crestron.TimezoneId));
-                
-                Email.Initialize();
 
+                string pResponse = null;
+                CrestronConsole.SendControlSystemCommand("SNTP server:" + RoomSetup.Crestron.SntpServer, ref pResponse);
+                CrestronConsole.SendControlSystemCommand("SNTP start", ref pResponse);
+
+                Email.Initialize();
+                
                 Scheduling.SystemEventGroup = new ScheduledEventGroup("NFAH");
                 Scheduling.SystemEventGroup.ClearAllEvents();
                 Scheduling.AddDailyTimerEvent();
