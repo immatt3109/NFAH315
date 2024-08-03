@@ -12,38 +12,10 @@ namespace NFAHRooms
 {
     
 
-    public class HuddleHandler
+    public static class HuddleHandler
     {
-        private Ts1070 tp;
-        private HdMd4x14kzE hdmd;
-        private Am300 am3200;
-        private CrestronConnectedDisplayV2 disp1;
-        //private HDMD hdmdClass;
-        //private RoomSetup roomSetup;
-        //private Scheduling schedule;
-        public HuddleHandler(Ts1070 tp, HdMd4x14kzE hdmd, Am300 am3200, CrestronConnectedDisplayV2 disp1)
-        {
-            //hdmdClass = new HDMD(hdmd);
-            
-            this.tp = tp;
-            this.hdmd = hdmd;
-            this.am3200 = am3200;
-            this.disp1 = disp1;
-
-            this.tp.SigChange += new SigEventHandler(tp_SigChange);
-            this.tp.OnlineStatusChange += new OnlineStatusChangeEventHandler(tp_OnlineStatusChange);
-            this.hdmd.OnlineStatusChange += new OnlineStatusChangeEventHandler(hdmd_OnlineStatusChange);
-            this.hdmd.DMSystemChange += new DMSystemEventHandler(hdmd_DMSystemChange);
-            this.disp1.OnlineStatusChange += new OnlineStatusChangeEventHandler(disp1_OnlineStatusChange);
-            this.am3200.OnlineStatusChange += new OnlineStatusChangeEventHandler(am3200_OnlineStatusChange);
-            this.disp1.BaseEvent += new BaseEventHandler(disp1_BaseEvent);
-
-            //this.roomSetup = roomSetup;
-
-            //schedule = new Scheduling();
-        }
-                
-        private void disp1_BaseEvent(GenericBase currentDevice, BaseEventArgs args)
+                        
+        private static void disp1_BaseEvent(GenericBase currentDevice, BaseEventArgs args)
         {
             ///
             ///btnPwrOff = 23,  //If power is on and you want to turn it off, it's this button
@@ -53,26 +25,24 @@ namespace NFAHRooms
 
             try
             {
-                if (disp1.Power.PowerOnFeedback.BoolValue && !disp1.Power.PowerOffFeedback.BoolValue)  //Power On
+                if (ControlSystem.disp1.Power.PowerOnFeedback.BoolValue && !ControlSystem.disp1.Power.PowerOffFeedback.BoolValue)  //Power On
                 {
-                    tp.BooleanInput[((uint)Join.btnPwrOnVis)].BoolValue = false;
-                    //hdmdClass.RouteVideo(((uint)roomSetup.HuddleRoomSettings.DefaultVideoOutput));
-
-                    if (disp1.Video.Source.SourceSelect.UShortValue != 1)
-                        disp1.Video.Source.SourceSelect.UShortValue = 1;
-                    if (hdmd.FrontPanelLockEnabledFeedback.BoolValue && RoomSetup.HuddleRoomSettings.FrontpanelLock == "off")
-                        hdmd.DisableFrontPanelLock();
+                    ControlSystem.tp.BooleanInput[((uint)Join.btnPwrOnVis)].BoolValue = false;
+                    
+                    if (ControlSystem.disp1.Video.Source.SourceSelect.UShortValue != 1)
+                        ControlSystem.disp1.Video.Source.SourceSelect.UShortValue = 1;
+                    if (ControlSystem.hdmd.FrontPanelLockEnabledFeedback.BoolValue && RoomSetup.HuddleRoomSettings.FrontpanelLock == "off")
+                        ControlSystem.hdmd.DisableFrontPanelLock();
                     
                 }
 
-                if (disp1.Power.PowerOffFeedback.BoolValue && !disp1.Power.PowerOnFeedback.BoolValue) //Power Off
+                if (ControlSystem.disp1.Power.PowerOffFeedback.BoolValue && !ControlSystem.disp1.Power.PowerOnFeedback.BoolValue) //Power Off
                 {
-                    tp.BooleanInput[((uint)Join.btnPwrOnVis)].BoolValue = true;
-                    //hdmdClass.RouteVideo(0);
+                    ControlSystem.tp.BooleanInput[((uint)Join.btnPwrOnVis)].BoolValue = true;
                     HDMD.RouteVideo(0); 
 
-                    if (hdmd.FrontPanelLockDisabledFeedback.BoolValue)
-                        hdmd.EnableFrontPanelLock();
+                    if (ControlSystem.hdmd.FrontPanelLockDisabledFeedback.BoolValue)
+                        ControlSystem.hdmd.EnableFrontPanelLock();
                 }
             }
             catch (Exception e)
@@ -82,11 +52,11 @@ namespace NFAHRooms
                 Email.SendEmail(RoomSetup.MailSubject + " Disp1_BaseEvent", e.Message);
             }
         }
-        private void tp_SigChange(BasicTriList currentDevice, SigEventArgs args)
+        private static void tp_SigChange(BasicTriList currentDevice, SigEventArgs args)
         {
             try
             {
-                if (currentDevice == tp)
+                if (currentDevice == ControlSystem.tp)
                 {
                     switch (args.Sig.Type)
                     {
@@ -101,36 +71,38 @@ namespace NFAHRooms
                                         case 20:
                                             {
                                                 HDMD.RouteVideo(2);
-                                                //hdmdClass.RouteVideo(2);
-                                                if (disp1.Video.Source.SourceSelect.UShortValue != 1)
-                                                        disp1.Video.Source.SourceSelect.UShortValue = 1;
+                                                if (ControlSystem.disp1.Video.Source.SourceSelect.UShortValue != 1)
+                                                        ControlSystem.disp1.Video.Source.SourceSelect.UShortValue = 1;
                                                 
-                                                if (disp1.Power.PowerOffFeedback.BoolValue)
-                                                    disp1.Power.PowerOn();
-                                                
+                                                if (ControlSystem.disp1.Power.PowerOffFeedback.BoolValue)
+                                                    ControlSystem.disp1.Power.PowerOn();
+
+                                                ControlSystem.hdmd.HdmiOutputs[1].HdmiOutputPort.DisableAutomaticPowerSettings();
+
                                                 break;
                                             }
                                         case 21:
                                             {
                                                 HDMD.RouteVideo(3);
-                                                //hdmdClass.RouteVideo(3);
-                                                if (disp1.Video.Source.SourceSelect.UShortValue != 1)
-                                                    disp1.Video.Source.SourceSelect.UShortValue = 1;
+                                                if (ControlSystem.disp1.Video.Source.SourceSelect.UShortValue != 1)
+                                                    ControlSystem.disp1.Video.Source.SourceSelect.UShortValue = 1;
 
-                                                if (disp1.Power.PowerOffFeedback.BoolValue)
-                                                    disp1.Power.PowerOn();
+                                                if (ControlSystem.disp1.Power.PowerOffFeedback.BoolValue)
+                                                    ControlSystem.disp1.Power.PowerOn();
 
+                                                ControlSystem.hdmd.HdmiOutputs[1].HdmiOutputPort.DisableAutomaticPowerSettings();
                                                 break;
                                             }
                                         case 22:
                                             {
                                                 HDMD.RouteVideo(1);
-                                                //hdmdClass.RouteVideo(1);
-                                                if (disp1.Video.Source.SourceSelect.UShortValue != 1)
-                                                    disp1.Video.Source.SourceSelect.UShortValue = 1;
+                                                if (ControlSystem.disp1.Video.Source.SourceSelect.UShortValue != 1)
+                                                    ControlSystem.disp1.Video.Source.SourceSelect.UShortValue = 1;
 
-                                                if (disp1.Power.PowerOffFeedback.BoolValue)
-                                                    disp1.Power.PowerOn();
+                                                if (ControlSystem.disp1.Power.PowerOffFeedback.BoolValue)
+                                                    ControlSystem.disp1.Power.PowerOn();
+
+                                                ControlSystem.hdmd.HdmiOutputs[1].HdmiOutputPort.DisableAutomaticPowerSettings();
 
                                                 break;
                                             }
@@ -152,8 +124,7 @@ namespace NFAHRooms
                                             }
                                         case 23:  //Power Off
                                             {
-                                                disp1.Power.PowerOff();
-                                                //hdmdClass.RouteVideo(0);
+                                                ControlSystem.disp1.Power.PowerOff();
                                                 HDMD.RouteVideo(0);
                                                 
                                                 break;
@@ -180,7 +151,7 @@ namespace NFAHRooms
                 Email.SendEmail(RoomSetup.MailSubject + " TP_SigChange", e.Message);
             }
         }
-        private void tp_OnlineStatusChange(GenericBase currentDevice, OnlineOfflineEventArgs args)
+        private static void tp_OnlineStatusChange(GenericBase currentDevice, OnlineOfflineEventArgs args)
         {
             try
             {
@@ -192,20 +163,20 @@ namespace NFAHRooms
                         Email.SendEmail(RoomSetup.MailSubject, $"{currentDevice.Name} is online {DateTime.Now}");
                     }
 
-                    tp.ExtenderSystemReservedSigs.StandbyTimeout.UShortValue = RoomSetup.Touchpanel.StandbyTimeout;
+                    ControlSystem.tp.ExtenderSystemReservedSigs.StandbyTimeout.UShortValue = RoomSetup.Touchpanel.StandbyTimeout;
 
                     if (RoomSetup.Touchpanel.ScreenSaver.ToLower() == "on" && RoomSetup.Touchpanel.StandbyTimeout != 0 && Scheduling.SS_Active)
                     {
-                        tp.ExtenderScreenSaverReservedSigs.ScreenSaverImageUrl.StringValue = RoomSetup.Touchpanel.ImageUrl;
+                        ControlSystem.tp.ExtenderScreenSaverReservedSigs.ScreenSaverImageUrl.StringValue = RoomSetup.Touchpanel.ImageUrl;
 
-                        tp.ExtenderScreenSaverReservedSigs.ScreensaverOff.BoolValue = false;
-                        tp.ExtenderScreenSaverReservedSigs.ScreensaverOn.BoolValue = true;
+                        ControlSystem.tp.ExtenderScreenSaverReservedSigs.ScreensaverOff.BoolValue = false;
+                        ControlSystem.tp.ExtenderScreenSaverReservedSigs.ScreensaverOn.BoolValue = true;
                     }
 
                     else if ((RoomSetup.Touchpanel.ScreenSaver.ToLower() == "off" && !Scheduling.SS_Active) || RoomSetup.Touchpanel.StandbyTimeout == 0)
                     {
-                        tp.ExtenderScreenSaverReservedSigs.ScreensaverOn.BoolValue = false;
-                        tp.ExtenderScreenSaverReservedSigs.ScreensaverOff.BoolValue = true;
+                        ControlSystem.tp.ExtenderScreenSaverReservedSigs.ScreensaverOn.BoolValue = false;
+                        ControlSystem.tp.ExtenderScreenSaverReservedSigs.ScreensaverOff.BoolValue = true;
                     }
                 }
                 else if (!args.DeviceOnLine)
@@ -220,7 +191,7 @@ namespace NFAHRooms
                 Email.SendEmail(RoomSetup.MailSubject + " TP_OnlineStatusChange", e.Message);
             }  
         }
-        private void hdmd_OnlineStatusChange(GenericBase currentDevice, OnlineOfflineEventArgs args)
+        private static void hdmd_OnlineStatusChange(GenericBase currentDevice, OnlineOfflineEventArgs args)
         {
             try
             {
@@ -228,29 +199,29 @@ namespace NFAHRooms
                 {
                     if (RoomSetup.HuddleRoomSettings.Autoroute.ToLower() == "on")
                     {
-                        hdmd.AutoRouteOn();
+                        ControlSystem.hdmd.AutoRouteOn();
                     }
                     else
                     {
-                        hdmd.AutoRouteOff();
+                        ControlSystem.hdmd.AutoRouteOff();
                     }
 
                     if (RoomSetup.HuddleRoomSettings.FrontpanelLock.ToLower() == "on")
                     {
-                        hdmd.EnableFrontPanelLock();
+                        ControlSystem.hdmd.EnableFrontPanelLock();
                     }
                     else
                     {
-                        hdmd.DisableFrontPanelLock();
+                        ControlSystem.hdmd.DisableFrontPanelLock();
                     }
 
                     if (RoomSetup.HuddleRoomSettings.FrontpanelLed.ToLower() == "on")
                     {
-                        hdmd.EnableFrontPanelLed();
+                        ControlSystem.hdmd.EnableFrontPanelLed();
                     }
                     else
                     {
-                        hdmd.DisableFrontPanelLed();
+                        ControlSystem.hdmd.DisableFrontPanelLed();
                     }
 
                     if (Scheduling.errorCounts.TryGetValue("hdmd", out int x) && x > 0)
@@ -273,40 +244,40 @@ namespace NFAHRooms
                 Email.SendEmail(RoomSetup.MailSubject + " HDMD_OnlineStatusChange", e.Message);
             }
         }
-        private void hdmd_DMSystemChange(GenericBase currentDevice, DMSystemEventArgs args)
+        private static void hdmd_DMSystemChange(GenericBase currentDevice, DMSystemEventArgs args)
         { 
-            if (hdmd.HdmiOutputs[1].VideoOutFeedback != null)
+            if (ControlSystem.hdmd.HdmiOutputs[1].VideoOutFeedback != null)
             {
-                CrestronConsole.PrintLine("HdmiOutputs[1].VideoOutFeedback.Number: {0}", hdmd.HdmiOutputs[1].VideoOutFeedback.Number);
+                
                 try
-                {   switch (hdmd.HdmiOutputs[1].VideoOutFeedback.Number)
+                {   switch (ControlSystem.hdmd.HdmiOutputs[1].VideoOutFeedback.Number)
                     {
                         case 1:
                             {
-                                tp.BooleanInput[((uint)Join.btnPCOnVis)].BoolValue = false;
-                                tp.BooleanInput[((uint)Join.btnAirMediaOnVis)].BoolValue = false;
-                                tp.BooleanInput[((uint)Join.btnAuxOnVis)].BoolValue = true;
+                                ControlSystem.tp.BooleanInput[((uint)Join.btnPCOnVis)].BoolValue = false;
+                                ControlSystem.tp.BooleanInput[((uint)Join.btnAirMediaOnVis)].BoolValue = false;
+                                ControlSystem.tp.BooleanInput[((uint)Join.btnAuxOnVis)].BoolValue = true;
                                 break;
                             }
                         case 2:
                             {
-                                tp.BooleanInput[((uint)Join.btnPCOnVis)].BoolValue = true;
-                                tp.BooleanInput[((uint)Join.btnAirMediaOnVis)].BoolValue = false;
-                                tp.BooleanInput[((uint)Join.btnAuxOnVis)].BoolValue = false;
+                                ControlSystem.tp.BooleanInput[((uint)Join.btnPCOnVis)].BoolValue = true;
+                                ControlSystem.tp.BooleanInput[((uint)Join.btnAirMediaOnVis)].BoolValue = false;
+                                ControlSystem.tp.BooleanInput[((uint)Join.btnAuxOnVis)].BoolValue = false;
                                 break;
                             }
                         case 3:
                             {
-                                tp.BooleanInput[((uint)Join.btnPCOnVis)].BoolValue = false;
-                                tp.BooleanInput[((uint)Join.btnAirMediaOnVis)].BoolValue = true;
-                                tp.BooleanInput[((uint)Join.btnAuxOnVis)].BoolValue = false;
+                                ControlSystem.tp.BooleanInput[((uint)Join.btnPCOnVis)].BoolValue = false;
+                                ControlSystem.tp.BooleanInput[((uint)Join.btnAirMediaOnVis)].BoolValue = true;
+                                ControlSystem.tp.BooleanInput[((uint)Join.btnAuxOnVis)].BoolValue = false;
                                 break;
                             }
                         case 0:
                             {
-                                tp.BooleanInput[((uint)Join.btnPCOnVis)].BoolValue = false;
-                                tp.BooleanInput[((uint)Join.btnAirMediaOnVis)].BoolValue = false;
-                                tp.BooleanInput[((uint)Join.btnAuxOnVis)].BoolValue = false;
+                                ControlSystem.tp.BooleanInput[((uint)Join.btnPCOnVis)].BoolValue = false;
+                                ControlSystem.tp.BooleanInput[((uint)Join.btnAirMediaOnVis)].BoolValue = false;
+                                ControlSystem.tp.BooleanInput[((uint)Join.btnAuxOnVis)].BoolValue = false;
                                 break;
                             }
 
@@ -321,15 +292,15 @@ namespace NFAHRooms
                     Email.SendEmail(RoomSetup.MailSubject, e.Message);
                 }
             }
-            if (hdmd.HdmiOutputs[1].VideoOutFeedback == null)
+            if (ControlSystem.hdmd.HdmiOutputs[1].VideoOutFeedback == null)
             {
-                tp.BooleanInput[((uint)Join.btnPCOnVis)].BoolValue = false;
-                tp.BooleanInput[((uint)Join.btnAirMediaOnVis)].BoolValue = false;
-                tp.BooleanInput[((uint)Join.btnAuxOnVis)].BoolValue = false;
+                ControlSystem.tp.BooleanInput[((uint)Join.btnPCOnVis)].BoolValue = false;
+                ControlSystem.tp.BooleanInput[((uint)Join.btnAirMediaOnVis)].BoolValue = false;
+                ControlSystem.tp.BooleanInput[((uint)Join.btnAuxOnVis)].BoolValue = false;
             }
         }
 
-        private void disp1_OnlineStatusChange(GenericBase currentDevice, OnlineOfflineEventArgs args)
+        private static void disp1_OnlineStatusChange(GenericBase currentDevice, OnlineOfflineEventArgs args)
         {
             try
             {
@@ -354,7 +325,7 @@ namespace NFAHRooms
             }
         }
 
-        private void am3200_OnlineStatusChange(GenericBase currentDevice, OnlineOfflineEventArgs args)
+        private static void am3200_OnlineStatusChange(GenericBase currentDevice, OnlineOfflineEventArgs args)
         {
             try
             {
@@ -378,36 +349,45 @@ namespace NFAHRooms
                 Email.SendEmail(RoomSetup.MailSubject + " AM3200_OnlineStatusChange", e.Message);
             }
         }
-        public void Initialize()
+        public static void Initialize()
         {   
             try
             {
-                tp.ExtenderSystemReservedSigs.Use();
-                tp.ExtenderSystemReservedSigs.DeviceExtenderSigChange += tp_EXTSSSigChange;
-                tp.ExtenderScreenSaverReservedSigs.Use();
-                tp.ExtenderScreenSaverReservedSigs.DeviceExtenderSigChange += tp_EXTSSSigChange;
-                tp.ExtenderSystem3ReservedSigs.Use();
-                tp.ExtenderSystem3ReservedSigs.DeviceExtenderSigChange += tp_EXTSSSigChange;
+                ControlSystem.tp.ExtenderSystemReservedSigs.Use();
+                ControlSystem.tp.ExtenderSystemReservedSigs.DeviceExtenderSigChange += tp_EXTSSSigChange;
+                ControlSystem.tp.ExtenderScreenSaverReservedSigs.Use();
+                ControlSystem.tp.ExtenderScreenSaverReservedSigs.DeviceExtenderSigChange += tp_EXTSSSigChange;
+                ControlSystem.tp.ExtenderSystem3ReservedSigs.Use();
+                ControlSystem.tp.ExtenderSystem3ReservedSigs.DeviceExtenderSigChange += tp_EXTSSSigChange;
 
 
-                if (tp.Register() != eDeviceRegistrationUnRegistrationResponse.Success)
-                    throw new Exception(tp.RegistrationFailureReason.ToString());
+                if (ControlSystem.tp.Register() != eDeviceRegistrationUnRegistrationResponse.Success)
+                    throw new Exception(ControlSystem.tp.RegistrationFailureReason.ToString());
 
-                if (hdmd.Register() != eDeviceRegistrationUnRegistrationResponse.Success)
-                    throw new Exception(hdmd.RegistrationFailureReason.ToString());
+                if (ControlSystem.hdmd.Register() != eDeviceRegistrationUnRegistrationResponse.Success)
+                    throw new Exception(ControlSystem.hdmd.RegistrationFailureReason.ToString());
 
 
-                if (disp1.Register() != eDeviceRegistrationUnRegistrationResponse.Success)
-                    throw new Exception(disp1.RegistrationFailureReason.ToString());
+                if (ControlSystem.disp1.Register() != eDeviceRegistrationUnRegistrationResponse.Success)
+                    throw new Exception(ControlSystem.disp1.RegistrationFailureReason.ToString());
 
-                if (am3200.Register() != eDeviceRegistrationUnRegistrationResponse.Success)
-                    throw new Exception(am3200.RegistrationFailureReason.ToString());
+                if (ControlSystem.am3200.Register() != eDeviceRegistrationUnRegistrationResponse.Success)
+                    throw new Exception(ControlSystem.am3200.RegistrationFailureReason.ToString());
 
-                //tp.StringInput[((uint)Join.lblRoomName)].StringValue = RoomSetup.Touchpanel.RoomText;
-                hdmd.HdmiOutputs[1].HdmiOutputPort.DisableAutomaticPowerSettings();
-                //am3200.HdmiOut.Resolution = CommonStreamingSupport.eScreenResolutions.Resolution1080p60Hz;
-                //tp.ExtenderButtonToolbarReservedSigs.HideButtonToolbar();
-                //tp.ExtenderSystemReservedSigs.LcdBrightnessAutoOff();
+                ControlSystem.tp.SigChange += new SigEventHandler(tp_SigChange);
+                ControlSystem.tp.OnlineStatusChange += new OnlineStatusChangeEventHandler(tp_OnlineStatusChange);
+                ControlSystem.hdmd.OnlineStatusChange += new OnlineStatusChangeEventHandler(hdmd_OnlineStatusChange);
+                ControlSystem.hdmd.DMSystemChange += new DMSystemEventHandler(hdmd_DMSystemChange);
+                ControlSystem.disp1.OnlineStatusChange += new OnlineStatusChangeEventHandler(disp1_OnlineStatusChange);
+                ControlSystem.am3200.OnlineStatusChange += new OnlineStatusChangeEventHandler(am3200_OnlineStatusChange);
+                ControlSystem.disp1.BaseEvent += new BaseEventHandler(disp1_BaseEvent);
+
+                ControlSystem.tp.StringInput[((uint)Join.lblRoomName)].StringValue = RoomSetup.Touchpanel.RoomText;
+                ControlSystem.hdmd.HdmiOutputs[1].HdmiOutputPort.DisableAutomaticPowerSettings();
+                ControlSystem.am3200.HdmiOut.Resolution = CommonStreamingSupport.eScreenResolutions.Resolution1080p60Hz;
+                ControlSystem.tp.ExtenderSystemReservedSigs.LcdBrightnessAutoOff();
+                
+
             }
             catch (Exception e)
             {
@@ -417,7 +397,7 @@ namespace NFAHRooms
             }
         }
 
-        private void tp_EXTSSSigChange(DeviceExtender currentDeviceExtender, SigEventArgs args)
+        private static void tp_EXTSSSigChange(DeviceExtender currentDeviceExtender, SigEventArgs args)
         {
             try
             {
@@ -425,7 +405,7 @@ namespace NFAHRooms
                 {
                     if (args.Sig.Number == 18358 && Scheduling.Prox_Active == true)
                     {
-                        tp.SleepWakeManager.Wake();
+                        ControlSystem.tp.SleepWakeManager.Wake();
                     }
                     return;
                 }

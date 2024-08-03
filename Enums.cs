@@ -24,6 +24,7 @@
         pg2Proj = 13,
         pg3Display = 14,
         pgVTC = 15,
+        pgAIVis = 16,
 
         btn1_PCOff = 120,
         btn1_PCOn = 130,

@@ -1,21 +1,21 @@
  {
-"room_type": "huddle_room",
-"display_1": "tv",
+"room_type": "evertz_room",
+"display_1": "proj",
 "display_2": null,
 "display_3": null,
-"mail_subject": "Test Huddle Room",
+"mail_subject": "Test Evertz Room",
 "Crestron":{
 		"SNTP_server":"pool.ntp.org",
 		"Timezone_ID":"010",
 		"Username":"admin",
 		"Password":"password"},
 "Touchpanel":{
-	"Room_Text":"Test Huddle Room",
+	"Room_Text":"Test Evertz Room",
 	"Proximity":"on",
 	"Screensaver":"off",
-	"Standby_Timeout": 5,
-	"Image_URL": null,
-	"Room_Type": null
+	"Standby_Timeout": 3,
+	"Image_URL":"http://192.168.1.95/TPAssets/AGSCreenSaver1920x1200.png",
+	"Room_Type":"evertz_1"
 	},
   "evertz": {
     "ip_address": "192.168.1.110",

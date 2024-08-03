@@ -12,13 +12,6 @@ namespace NFAHRooms
     public static class HDMD
     {
 
-        //private static HdMd4x14kzE hdmd;
-
-        //public HDMD(HdMd4x14kzE hdmd)
-        //{
-        //    this.hdmd = hdmd;
-        //}
-
         public static void RouteVideo(uint video)
         {
             if (video > 0)

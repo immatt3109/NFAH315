@@ -168,6 +168,8 @@ namespace NFAHRooms
     }
     public class Microphone
     {
+        [JsonProperty("type")]
+        public string Type { get; set; }
         [JsonProperty("ip_address")]
         public string IpAddress { get; set; }
     }

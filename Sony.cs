@@ -70,7 +70,7 @@ namespace NFAHRooms
         {  
             if (state.ToString() == "TPS1")
             {
-                CrestronConsole.PrintLine("Setting TPS1 Preset");            
+                        
                 _ = SendRequest(urls["TPS1_Set"]);
                 await DownloadThumbnail(state.ToString());
             }
@@ -184,24 +184,24 @@ namespace NFAHRooms
         }
 
         public static async Task SendRequest(string url)
-        {CrestronConsole.PrintLine("Sending HTTP Request to {0}", url);
+        {
 
             HttpClientHandler handler = new HttpClientHandler()
             {
                 Credentials = new NetworkCredential(RoomSetup.SonyCameras.CommonProperties.Username, RoomSetup.SonyCameras.CommonProperties.Password)
             };
-            CrestronConsole.PrintLine("Credentials: {0}", handler.Credentials.ToString());
+            
             using (HttpClient client = new HttpClient(handler))
             {
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
                 if (ControlSystem.tp.BooleanInput[((uint)Join.mode_TeachCamVisibile)].BoolValue)
                 {
-                    CrestronConsole.PrintLine("Teacher Camera is Visible");
+                    
 
                     string referrer = "http://" + RoomSetup.SonyCameras.CommonProperties.TeacherIP + "/";
                     request.Headers.Referrer = new Uri(referrer);
 
-                    CrestronConsole.PrintLine("Referrer:  {0}", request.Headers.Referrer.AbsolutePath);
+                    
                 }
                 else if (ControlSystem.tp.BooleanInput[((uint)Join.mode_StuCamVisibile)].BoolValue)
                 {
@@ -210,14 +210,14 @@ namespace NFAHRooms
                 }
                                 
                 HttpResponseMessage response = await client.SendAsync(request);
-                CrestronConsole.PrintLine("REsponse:  {0}", response.StatusCode);
+               
                 if (response.StatusCode == HttpStatusCode.Unauthorized)
                 {
                     CrestronConsole.PrintLine("Unauthorized HTTP Request");
                     ErrorLog.Error("Unauthorized HTTP Request");
                 }
                 else if (response.IsSuccessStatusCode)
-                {   CrestronConsole.PrintLine("HTTP Request Successful");
+                {   
                     _ = await response.Content.ReadAsStringAsync();
                 }
             }

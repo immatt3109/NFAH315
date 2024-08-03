@@ -351,13 +351,13 @@ namespace NFAHRooms
 
             if (schEvent.Name.ToString().Length > 1 && schEvent.Name.ToString().Substring(0, schEvent.Name.ToString().Length - 1).Equals("tp_prox_off", StringComparison.OrdinalIgnoreCase))
             {
-                CrestronConsole.PrintLine("Prox_Off");
+                
                 Prox_Active = false;
             }
 
             if (schEvent.Name.ToString().Length > 1 && schEvent.Name.ToString().Substring(0, schEvent.Name.ToString().Length - 1).Equals("tp_prox_on", StringComparison.OrdinalIgnoreCase))
             {
-                CrestronConsole.PrintLine("Prox_On");
+                
                 Prox_Active = true;
             }
 

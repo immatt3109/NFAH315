@@ -4,6 +4,7 @@ using Crestron.SimplSharpPro;                       	// For Basic SIMPL#Pro clas
 using Crestron.SimplSharpPro.DeviceSupport;
 using System.Threading;
 using static Crestron.SimplSharpPro.DM.Audio;
+using System.Threading.Tasks;
 
 namespace NFAHRooms
 {
@@ -12,10 +13,21 @@ namespace NFAHRooms
     public static class EvertzHandler
     {
         static CTimer _timer;
-        
+        private static bool Proj1On;
+        private static bool Proj2On;
+        private static bool Proj3On;
+        private static bool AIOnVisState = false;
+        private static bool LayoutCtrOnVisState = false;
+        private static bool LayoutTopOnVisState = false;
+        private static bool LayoutFullOnVisState = false;
+        private static bool LayoutHeadOnVisState = false;
+        private static bool LayoutLeftOnVisState = false;
+        private static bool LayoutRightOnVisState = false;
+
+
         private static void disp1_BaseEvent(GenericBase currentDevice, BaseEventArgs args)
         {
-            CrestronConsole.PrintLine("disp1_BaseEvent");
+            
             ///
             ///btnPwrOff = 23,  //If power is on and you want to turn it off, it's this button
             ///btnPwrOn = 33,  //If power is off and you want to turn it on, it's this button
@@ -26,7 +38,8 @@ namespace NFAHRooms
                 if (ControlSystem.disp1.Power.PowerOnFeedback.BoolValue && !ControlSystem.disp1.Power.PowerOffFeedback.BoolValue)  //Power On
                 {
                     ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = false;
-
+                    Mics.Mute("OFF");
+                    
                     if (ControlSystem.disp1.Video.Source.SourceSelect.UShortValue != 1)
                         ControlSystem.disp1.Video.Source.SourceSelect.UShortValue = 1;
                 }
@@ -35,6 +48,7 @@ namespace NFAHRooms
                 {
                     ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = true;
                     tp_ButtonStatus(((uint)EvertzOutputs.out_Disp1).ToString(), ((uint)EvertzInputs.in_Blank).ToString());
+                    Mics.Mute("ON");
                 }
             }
             catch (Exception e)
@@ -56,7 +70,7 @@ namespace NFAHRooms
                         {
                             SetOutput(101);
                         }
-                        CrestronConsole.PrintLine("tp_Clearbuttonstatus 1:  Input: {0}", Input);
+                        
                         switch (Input)
                         {
                             case "1":
@@ -78,7 +92,7 @@ namespace NFAHRooms
                                 ControlSystem.tp.BooleanInput[((uint)Join.btn1_DSPwrOn)].BoolValue = true;
                                 break;
                             case "0":
-                            CrestronConsole.PrintLine("tp_Clearbuttonstatus case 0");
+                            
                             if (RoomSetup.Display1 == "proj")
                                 {
                                     if (ControlSystem.proj1.PowerOnFeedback.BoolValue)
@@ -86,7 +100,7 @@ namespace NFAHRooms
                                 }
                                 else if (RoomSetup.Display1 == "tv")
                                 {
-                                CrestronConsole.PrintLine("TV Power Off");
+                                
                                     if (ControlSystem.disp1.Power.PowerOnFeedback.BoolValue)
                                         ControlSystem.disp1.Power.PowerOff();
                                 }
@@ -254,6 +268,7 @@ namespace NFAHRooms
         }
         private static async void tp_SigChange(BasicTriList currentDevice, SigEventArgs args)
         {
+            
             try
             {
                 if (currentDevice == ControlSystem.tp)
@@ -609,22 +624,33 @@ namespace NFAHRooms
                                             }
                                             break;
                                         case (uint)Join.btn_StudentCamControl:
-
+                                            AIOnVisState = ControlSystem.tp.BooleanInput[((uint)Join.btn_AIOnVis)].BoolValue;
+                                            LayoutCtrOnVisState = ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutCtrOnVis)].BoolValue;
+                                            LayoutTopOnVisState = ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutTopOnVis)].BoolValue;
+                                            LayoutFullOnVisState = ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutFullOnVis)].BoolValue;
+                                            LayoutHeadOnVisState = ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutHeadOnVis)].BoolValue;
+                                            LayoutLeftOnVisState = ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutLeftOnVis)].BoolValue;
+                                            LayoutRightOnVisState = ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutRightOnVis)].BoolValue;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.pgAIVis)].BoolValue = true;
                                             ControlSystem.tp.BooleanInput[((uint)Join.mode_StuCamVisibile)].BoolValue = true;
                                             ControlSystem.tp.BooleanInput[((uint)Join.mode_TeachCamVisibile)].BoolValue = false;
                                             ControlSystem.tp.StringInput[((uint)Join.serial_Stream)].StringValue = Constants.rtsp + RoomSetup.SonyCameras.CommonProperties.StudentIP + Constants.rtspStream;
                                             break;
-
                                         case (uint)Join.btn_TeachCamControl:
-
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn_AIOnVis)].BoolValue = AIOnVisState;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutCtrOnVis)].BoolValue = LayoutCtrOnVisState;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutTopOnVis)].BoolValue = LayoutTopOnVisState;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutFullOnVis)].BoolValue = LayoutFullOnVisState;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutHeadOnVis)].BoolValue = LayoutHeadOnVisState;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutLeftOnVis)].BoolValue = LayoutLeftOnVisState;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutRightOnVis)].BoolValue = LayoutRightOnVisState;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.pgAIVis)].BoolValue = false;
                                             ControlSystem.tp.BooleanInput[((uint)Join.mode_StuCamVisibile)].BoolValue = false;
                                             ControlSystem.tp.BooleanInput[((uint)Join.mode_TeachCamVisibile)].BoolValue = true;
                                             ControlSystem.tp.StringInput[((uint)Join.serial_Stream)].StringValue = Constants.rtsp + RoomSetup.SonyCameras.CommonProperties.TeacherIP + Constants.rtspStream;
                                             break;
                                         case ((uint)Join.btn_TPreset1):
-                                            CrestronConsole.PrintLine("TPreset1");
                                             _timer = new CTimer(Sony.TimerCallback, "TPS1", 5000);
-
                                             break;
                                         case ((uint)Join.btn_TPreset2):
                                             _timer = new CTimer(Sony.TimerCallback, "TPS2", 5000);
@@ -707,11 +733,7 @@ namespace NFAHRooms
                                             ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutFullOnVis)].BoolValue = false;
                                             ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutHeadOnVis)].BoolValue = true;
                                             break;
-
-
-                                            
-                                            
-
+ 
                                         default:
                                             break;
                                     }
@@ -843,7 +865,7 @@ namespace NFAHRooms
                                             }
                                             break;
                                         case ((uint)Join.btn_TPreset1):
-                                            CrestronConsole.PrintLine("Activate Preset 1");
+                                            
                                             if (_timer != null)
                                             {
                                                 _timer.Stop();
@@ -1009,12 +1031,7 @@ namespace NFAHRooms
                     {
                         ControlSystem.tp.ExtenderScreenSaverReservedSigs.ScreensaverOn.BoolValue = false;
                         ControlSystem.tp.ExtenderScreenSaverReservedSigs.ScreensaverOff.BoolValue = true;
-                    }
-
-                    
-                    
-                    
-
+                    }   
                 }
                 else if (!args.DeviceOnLine)
                 {
@@ -1033,7 +1050,7 @@ namespace NFAHRooms
         private static void disp1_OnlineStatusChange(GenericBase currentDevice, OnlineOfflineEventArgs args)
         {
             try
-            {CrestronConsole.PrintLine("Display_OnlineStatusChange");
+            {
                 if (args.DeviceOnLine)
                 {
                     if (Scheduling.errorCounts.TryGetValue("tv", out int x) && x > 0)
@@ -1083,7 +1100,7 @@ namespace NFAHRooms
         {
             try
             {
-                CrestronConsole.PrintLine("Display_OnlineStatusChange");
+                
                 if (args.DeviceOnLine)
                 {
                     if (Scheduling.errorCounts.TryGetValue("proj", out int x) && x > 0)
@@ -1104,31 +1121,34 @@ namespace NFAHRooms
                 Email.SendEmail(RoomSetup.MailSubject + " Display_OnlineStatusChange", e.Message);
             }
         }
-        private static void proj1_BaseEvent(GenericBase currentDevice, BaseEventArgs args)
+        private static async void proj1_BaseEvent(GenericBase currentDevice, BaseEventArgs args)
         {
-            CrestronConsole.PrintLine($"PowerStatusFeedback: {ControlSystem.proj1.PowerStatusFeedback.StringValue}");
             try
             {
-                if (ControlSystem.proj1.PowerOnFeedback.BoolValue )  //Power On
+                if (ControlSystem.proj1.PowerOnFeedback.BoolValue && !Proj1On)  //Power On
                 {
                     ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = false;
                     ControlSystem.proj1.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
+                    Mics.Mute("Off");
+                    Proj1On = true;
                 }
 
-                if (ControlSystem.proj1.PowerOffFeedback.BoolValue ) //Power Off
-                {
+                if (ControlSystem.proj1.PowerOffFeedback.BoolValue && Proj1On) //Power Off
+                { 
                     ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = true;
-                    
-
-
+                    Proj1On = false;
+                    await Task.Delay(1000);
+                    if (ControlSystem.proj1.PowerOffFeedback.BoolValue)
+                    {
+                        await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj1).ToString(), ((uint)EvertzInputs.in_Blank).ToString());
+                        Mics.Mute("On");
+                    }
                 }
 
                 if (!ControlSystem.proj1.SourceSelectFeedbackSigs[((uint)SonyProjInputs.ProjHDMI)].BoolValue)
                 {
                     ControlSystem.proj1.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
-                }
-
-                
+                }   
             }
             catch (Exception e)
             {
@@ -1141,7 +1161,7 @@ namespace NFAHRooms
         {
             try
             {
-                CrestronConsole.PrintLine("Display_OnlineStatusChange");
+                
                 if (args.DeviceOnLine)
                 {
                     if (Scheduling.errorCounts.TryGetValue("proj", out int x) && x > 0)
@@ -1162,20 +1182,28 @@ namespace NFAHRooms
                 Email.SendEmail(RoomSetup.MailSubject + " Display_OnlineStatusChange", e.Message);
             }
         }
-        private static void proj2_BaseEvent(GenericBase currentDevice, BaseEventArgs args)
+        private static async void proj2_BaseEvent(GenericBase currentDevice, BaseEventArgs args)
         {
             try
             {
-                if (ControlSystem.proj2.PowerOnFeedback.BoolValue)  //Power On
+                if (ControlSystem.proj2.PowerOnFeedback.BoolValue && !Proj2On)  //Power On
                 {
-                    ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = false;
+                    ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = false;
                     ControlSystem.proj2.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
+                    Mics.Mute("Off");
+                    Proj2On = true;
                 }
 
-                if (ControlSystem.proj2.PowerOffFeedback.BoolValue) //Power Off
+                if (ControlSystem.proj2.PowerOffFeedback.BoolValue && Proj2On) //Power Off
                 {
-                    ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = true;
-                    
+                    ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = true;
+                    Proj2On = false;
+                    await Task.Delay(1000);
+                    if (ControlSystem.proj2.PowerOffFeedback.BoolValue)
+                    {
+                        await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj2).ToString(), ((uint)EvertzInputs.in_Blank).ToString());
+                        Mics.Mute("On");
+                    }
                 }
 
                 if (!ControlSystem.proj2.SourceSelectFeedbackSigs[((uint)SonyProjInputs.ProjHDMI)].BoolValue)
@@ -1194,7 +1222,7 @@ namespace NFAHRooms
         {
             try
             {
-                CrestronConsole.PrintLine("Display_OnlineStatusChange");
+                
                 if (args.DeviceOnLine)
                 {
                     if (Scheduling.errorCounts.TryGetValue("proj", out int x) && x > 0)
@@ -1215,20 +1243,28 @@ namespace NFAHRooms
                 Email.SendEmail(RoomSetup.MailSubject + " Display_OnlineStatusChange", e.Message);
             }
         }
-        private static void proj3_BaseEvent(GenericBase currentDevice, BaseEventArgs args)
+        private static async void proj3_BaseEvent(GenericBase currentDevice, BaseEventArgs args)
         {
             try
             {
-                if (ControlSystem.proj3.PowerOnFeedback.BoolValue)  //Power On
+                if (ControlSystem.proj3.PowerOnFeedback.BoolValue && !Proj3On)  //Power On
                 {
-                    ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = false;
+                    ControlSystem.tp.BooleanInput[((uint)Join.btn3_PwrOnVis)].BoolValue = false;
                     ControlSystem.proj3.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
+                    Mics.Mute("Off");
+                    Proj3On = true;
                 }
 
-                if (ControlSystem.proj3.PowerOffFeedback.BoolValue) //Power Off
+                if (ControlSystem.proj3.PowerOffFeedback.BoolValue && Proj3On) //Power Off
                 {
-                    ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = true;
-                    
+                    ControlSystem.tp.BooleanInput[((uint)Join.btn3_PwrOnVis)].BoolValue = true;
+                    Proj3On = false;
+                    await Task.Delay(1000);
+                    if (ControlSystem.proj3.PowerOffFeedback.BoolValue)
+                    {
+                        await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj3).ToString(), ((uint)EvertzInputs.in_Blank).ToString());
+                        Mics.Mute("On");
+                    }
                 }
 
                 if (!ControlSystem.proj3.SourceSelectFeedbackSigs[((uint)SonyProjInputs.ProjHDMI)].BoolValue)
@@ -1247,7 +1283,7 @@ namespace NFAHRooms
         {
             try
             {
-                CrestronConsole.PrintLine("Display_OnlineStatusChange");
+                
                 if (args.DeviceOnLine)
                 {
                     if (Scheduling.errorCounts.TryGetValue("tv", out int x) && x > 0)
@@ -1299,7 +1335,7 @@ namespace NFAHRooms
         {
             try
             {
-                CrestronConsole.PrintLine("Display_OnlineStatusChange");
+             
                 if (args.DeviceOnLine)
                 {
                     if (Scheduling.errorCounts.TryGetValue("tv", out int x) && x > 0)
@@ -1381,6 +1417,7 @@ namespace NFAHRooms
 
                     ControlSystem.proj1.OnlineStatusChange += new OnlineStatusChangeEventHandler(proj1_OnlineStatusChange);
                     ControlSystem.proj1.BaseEvent += new BaseEventHandler(proj1_BaseEvent);
+                    Proj1On = true;
                 }
                 if (RoomSetup.Display1 == "tv")
                 {
@@ -1390,7 +1427,7 @@ namespace NFAHRooms
                     ControlSystem.disp1.OnlineStatusChange += new OnlineStatusChangeEventHandler(disp1_OnlineStatusChange);
                     ControlSystem.disp1.BaseEvent += new BaseEventHandler(disp1_BaseEvent);
 
-                    CrestronConsole.PrintLine("Display 1 Registered");
+                    
 
                    
                 }
@@ -1402,6 +1439,7 @@ namespace NFAHRooms
 
                     ControlSystem.proj2.OnlineStatusChange += new OnlineStatusChangeEventHandler(proj2_OnlineStatusChange);
                     ControlSystem.proj2.BaseEvent += new BaseEventHandler(proj2_BaseEvent);
+                    Proj2On = true;
                 }
                 if (RoomSetup.Display2 == "tv")
                 {
@@ -1420,6 +1458,7 @@ namespace NFAHRooms
 
                     ControlSystem.proj3.OnlineStatusChange += new OnlineStatusChangeEventHandler(proj3_OnlineStatusChange);
                     ControlSystem.proj3.BaseEvent += new BaseEventHandler(proj3_BaseEvent);
+                    Proj3On = true;
                 }
                 if (RoomSetup.Display3 == "tv")
                 {
@@ -1455,6 +1494,7 @@ namespace NFAHRooms
 
                 string IP = CrestronEthernetHelper.GetEthernetParameter(CrestronEthernetHelper.ETHERNET_PARAMETER_TO_GET.GET_CURRENT_IP_ADDRESS, 0);
 
+                Mics.MicList();
                 ControlSystem.tp.StringInput[((uint)Join.lblRoomName)].StringValue = RoomSetup.Touchpanel.RoomText;
                 ControlSystem.tp.ExtenderSystemReservedSigs.LcdBrightnessAutoOff();
                 Sony.MakeDictionary();
@@ -1462,14 +1502,13 @@ namespace NFAHRooms
                 ControlSystem.tp.BooleanInput[((uint)Join.mode_StuCamVisibile)].BoolValue = false;
                 ControlSystem.tp.StringInput[((uint)Join.serial_Stream)].StringValue = Constants.rtsp + RoomSetup.SonyCameras.CommonProperties.TeacherIP + Constants.rtspStream;
                 ControlSystem.tp.UShortInput[((uint)Join.analog_StreamType)].UShortValue = ((ushort)Join.mode_H264);
-
+                
                 ControlSystem.tp.StringInput[((uint)Join.serial_TPS1)].StringValue = Constants.http + IP + Constants.PresetHTMLFolder + "1" + Constants.PresetFileSuffix;
                 ControlSystem.tp.StringInput[((uint)Join.serial_TPS2)].StringValue = Constants.http + IP + Constants.PresetHTMLFolder + "2" + Constants.PresetFileSuffix;
                 ControlSystem.tp.StringInput[((uint)Join.serial_TPS3)].StringValue = Constants.http + IP + Constants.PresetHTMLFolder + "3" + Constants.PresetFileSuffix;
                 ControlSystem.tp.StringInput[((uint)Join.serial_SPS1)].StringValue = Constants.http + IP + Constants.PresetHTMLFolder + "4" + Constants.PresetFileSuffix;
                 ControlSystem.tp.StringInput[((uint)Join.serial_SPS2)].StringValue = Constants.http + IP + Constants.PresetHTMLFolder + "5" + Constants.PresetFileSuffix;
                 ControlSystem.tp.StringInput[((uint)Join.serial_SPS3)].StringValue = Constants.http + IP + Constants.PresetHTMLFolder + "6" + Constants.PresetFileSuffix;
-                CrestronConsole.PrintLine($"Image Path: {ControlSystem.tp.StringInput[((uint)Join.serial_TPS1)].StringValue}");
                 Evertz.Initialize();
 
                 await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_VTC).ToString(), ((uint)EvertzInputs.in_Blank).ToString());

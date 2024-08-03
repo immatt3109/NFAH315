@@ -88,11 +88,8 @@ namespace NFAHRooms
 
         public static async Task<string> SetEvertzData(string Parameter, string Index, string Value)
 
-        {
-                       
+        {                       
             string url = "http://" + RoomSetup.Evertz.IpAddress+ "/v.api/apis/EV/SET/parameter/" + Parameter + "." + Index + "/" + Value;
-
-            CrestronConsole.PrintLine("URL: {0}", url);
 
             using (HttpClient client = new HttpClient())
             {
@@ -108,8 +105,7 @@ namespace NFAHRooms
                     ErrorLog.Error("Error in GetEvertzData: {0}", e.Message);
                     return null;
                 }
-            }
-            
+            }     
 
         }
 
@@ -124,7 +120,7 @@ namespace NFAHRooms
                     HttpResponseMessage response = await client.GetAsync(url);
                     response.EnsureSuccessStatusCode();
                     string responseBody = await response.Content.ReadAsStringAsync();
-                    CrestronConsole.PrintLine("GetEvertzData ResponseBody: {0}", responseBody);
+                    
                     return responseBody;
                 }
                 catch (HttpRequestException e)
@@ -137,26 +133,25 @@ namespace NFAHRooms
         private static void ParseResponse(string response)
         {
             EvertzResponse jsonobj = Newtonsoft.Json.JsonConvert.DeserializeObject<EvertzResponse>(response);
-            CrestronConsole.PrintLine($"ID: {jsonobj.ID} Value: {jsonobj.Value}");
         }
 
         private static void NewEvertzServer()
         {
 
             string DelServerURL = "http://" + RoomSetup.Evertz.IpAddress + "/v.api/apis/EV/SERVERDEL/server/1";
-            CrestronConsole.PrintLine("DelServerURL: {0}", DelServerURL);
+            
 
             string ProcessorIP = CrestronEthernetHelper.GetEthernetParameter(CrestronEthernetHelper.ETHERNET_PARAMETER_TO_GET.GET_CURRENT_IP_ADDRESS, 0);
-            CrestronConsole.PrintLine("ProcessorIP: {0}", ProcessorIP);
+           
 
             string ServerURL = "http://" + RoomSetup.Evertz.IpAddress + "/v.api/apis/EV/SERVERADD/server/" + ProcessorIP + "/" + RoomSetup.Evertz.UDP_Server.ServerName + "/" + RoomSetup.Evertz.UDP_Server.UdpPort + "/udp";
-            CrestronConsole.PrintLine("ServerURL: {0}", ServerURL);
+            
 
             string ParameterURL = "http://" + RoomSetup.Evertz.IpAddress + "/v.api/apis/EV/NOTIFYADD/parameter/1/" + RoomSetup.Evertz.UDP_Server.ParametersToReport.param1 ;
-            CrestronConsole.PrintLine("ParameterURL: {0}", ParameterURL);
+            
 
             string ParameterURL2 = "http://" + RoomSetup.Evertz.IpAddress + "/v.api/apis/EV/NOTIFYADD/parameter/1/" + RoomSetup.Evertz.UDP_Server.ParametersToReport.param2 ;
-            CrestronConsole.PrintLine("ParameterURL2: {0}", ParameterURL2);
+            
 
 
             using (HttpClient client = new HttpClient())
@@ -173,8 +168,7 @@ namespace NFAHRooms
                     {
                         string responseBody = URLresponse.Content.ReadAsStringAsync().Result;
                         ServerResponse jsonobj = JsonConvert.DeserializeObject<ServerResponse>(responseBody);
-                        CrestronConsole.PrintLine("ServerResponse: {0}", responseBody);
-
+                        
                         if (jsonobj.Status == "success")
                         {
                             HttpResponseMessage ParameterResponse = client.GetAsync(ParameterURL).Result;
@@ -188,9 +182,7 @@ namespace NFAHRooms
                             {
                                 string ParameterBody = ParameterResponse.Content.ReadAsStringAsync().Result;
                                 ServerResponse jsonobj2 = JsonConvert.DeserializeObject<ServerResponse>(ParameterBody);
-                                CrestronConsole.PrintLine("ParameterResponse: {0}", ParameterBody);
-                                CrestronConsole.PrintLine("StatusResponse: {0}", jsonobj2.Status);
-                                CrestronConsole.PrintLine("ErrorResponse: {0}", jsonobj2.Error);
+                                
                                 if (jsonobj2.Status == "success")
                                 {
                                     ResponseServer = new Crestron.SimplSharp.CrestronSockets.UDPServer(RoomSetup.Evertz.IpAddress, RoomSetup.Evertz.UDP_Server.UdpPort, RoomSetup.Evertz.UDP_Server.ReadBufferSize);
@@ -226,7 +218,6 @@ namespace NFAHRooms
             try
             {
                NewEvertzServer();
-               CrestronConsole.PrintLine("Evertz Server Initialized");
             }
             catch (Exception e)
             {
@@ -235,7 +226,7 @@ namespace NFAHRooms
         }
 
         private static void UDPServerReceiveCallback(Crestron.SimplSharp.CrestronSockets.UDPServer server, int numberOfBytesReceived)
-        {CrestronConsole.PrintLine("UDP Data Received: {0}", numberOfBytesReceived);
+        {
             try
             {
                 if (numberOfBytesReceived > 0)
@@ -245,7 +236,6 @@ namespace NFAHRooms
                     string data = System.Text.Encoding.ASCII.GetString(receivedBytes);
                     var x = ParseUDPResponse(data);
 
-                    CrestronConsole.PrintLine("UDP Data Received: {0}", data);
                 }
             }
             catch (Exception e)
@@ -261,10 +251,7 @@ namespace NFAHRooms
             try
             {
                 UDPResponse jsonobj = Newtonsoft.Json.JsonConvert.DeserializeObject<UDPResponse>(response);
-                CrestronConsole.PrintLine($"Varid: {jsonobj.UDPParameters[0].Varid} Data: {jsonobj.UDPParameters[0].Data}");
                 string index = ParseIndex(jsonobj.UDPParameters[0].Varid.ToString());
-                CrestronConsole.PrintLine($"Index: {index} Value: {jsonobj.UDPParameters[0].Data}");
-                CrestronConsole.PrintLine($"jsonobj: {jsonobj}");
                 EvertzHandler.tp_ButtonStatus(index, jsonobj.UDPParameters[0].Data);
                 return jsonobj;
             }

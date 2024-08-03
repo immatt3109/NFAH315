@@ -43,9 +43,9 @@ namespace NFAHRooms
                     disp1 = new CrestronConnectedDisplayV2(0x05, this);
                     am3200 = new Am300(0x06, this);
                   
-                    HuddleHandler huddleHandler = new HuddleHandler(tp, hdmd, am3200, disp1);
+                    //HuddleHandler huddleHandler = new HuddleHandler(tp, hdmd, am3200, disp1);
                     
-                    huddleHandler.Initialize();
+                    HuddleHandler.Initialize();
                     CrestronConsole.PrintLine("Huddle Room Setup");
                 }
                 else if (RoomSetup.RoomType.ToLower() == "evertz_room")

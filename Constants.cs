@@ -14,5 +14,10 @@
         public const string PresetHTMLFolder = "/Icons/presetimg";
         public const string PresetFileSuffix = ".jpg";
         public const string AICommand = "/analytics/ptzautoframing.cgi?";
+        public const int ShurePort = 2202;
+        public const int TCCPort = 45;
+        public const string TCCMuteOn = "{ \"audio\": { \"mute\": true } }";
+        public const string TCCMuteOff = "{ \"audio\": { \"mute\": false } }";
+        public const string JSONSeparator = "\r\n";
     }
 }

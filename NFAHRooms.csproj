@@ -143,6 +143,7 @@
     <Compile Include="Email.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="HuddleHandler.cs" />
+    <Compile Include="mics.cs" />
     <Compile Include="RoomSetup.cs" />
     <Compile Include="ControlSystem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
