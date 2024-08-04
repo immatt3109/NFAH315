@@ -250,8 +250,19 @@
         Dante6 = 28,
         Dante7 = 29,
         Dante8 = 30,
+    }
 
-        
+    public enum NVXOutputs
+    {      out_VTC = 0,
+           out_Proj1 = 1,
+           out_Proj2 = 2,
+           out_Proj3 = 3,
+                   
+           out_Disp3 = 3,
+           out_Disp2 = 2,
+           out_Disp1 = 1,
+    
+           out_EXTDisplay =3,
     }
 
     public enum EvertzInputs
@@ -274,6 +285,18 @@
         HDMI_Audio6 = 10,
         HDMI_Audio7 = 11,
         HDMI_Audio8 = 12,
+    }
+    public enum NVXInputs
+    {      
+        in_PCMain = 1,
+        in_PCExtDesk = 2,
+        in_DocCam = 3,
+        in_AirMedia = 4,
+        in_Aux = 5,
+        in_TeachCam = 6,
+        in_StudentCam = 7,
+        in_DS = 8,
+        in_Blank = 0,
     }
 
     public enum SonyProjInputs

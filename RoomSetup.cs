@@ -56,7 +56,13 @@ namespace NFAHRooms
 
                     json = sr.ReadToEnd();
 
-                return JsonConvert.DeserializeObject<RoomSetup>(json);
+                RoomSetup roomSetup = JsonConvert.DeserializeObject<RoomSetup>(json);
+                
+                RoomSetup.NvxSettings?.PopulateDictionaries();
+
+                return roomSetup;
+
+                //return JsonConvert.DeserializeObject<RoomSetup>(json);
             }
             catch (Exception e)
             {
@@ -241,5 +247,48 @@ namespace NFAHRooms
 
         [JsonProperty("assigned_ipid")]
         public string AssignedIpid { get; set; }
+        [JsonProperty("inputs")]
+        public List<NvxInput> Inputs { get; set; }
+        [JsonProperty("outputs")]
+        public List<NvxOutput> Outputs { get; set; }
+
+        [JsonIgnore]
+        public Dictionary<string, NvxInput> InputDictionary { get; private set; }
+
+        [JsonIgnore]
+        public Dictionary<string, NvxOutput> OutputDictionary { get; private set; }
+        public void PopulateDictionaries()
+        {
+            InputDictionary = new Dictionary<string, NvxInput>();
+            OutputDictionary = new Dictionary<string, NvxOutput>();
+
+            if (Inputs != null)
+            {
+                foreach (var input in Inputs)
+                {
+                    InputDictionary[input.type] = input;
+                }
+            }
+
+            if (Outputs != null)
+            {
+                foreach (var output in Outputs)
+                {
+                    OutputDictionary[output.type] = output;
+                }
+            }
+        }
     }
+    public class NvxInput
+    {
+        public string type { get; set; }
+        public string value { get; set; }
+    }
+    public class NvxOutput
+    {
+        public string type { get; set; }
+        public string value { get; set; }
+    }
+
+   
 }

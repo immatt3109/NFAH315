@@ -8,6 +8,7 @@ using Crestron.SimplSharpPro.DM;
 using Crestron.SimplSharpPro.CrestronConnected;         	// For Generic Device Support
 using Crestron.SimplSharp.Scheduler;
 using Crestron.SimplSharpPro.DeviceSupport;
+using Crestron.SimplSharpPro.EthernetCommunication;
 
 
 namespace NFAHRooms
@@ -22,7 +23,8 @@ namespace NFAHRooms
         public static RoomViewConnectedDisplay proj1;
         public static RoomViewConnectedDisplay proj2;
         public static RoomViewConnectedDisplay proj3;
-                
+        public static EthernetIntersystemCommunications EISC;
+
         public ControlSystem() : base()
         {
             string configRoomFilePath = "/user/room_setup.json";
@@ -77,7 +79,12 @@ namespace NFAHRooms
                 }
                 else if (RoomSetup.RoomType.ToLower() == "nvx_room")
                 {
+                    uint ipid = Convert.ToUInt32(RoomSetup.NvxSettings.AssignedIpid,16);
+                    EISC = new EthernetIntersystemCommunications(ipid, RoomSetup.NvxSettings.DmServerProcessorIp, this);
+                    
                     CrestronConsole.PrintLine("NVX Room Setup");
+                    CrestronConsole.AddNewConsoleCommand(NVX.RouteNVX, "RouteNVX", "Route NVX <source>,<dest>", ConsoleAccessLevelEnum.AccessOperator);
+                    NVX.InitializeSystem();
                 }
                 else
                 {
@@ -89,8 +96,8 @@ namespace NFAHRooms
             }
             catch (Exception e)
             {
-                ErrorLog.Error("Error in the constructor: {0}", e.Message);
-                CrestronConsole.PrintLine("Error in the constructor: {0}", e.Message);
+                ErrorLog.Error("Error in the ControlSystem constructor: {0}", e.Message);
+                CrestronConsole.PrintLine("Error in the ControlSystem constructor: {0}", e.Message);
                 Email.SendEmail(RoomSetup.MailSubject, e.Message);
             }
         }
@@ -112,7 +119,7 @@ namespace NFAHRooms
                 Scheduling.SystemEventGroup.ClearAllEvents();
                 Scheduling.AddDailyTimerEvent();
 
-                am3200.HdmiOut.Resolution = CommonStreamingSupport.eScreenResolutions.Resolution1080p60Hz;
+                //am3200.HdmiOut.Resolution = CommonStreamingSupport.eScreenResolutions.Resolution1080p60Hz;
             }
             catch (Exception e)
             {

@@ -1,5 +1,5 @@
  {
-"room_type": "huddle_room",
+"room_type": "nvx_room",
 "display_1": "tv",
 "display_2": null,
 "display_3": null,
@@ -150,7 +150,9 @@
     "error_threshold": 3
   },
   "nvx_settings": {
-    "dm_server_processor_ip": "192.168.1.125",
-    "assigned_ipid": "0x22"
+    "dm_server_processor_ip": "192.168.1.98",
+    "assigned_ipid": "0x23",
+	  "inputs":[{"type": "1", "value": "1"},{"type":"2","value":"2"},{"type":"doc","value":"70"},{"type":"am","value":"71"},{"type":"0","value":"1"}],
+	  "outputs":[{"type":"1","value":"1"},{"type":"2","value":"2"}]
   }
   }

@@ -138,12 +138,14 @@
   <ItemGroup>
     <Compile Include="Constants.cs" />
     <Compile Include="Evertz.cs" />
+    <Compile Include="NVXHandler.cs" />
     <Compile Include="EvertzHandler.cs" />
     <Compile Include="HDMD.cs" />
     <Compile Include="Email.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="HuddleHandler.cs" />
     <Compile Include="mics.cs" />
+    <Compile Include="NVX.cs" />
     <Compile Include="RoomSetup.cs" />
     <Compile Include="ControlSystem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
