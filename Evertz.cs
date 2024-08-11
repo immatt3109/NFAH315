@@ -13,7 +13,7 @@ namespace NFAHRooms
 {
     public static class Evertz
     {
-        private static Crestron.SimplSharp.CrestronSockets.UDPServer ResponseServer;
+        //private static Crestron.SimplSharp.CrestronSockets.UDPServer ResponseServer;
 
         public class EvertzResponse
         {
@@ -178,25 +178,25 @@ namespace NFAHRooms
                             ParameterResponse.EnsureSuccessStatusCode();  ///????
 
 
-                            if (ParameterResponse.IsSuccessStatusCode)
-                            {
-                                string ParameterBody = ParameterResponse.Content.ReadAsStringAsync().Result;
-                                ServerResponse jsonobj2 = JsonConvert.DeserializeObject<ServerResponse>(ParameterBody);
+                            //if (ParameterResponse.IsSuccessStatusCode)
+                            //{
+                            //    string ParameterBody = ParameterResponse.Content.ReadAsStringAsync().Result;
+                            //    ServerResponse jsonobj2 = JsonConvert.DeserializeObject<ServerResponse>(ParameterBody);
                                 
-                                if (jsonobj2.Status == "success")
-                                {
-                                    ResponseServer = new Crestron.SimplSharp.CrestronSockets.UDPServer(RoomSetup.Evertz.IpAddress, RoomSetup.Evertz.UDP_Server.UdpPort, RoomSetup.Evertz.UDP_Server.ReadBufferSize);
-                                    ResponseServer.EnableUDPServer();
-                                    ResponseServer.ReceiveDataAsync(UDPServerReceiveCallback);
+                            //    if (jsonobj2.Status == "success")
+                            //    {
+                            //        ResponseServer = new Crestron.SimplSharp.CrestronSockets.UDPServer(RoomSetup.Evertz.IpAddress, RoomSetup.Evertz.UDP_Server.UdpPort, RoomSetup.Evertz.UDP_Server.ReadBufferSize);
+                            //        ResponseServer.EnableUDPServer();
+                            //        ResponseServer.ReceiveDataAsync(UDPServerReceiveCallback);
                                    
 
-                                }
-                                if (jsonobj2.Error != null)
-                                {
-                                    CrestronConsole.PrintLine("Cannot add Evertz Server Paramaters: {0}", jsonobj2.Error);
-                                    ErrorLog.Error("Cannot add Evertz Server Paramaters: {0}", jsonobj2.Error);
-                                }
-                            }
+                            //    }
+                            //    if (jsonobj2.Error != null)
+                            //    {
+                            //        CrestronConsole.PrintLine("Cannot add Evertz Server Paramaters: {0}", jsonobj2.Error);
+                            //        ErrorLog.Error("Cannot add Evertz Server Paramaters: {0}", jsonobj2.Error);
+                            //    }
+                            //}
                         }
                         else if (jsonobj.Error != null)
                         {
@@ -225,7 +225,7 @@ namespace NFAHRooms
             }
         }
 
-        private static void UDPServerReceiveCallback(Crestron.SimplSharp.CrestronSockets.UDPServer server, int numberOfBytesReceived)
+        public static void UDPServerReceiveCallback(Crestron.SimplSharp.CrestronSockets.UDPServer server, int numberOfBytesReceived)
         {
             try
             {
@@ -243,7 +243,7 @@ namespace NFAHRooms
                 ErrorLog.Error("Error in UDPServerReceiveCallback: {0}", e.Message);
                 CrestronConsole.PrintLine("Error in UDPServerReceiveCallback: {0}", e.Message);
             }
-            ResponseServer.ReceiveDataAsync(UDPServerReceiveCallback);
+            EvertzHandler.ResponseServer.ReceiveDataAsync(UDPServerReceiveCallback);
         }
 
         private static UDPResponse ParseUDPResponse(string response)

@@ -11,41 +11,84 @@ using System.Threading.Tasks;
 namespace NFAHRooms
 {
     public static class NVX
-    {
-
-
-        public enum ItemNum
-        {
-            RouteOutput = 1,
-        }
-                
+    {    
         public static void RouteNVX(string s)
         {
-            CrestronConsole.PrintLine("RouteNVX: {0}", s);
-            ControlSystem.EISC.StringInput[((uint)ItemNum.RouteOutput)].StringValue = s;
+            try
+            {
+                CrestronConsole.PrintLine("RouteNVX: {0}", s);
+                var data = s.Split(',');
+                string input, output;
+                input = data[0];
+                output = data[1];
 
+                RoomSetup.NvxSettings.InputDictionary.TryGetValue(input, out var inputValue);
+                RoomSetup.NvxSettings.OutputDictionary.TryGetValue(output, out var outputValue);
+
+                if (ControlSystem.Is131)
+                {
+                    CrestronConsole.PrintLine("Is131: {0}", ControlSystem.Is131);
+                    if (outputValue.ToString() == "4")
+                    {
+                        CrestronConsole.PrintLine("output 4?: {0}", output);
+                        ControlSystem.EISC.StringInput[((uint)NVXRoutes.RouteOutput)].StringValue = inputValue.InputNVX + "," + outputValue.OutputNVX;
+
+                        for (int i = 6; i <= 8; i++)
+                        {
+                            RoomSetup.NvxSettings.OutputDictionary.TryGetValue(i.ToString(), out var outputValue2);
+                            ControlSystem.EISC.StringInput[((uint)NVXRoutes.RouteOutput)].StringValue = inputValue.InputNVX + "," + outputValue2.OutputNVX;
+                        }
+                    }
+                }
+                else
+                {
+                    ControlSystem.EISC.StringInput[((uint)NVXRoutes.RouteOutput)].StringValue = inputValue.InputNVX + "," + outputValue.OutputNVX;
+                    CrestronConsole.PrintLine("NVX Route Sent to NVX: {0}", inputValue.InputNVX + "," + outputValue.OutputNVX);
+                }
+
+            }
+            catch (Exception e)
+            {
+                CrestronConsole.PrintLine("Error in RouteNVX: {0}", e.Message);
+            }
         }
 
         private static void EISC_SigChange(BasicTriList currentDevice, SigEventArgs args)
         {
-            switch (args.Sig.Type)
+            try
             {
-                case eSigType.String:
-                    if (args.Sig.Number == 1)
-                    {
-                        CrestronConsole.PrintLine("NVX Route: {0}", args.Sig.StringValue);
+                switch (args.Sig.Type)
+                {
+                    case eSigType.String:
+                        if (args.Sig.Number == 1)
+                        {
+                            CrestronConsole.PrintLine("NVX Route Returned from NVX: {0}", args.Sig.StringValue);
 
-                        var data = args.Sig.StringValue.Split(',');
-                        string input, output;
-                        output = data[0];
-                        input = data[1];
+                            var data = args.Sig.StringValue.Split(',');
+                            string input, output;
+                            output = data[1];
+                            input = data[0];
 
-                        RoomSetup.NvxSettings.InputDictionary.TryGetValue(input, out var inputValue);                            
-                        RoomSetup.NvxSettings.OutputDictionary.TryGetValue(output, out var outputValue);
-                        
-                        CrestronConsole.PrintLine($"Output : {output} Output Value:{outputValue.value} Input: {input} Input Value: {inputValue.value}");
-                    }
-                     break;
+                            CrestronConsole.PrintLine("Input: {0} Output: {1}", input, output);
+
+                            var ReverseInputDictionary = RoomSetup.NvxSettings.InputDictionary.ToDictionary(x => x.Value.InputNVX, x => x.Value);
+                            var ReverseOutputDictionary = RoomSetup.NvxSettings.OutputDictionary.ToDictionary(x => x.Value.OutputNVX, x => x.Value);
+
+                            ReverseInputDictionary.TryGetValue(input, out var inputValue);
+                            ReverseOutputDictionary.TryGetValue(output, out var outputValue);
+
+                            CrestronConsole.PrintLine($"Original input: {inputValue.InputProg} Original output: {outputValue.OutputProg}");
+                            if (Convert.ToInt32(outputValue.OutputProg) < ((int)NVXOutputs.out_EXTDisplay))
+                            {
+                                NVXHandler.tp_ButtonStatus(outputValue.OutputProg, inputValue.InputProg);
+                            }
+                        }
+                        break;
+                }
+            }
+            catch (Exception e)
+            {
+                CrestronConsole.PrintLine("Error in EISC_SigChange: {0}", e.Message);
             }
         }
         public static void InitializeSystem()
@@ -55,6 +98,7 @@ namespace NFAHRooms
                 if (ControlSystem.EISC.Register() != eDeviceRegistrationUnRegistrationResponse.Success)
                 {
                     ErrorLog.Error("Error Registering EISC");
+                    CrestronConsole.PrintLine("Error Registering EISC");
                 }
                 else
                 {
@@ -64,9 +108,9 @@ namespace NFAHRooms
             catch (Exception e)
             {
                 ErrorLog.Error("Error in the NVX constructor: {0}", e.Message);
+                CrestronConsole.PrintLine("Error in the NVX constructor: {0}", e.Message);
             }
         }
-
     }
 }
           

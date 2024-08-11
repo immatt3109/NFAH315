@@ -23,6 +23,7 @@ namespace NFAHRooms
         private static bool LayoutHeadOnVisState = false;
         private static bool LayoutLeftOnVisState = false;
         private static bool LayoutRightOnVisState = false;
+        public static Crestron.SimplSharp.CrestronSockets.UDPServer ResponseServer;
 
 
         private static void disp1_BaseEvent(GenericBase currentDevice, BaseEventArgs args)
@@ -394,9 +395,20 @@ namespace NFAHRooms
                                             }
                                         case ((uint)Join.btn2_PwrOn):  //Power On
                                             {
-                                                if (ControlSystem.proj2.PowerOffFeedback.BoolValue)
-                                                    SetOutput((uint)Join.btn2_PwrOn);
+                                                if (RoomSetup.Display2 == "proj")
+                                                {
+                                                    if (ControlSystem.proj2.PowerOffFeedback.BoolValue)
+                                                        SetOutput((uint)Join.btn2_PwrOn);
+                                                }
+                                                else if (RoomSetup.Display2 == "tv")
+                                                {
+                                                    if (ControlSystem.disp2.Power.PowerOffFeedback.BoolValue)
+                                                        SetOutput((uint)Join.btn2_PwrOn);
+                                                }
                                                 break;
+                                                //if (ControlSystem.proj2.PowerOffFeedback.BoolValue)
+                                                //    SetOutput((uint)Join.btn2_PwrOn);
+                                                //break;
                                             }
                                         case ((uint)Join.btn2_PwrOff):  //Power Off
                                             {
@@ -449,9 +461,20 @@ namespace NFAHRooms
                                             }
                                         case ((uint)Join.btn3_PwrOn):  //Power On
                                             {
-                                                if (ControlSystem.proj3.PowerOffFeedback.BoolValue)
-                                                    SetOutput((uint)Join.btn3_PwrOn);
+                                                if (RoomSetup.Display3 == "proj")
+                                                {
+                                                    if (ControlSystem.proj3.PowerOffFeedback.BoolValue)
+                                                        SetOutput((uint)Join.btn3_PwrOn);
+                                                }
+                                                else if (RoomSetup.Display3 == "tv")
+                                                {
+                                                    if (ControlSystem.disp3.Power.PowerOffFeedback.BoolValue)
+                                                        SetOutput((uint)Join.btn3_PwrOn);
+                                                }
                                                 break;
+                                                //if (ControlSystem.proj3.PowerOffFeedback.BoolValue)
+                                                //    SetOutput((uint)Join.btn3_PwrOn);
+                                                //break;
                                             }
                                         case ((uint)Join.btn3_PwrOff):  //Power Off
                                             {
@@ -461,11 +484,16 @@ namespace NFAHRooms
                                         case ((uint)Join.btn_VTCOpen):
                                             {
                                                 ControlSystem.tp.BooleanInput[((uint)Join.pgVTC)].BoolValue = true;
+                                                if (ControlSystem.tp.BooleanInput[((uint)Join.mode_StuCamVisibile)].BoolValue)
+                                                {
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.pgAIVis)].BoolValue = true;
+                                                }
                                                 break;
                                             }
                                         case ((uint)Join.btn_VTCClose):
                                             {
                                                 ControlSystem.tp.BooleanInput[((uint)Join.pgVTC)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.pgAIVis)].BoolValue = false;
                                                 break;
                                             }
                                         case ((uint)Join.btn_VTCPCOff):
@@ -1311,17 +1339,17 @@ namespace NFAHRooms
                 if (ControlSystem.disp2.Power.PowerOnFeedback.BoolValue && !ControlSystem.disp2.Power.PowerOffFeedback.BoolValue)  //Power On
                 {
                     ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = false;
+                    Mics.Mute("OFF");
 
                     if (ControlSystem.disp2.Video.Source.SourceSelect.UShortValue != 1)
                         ControlSystem.disp2.Video.Source.SourceSelect.UShortValue = 1;
-                    
                 }
 
                 if (ControlSystem.disp2.Power.PowerOffFeedback.BoolValue && !ControlSystem.disp2.Power.PowerOnFeedback.BoolValue) //Power Off
                 {
                     ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = true;
                     tp_ButtonStatus(((uint)EvertzOutputs.out_Disp2).ToString(), ((uint)EvertzInputs.in_Blank).ToString());
-                                        
+                    Mics.Mute("ON");
                 }
             }
             catch (Exception e)
@@ -1330,6 +1358,30 @@ namespace NFAHRooms
                 CrestronConsole.PrintLine($"EvertzHandler disp2_BaseEvent Error:  {e.Message}");
                 Email.SendEmail(RoomSetup.MailSubject + " EvertzHandler disp2_BaseEvent Error", e.Message);
             }
+            //try
+            //{
+            //    if (ControlSystem.disp2.Power.PowerOnFeedback.BoolValue && !ControlSystem.disp2.Power.PowerOffFeedback.BoolValue)  //Power On
+            //    {
+            //        ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = false;
+
+            //        if (ControlSystem.disp2.Video.Source.SourceSelect.UShortValue != 1)
+            //            ControlSystem.disp2.Video.Source.SourceSelect.UShortValue = 1;
+
+            //    }
+
+            //    if (ControlSystem.disp2.Power.PowerOffFeedback.BoolValue && !ControlSystem.disp2.Power.PowerOnFeedback.BoolValue) //Power Off
+            //    {
+            //        ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = true;
+            //        tp_ButtonStatus(((uint)EvertzOutputs.out_Disp2).ToString(), ((uint)EvertzInputs.in_Blank).ToString());
+
+            //    }
+            //}
+            //catch (Exception e)
+            //{
+            //    ErrorLog.Notice($"EvertzHandler disp2_BaseEvent Error:  {e.Message}");
+            //    CrestronConsole.PrintLine($"EvertzHandler disp2_BaseEvent Error:  {e.Message}");
+            //    Email.SendEmail(RoomSetup.MailSubject + " EvertzHandler disp2_BaseEvent Error", e.Message);
+            //}
         }
         private static void disp3_OnlineStatusChange(GenericBase currentDevice, OnlineOfflineEventArgs args)
         {
@@ -1363,17 +1415,17 @@ namespace NFAHRooms
                 if (ControlSystem.disp3.Power.PowerOnFeedback.BoolValue && !ControlSystem.disp3.Power.PowerOffFeedback.BoolValue)  //Power On
                 {
                     ControlSystem.tp.BooleanInput[((uint)Join.btn3_PwrOnVis)].BoolValue = false;
+                    Mics.Mute("OFF");
 
                     if (ControlSystem.disp3.Video.Source.SourceSelect.UShortValue != 1)
                         ControlSystem.disp3.Video.Source.SourceSelect.UShortValue = 1;
-                    
                 }
 
                 if (ControlSystem.disp3.Power.PowerOffFeedback.BoolValue && !ControlSystem.disp3.Power.PowerOnFeedback.BoolValue) //Power Off
                 {
                     ControlSystem.tp.BooleanInput[((uint)Join.btn3_PwrOnVis)].BoolValue = true;
                     tp_ButtonStatus(((uint)EvertzOutputs.out_Disp3).ToString(), ((uint)EvertzInputs.in_Blank).ToString());
-
+                    Mics.Mute("ON");
                 }
             }
             catch (Exception e)
@@ -1382,6 +1434,30 @@ namespace NFAHRooms
                 CrestronConsole.PrintLine($"EvertzHandler disp3_BaseEvent Error:  {e.Message}");
                 Email.SendEmail(RoomSetup.MailSubject + " EvertzHandler disp3_BaseEvent Error", e.Message);
             }
+            //try
+            //{
+            //    if (ControlSystem.disp3.Power.PowerOnFeedback.BoolValue && !ControlSystem.disp3.Power.PowerOffFeedback.BoolValue)  //Power On
+            //    {
+            //        ControlSystem.tp.BooleanInput[((uint)Join.btn3_PwrOnVis)].BoolValue = false;
+
+            //        if (ControlSystem.disp3.Video.Source.SourceSelect.UShortValue != 1)
+            //            ControlSystem.disp3.Video.Source.SourceSelect.UShortValue = 1;
+
+            //    }
+
+            //    if (ControlSystem.disp3.Power.PowerOffFeedback.BoolValue && !ControlSystem.disp3.Power.PowerOnFeedback.BoolValue) //Power Off
+            //    {
+            //        ControlSystem.tp.BooleanInput[((uint)Join.btn3_PwrOnVis)].BoolValue = true;
+            //        tp_ButtonStatus(((uint)EvertzOutputs.out_Disp3).ToString(), ((uint)EvertzInputs.in_Blank).ToString());
+
+            //    }
+            //}
+            //catch (Exception e)
+            //{
+            //    ErrorLog.Notice($"EvertzHandler disp3_BaseEvent Error:  {e.Message}");
+            //    CrestronConsole.PrintLine($"EvertzHandler disp3_BaseEvent Error:  {e.Message}");
+            //    Email.SendEmail(RoomSetup.MailSubject + " EvertzHandler disp3_BaseEvent Error", e.Message);
+            //}
         }
 
         public static async void Initialize()
@@ -1493,6 +1569,8 @@ namespace NFAHRooms
                 }
 
                 string IP = CrestronEthernetHelper.GetEthernetParameter(CrestronEthernetHelper.ETHERNET_PARAMETER_TO_GET.GET_CURRENT_IP_ADDRESS, 0);
+                
+                
 
                 Mics.MicList();
                 ControlSystem.tp.StringInput[((uint)Join.lblRoomName)].StringValue = RoomSetup.Touchpanel.RoomText;
@@ -1510,6 +1588,10 @@ namespace NFAHRooms
                 ControlSystem.tp.StringInput[((uint)Join.serial_SPS2)].StringValue = Constants.http + IP + Constants.PresetHTMLFolder + "5" + Constants.PresetFileSuffix;
                 ControlSystem.tp.StringInput[((uint)Join.serial_SPS3)].StringValue = Constants.http + IP + Constants.PresetHTMLFolder + "6" + Constants.PresetFileSuffix;
                 Evertz.Initialize();
+
+                ResponseServer = new Crestron.SimplSharp.CrestronSockets.UDPServer(RoomSetup.Evertz.IpAddress, RoomSetup.Evertz.UDP_Server.UdpPort, RoomSetup.Evertz.UDP_Server.ReadBufferSize);
+                ResponseServer.EnableUDPServer();
+                ResponseServer.ReceiveDataAsync(Evertz.UDPServerReceiveCallback);
 
                 await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_VTC).ToString(), ((uint)EvertzInputs.in_Blank).ToString());
                 await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param2, ((uint)EvertzOutputs.Dante1).ToString(), ((uint)EvertzInputs.HDMI_Audio1).ToString());

@@ -61,9 +61,9 @@ namespace NFAHRooms
             urls.Add("TPS2_Set", Constants.http + RoomSetup.SonyCameras.CommonProperties.TeacherIP + Constants.command + Constants.presetset + "2,TPS2,On");
             urls.Add("TPS3_Set", Constants.http + RoomSetup.SonyCameras.CommonProperties.TeacherIP + Constants.command + Constants.presetset + "3,TPS3,On");
 
-            urls.Add("SPS1_Set", Constants.http + RoomSetup.SonyCameras.CommonProperties.StudentIP + Constants.command + Constants.presetset + "4,SPS1,On");
-            urls.Add("SPS2_Set", Constants.http + RoomSetup.SonyCameras.CommonProperties.StudentIP + Constants.command + Constants.presetset + "5,SPS2,On");
-            urls.Add("SPS3_Set", Constants.http + RoomSetup.SonyCameras.CommonProperties.StudentIP + Constants.command + Constants.presetset + "6,SPS3,On");
+            urls.Add("SPS1_Set", Constants.http + RoomSetup.SonyCameras.CommonProperties.StudentIP + Constants.command + Constants.presetset + "1,SPS1,On");
+            urls.Add("SPS2_Set", Constants.http + RoomSetup.SonyCameras.CommonProperties.StudentIP + Constants.command + Constants.presetset + "2,SPS2,On");
+            urls.Add("SPS3_Set", Constants.http + RoomSetup.SonyCameras.CommonProperties.StudentIP + Constants.command + Constants.presetset + "3,SPS3,On");
         }
         
         public static async void TimerCallback(object state)

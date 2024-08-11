@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Crestron.SimplSharp.CrestronIO;
 using Crestron.SimplSharp;
 using System;
+using static Crestron.SimplSharpPro.DM.Audio;
+using System.Linq;
 
 namespace NFAHRooms
 {       
@@ -57,8 +59,8 @@ namespace NFAHRooms
                     json = sr.ReadToEnd();
 
                 RoomSetup roomSetup = JsonConvert.DeserializeObject<RoomSetup>(json);
-                
-                RoomSetup.NvxSettings?.PopulateDictionaries();
+
+                NvxSettings?.PopulateDictionaries();
 
                 return roomSetup;
 
@@ -239,7 +241,7 @@ namespace NFAHRooms
         [JsonProperty("error_threshold")]
         public int ErrorThreshold { get; set; }
     }
-
+    
     public class NvxSettings
     {
         [JsonProperty("dm_server_processor_ip")]
@@ -259,36 +261,49 @@ namespace NFAHRooms
         public Dictionary<string, NvxOutput> OutputDictionary { get; private set; }
         public void PopulateDictionaries()
         {
-            InputDictionary = new Dictionary<string, NvxInput>();
-            OutputDictionary = new Dictionary<string, NvxOutput>();
-
-            if (Inputs != null)
+            try
             {
-                foreach (var input in Inputs)
+                InputDictionary = new Dictionary<string, NvxInput>();
+                OutputDictionary = new Dictionary<string, NvxOutput>();
+
+                if (Inputs != null)
                 {
-                    InputDictionary[input.type] = input;
+                    foreach (var input in Inputs)
+                    {
+                        InputDictionary[input.InputProg] = input;
+                        CrestronConsole.PrintLine($"Input Prog: {input.InputProg} Input NVX: {input.InputNVX}");
+                    }
                 }
+
+                if (Outputs != null)
+                {
+                    foreach (var output in Outputs)
+                    {
+                        OutputDictionary[output.OutputProg] = output;
+                        CrestronConsole.PrintLine($"Output Prog: {output.OutputProg} Output NVX: {output.OutputNVX}");
+
+                    }
+                }
+
+                
             }
-
-            if (Outputs != null)
+            catch (Exception e)
             {
-                foreach (var output in Outputs)
-                {
-                    OutputDictionary[output.type] = output;
-                }
+                CrestronConsole.PrintLine("Error in PopulateDictionaries: {0}", e.Message);
             }
         }
     }
     public class NvxInput
     {
-        public string type { get; set; }
-        public string value { get; set; }
+        public string InputProg { get; set; }
+        public string InputNVX { get; set; }
     }
     public class NvxOutput
     {
-        public string type { get; set; }
-        public string value { get; set; }
+        public string OutputProg { get; set; }
+        public string OutputNVX { get; set; }
     }
+    
 
-   
+
 }

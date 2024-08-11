@@ -257,12 +257,12 @@
            out_Proj1 = 1,
            out_Proj2 = 2,
            out_Proj3 = 3,
-                   
+                              
            out_Disp3 = 3,
            out_Disp2 = 2,
            out_Disp1 = 1,
-    
-           out_EXTDisplay =3,
+               
+           out_EXTDisplay = 5,
     }
 
     public enum EvertzInputs
@@ -302,6 +302,11 @@
     public enum SonyProjInputs
     {
         ProjHDMI = 5,
+    }
+
+    public enum NVXRoutes
+    {
+        RouteOutput = 1,
     }
 }
 

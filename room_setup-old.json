@@ -1,5 +1,5 @@
  {
-"room_type": "evertz_room",
+"room_type": "nvx_room",
 "display_1": "tv",
 "display_2": "tv",
 "display_3": "tv",
@@ -14,7 +14,7 @@
 	"Proximity":"on",
 	"Screensaver":"off",
 	"Standby_Timeout": 5,
-	"Image_URL": null,
+	"Image_URL": "http://192.168.1.95/TPAssets/AGSCreenSaver1920x1200.png",
 	"Room_Type": "evertz_3"
 	},
   "evertz": {
@@ -46,7 +46,13 @@
 	  "student_IP":"192.168.1.151"}
     },
 "microphones": [
-    
+    { "type": null,
+      "ip_address": null
+    },
+    { "type": null,
+      "ip_address": null
+    }
+	
   ],
   "huddle_room_settings": {
     "frontpanel_lock": "off",
@@ -146,13 +152,18 @@
   "nvx_settings": {
     "dm_server_processor_ip": "192.168.1.98",
     "assigned_ipid": "0x23",
-	  "hdmi_output_default_source": {
-      "out_1": -1,
-      "out_2": -1,
-      "out_3": -1,
-	  "out_4": -1
-    },
-	  "inputs":[{"InputProg": "1", "InputNVX": "17"},{"InputProg":"2","InputNVX":"21"},{"InputProg":"3","InputNVX": "19"},{"InputProg":"4","InputNVX":"4"},{"InputProg":"5","InputNVX":"51"}],
-	  "outputs":[{"OutputProg":"1","OutputNVX": "3"},{"OutputProg":"2","OutputNVX": "4"}]
+	"inputs":	[
+				{"InputProg":"1","InputNVX":"1"},
+				{"InputProg":"2","InputNVX":"2"},
+				{"InputProg":"0","InputNVX":"0"}
+				],
+	
+	"outputs":	[	
+				{"OutputProg":"1","OutputNVX":"2"},
+				{"OutputProg":"2","OutputNVX":"3"},
+				{"OutputProg":"3","OutputNVX":"4"},
+				{"OutputProg":"4","OutputNVX":"1"},
+				{"OutputProg":"5","OutputNVX":"1"}
+				]
   }
   }

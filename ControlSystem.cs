@@ -24,6 +24,7 @@ namespace NFAHRooms
         public static RoomViewConnectedDisplay proj2;
         public static RoomViewConnectedDisplay proj3;
         public static EthernetIntersystemCommunications EISC;
+        public static bool Is131 = false;
 
         public ControlSystem() : base()
         {
@@ -79,20 +80,43 @@ namespace NFAHRooms
                 }
                 else if (RoomSetup.RoomType.ToLower() == "nvx_room")
                 {
+                    tp = new Ts1070(0x03, this);
+                    am3200 = new Am300(0x06, this);
+
+                    if (RoomSetup.Display1 == "proj")
+                        proj1 = new RoomViewConnectedDisplay(0x05, this);
+
+                    if (RoomSetup.Display2 == "proj")
+                        proj2 = new RoomViewConnectedDisplay(0x15, this);
+
+                    if (RoomSetup.Display3 == "proj")
+                        proj3 = new RoomViewConnectedDisplay(0x25, this);
+
+                    if (RoomSetup.Display1 == "tv")
+                        disp1 = new CrestronConnectedDisplayV2(0x05, this);
+
+                    if (RoomSetup.Display2 == "tv")
+                        disp2 = new CrestronConnectedDisplayV2(0x15, this);
+
+                    if (RoomSetup.Display3 == "tv")
+                        disp3 = new CrestronConnectedDisplayV2(0x25, this);
+
+                    if (RoomSetup.Touchpanel.RoomText.Contains("131"))
+                        Is131 = true;
+
                     uint ipid = Convert.ToUInt32(RoomSetup.NvxSettings.AssignedIpid,16);
                     EISC = new EthernetIntersystemCommunications(ipid, RoomSetup.NvxSettings.DmServerProcessorIp, this);
                     
                     CrestronConsole.PrintLine("NVX Room Setup");
                     CrestronConsole.AddNewConsoleCommand(NVX.RouteNVX, "RouteNVX", "Route NVX <source>,<dest>", ConsoleAccessLevelEnum.AccessOperator);
-                    NVX.InitializeSystem();
+                   
+                    NVXHandler.Initialize();
                 }
                 else
                 {
                     CrestronConsole.PrintLine("Room Type not found");
                     throw new Exception("Room Type not found.  huddle_room/evertz_room/nvx_room");
-                }
-
-                
+                }                
             }
             catch (Exception e)
             {
@@ -118,8 +142,6 @@ namespace NFAHRooms
                 Scheduling.SystemEventGroup = new ScheduledEventGroup("NFAH");
                 Scheduling.SystemEventGroup.ClearAllEvents();
                 Scheduling.AddDailyTimerEvent();
-
-                //am3200.HdmiOut.Resolution = CommonStreamingSupport.eScreenResolutions.Resolution1080p60Hz;
             }
             catch (Exception e)
             {

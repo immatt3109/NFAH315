@@ -1,6 +1,7 @@
 ﻿using Crestron.SimplSharp;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Sockets;
@@ -15,32 +16,79 @@ namespace NFAHRooms
 
         public static void MicList()
         {
+            try 
+            { 
             List<Microphone>  Microphones = RoomSetup.Microphones;
 
             ShureMutes();           
+            }
+            catch (Exception e)
+            {
+                CrestronConsole.PrintLine("Error in MicList: {0}", e.Message);
+            }
         }
 
         private static void ShureMutes() 
         {
-            tcpCommands.Add("MXA_mute_on", "< SET DEVICE_AUDIO_MUTE ON >");
-            tcpCommands.Add("MXA_mute_off", "< SET DEVICE_AUDIO_MUTE OFF >");
-            tcpCommands.Add("ULXD_1_mute_on", "< SET 1 AUDIO_MUTE ON >");
-            tcpCommands.Add("ULXD_1_mute_off", "< SET 1 AUDIO_MUTE OFF >");
-            tcpCommands.Add("ULXD_2_mute_on", "< SET 2 AUDIO_MUTE ON >");
-            tcpCommands.Add("ULXD_2_mute_off", "< SET 2 AUDIO_MUTE OFF >");
-            tcpCommands.Add("ULXD_3_mute_on", "< SET 3 AUDIO_MUTE ON >");
-            tcpCommands.Add("ULXD_3_mute_off", "< SET 3 AUDIO_MUTE OFF >");
-            tcpCommands.Add("ULXD_4_mute_on", "< SET 4 AUDIO_MUTE ON >");
-            tcpCommands.Add("ULXD_4_mute_off", "< SET 4 AUDIO_MUTE OFF >");
+            try
+            {
+                tcpCommands.Add("MXA_mute_on", "< SET DEVICE_AUDIO_MUTE ON >");
+                tcpCommands.Add("MXA_mute_off", "< SET DEVICE_AUDIO_MUTE OFF >");
+                tcpCommands.Add("ULXD_1_mute_on", "< SET 1 AUDIO_MUTE ON >");
+                tcpCommands.Add("ULXD_1_mute_off", "< SET 1 AUDIO_MUTE OFF >");
+                tcpCommands.Add("ULXD_2_mute_on", "< SET 2 AUDIO_MUTE ON >");
+                tcpCommands.Add("ULXD_2_mute_off", "< SET 2 AUDIO_MUTE OFF >");
+                tcpCommands.Add("ULXD_3_mute_on", "< SET 3 AUDIO_MUTE ON >");
+                tcpCommands.Add("ULXD_3_mute_off", "< SET 3 AUDIO_MUTE OFF >");
+                tcpCommands.Add("ULXD_4_mute_on", "< SET 4 AUDIO_MUTE ON >");
+                tcpCommands.Add("ULXD_4_mute_off", "< SET 4 AUDIO_MUTE OFF >");
+            }
+            catch (Exception e)
+            {
+                CrestronConsole.PrintLine("Error in ShureMutes: {0}", e.Message);
+            }
         }
 
         public static async void Mute(string value)
         {
+            try 
+            { 
             if (value.ToLower() == "on")
             {
-                MuteOn();
-                await TCC2Mute("on");
-            }
+                    if (RoomSetup.Touchpanel.TP_RoomType.ToLower() == "evertz_1")
+                    {
+                        MuteOn();
+                        await TCC2Mute("on");
+                    }
+                    else if (RoomSetup.Touchpanel.TP_RoomType.ToLower() == "evertz_2")
+                    {
+                        if ((ControlSystem.disp1.Power.PowerOffFeedback.BoolValue || ControlSystem.proj1.PowerOffFeedback.BoolValue) && (ControlSystem.disp2.Power.PowerOffFeedback.BoolValue || ControlSystem.proj2.PowerOffFeedback.BoolValue))
+                        {          
+                            MuteOn();
+                            await TCC2Mute("on");
+                        }
+                        else
+                        {
+                            return;
+                        }
+                    }
+                    else if (RoomSetup.Touchpanel.TP_RoomType.ToLower() == "evertz_3")
+                    {
+                        if ((ControlSystem.disp1.Power.PowerOffFeedback.BoolValue || ControlSystem.proj1.PowerOffFeedback.BoolValue) && (ControlSystem.disp2.Power.PowerOffFeedback.BoolValue || ControlSystem.proj2.PowerOffFeedback.BoolValue) && (ControlSystem.disp3.Power.PowerOffFeedback.BoolValue || ControlSystem.proj3.PowerOffFeedback.BoolValue))
+                        {
+                            MuteOn();
+                            await TCC2Mute("on");
+                        }
+                        else
+                        {
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        CrestronConsole.PrintLine("Invalid room type");
+                    }
+                }
             else if (value.ToLower() == "off")
             {
                 MuteOff();
@@ -50,50 +98,75 @@ namespace NFAHRooms
             {
                 CrestronConsole.PrintLine("Invalid mute command");
             }
+            }
+            catch (Exception e)
+            {
+                CrestronConsole.PrintLine("Error in Mute: {0}", e.Message);
+            }
         }
         private static void MuteOn()
         {
-            Mics.SendCommand(RoomSetup.Microphones, "MXA", Mics.tcpCommands["MXA_mute_on"]);
-            Mics.SendCommand(RoomSetup.Microphones, "ULXD", Mics.tcpCommands["ULXD_1_mute_on"]);
-            Mics.SendCommand(RoomSetup.Microphones, "ULXD", Mics.tcpCommands["ULXD_2_mute_on"]);
-            Mics.SendCommand(RoomSetup.Microphones, "ULXD", Mics.tcpCommands["ULXD_3_mute_on"]);
-            Mics.SendCommand(RoomSetup.Microphones, "ULXD", Mics.tcpCommands["ULXD_4_mute_on"]);
-
+            try
+            {
+                Mics.SendCommand(RoomSetup.Microphones, "MXA", Mics.tcpCommands["MXA_mute_on"]);
+                Mics.SendCommand(RoomSetup.Microphones, "ULXD", Mics.tcpCommands["ULXD_1_mute_on"]);
+                Mics.SendCommand(RoomSetup.Microphones, "ULXD", Mics.tcpCommands["ULXD_2_mute_on"]);
+                Mics.SendCommand(RoomSetup.Microphones, "ULXD", Mics.tcpCommands["ULXD_3_mute_on"]);
+                Mics.SendCommand(RoomSetup.Microphones, "ULXD", Mics.tcpCommands["ULXD_4_mute_on"]);
+            }
+            catch (Exception e)
+            {
+                CrestronConsole.PrintLine("Error in MuteOn: {0}", e.Message);
+            }
             
         }
 
         private static void MuteOff()
         {
-            Mics.SendCommand(RoomSetup.Microphones, "MXA", Mics.tcpCommands["MXA_mute_off"]);
-            Mics.SendCommand(RoomSetup.Microphones, "ULXD", Mics.tcpCommands["ULXD_1_mute_off"]);
-            Mics.SendCommand(RoomSetup.Microphones, "ULXD", Mics.tcpCommands["ULXD_2_mute_off"]);
-            Mics.SendCommand(RoomSetup.Microphones, "ULXD", Mics.tcpCommands["ULXD_3_mute_off"]);
-            Mics.SendCommand(RoomSetup.Microphones, "ULXD", Mics.tcpCommands["ULXD_4_mute_off"]);
+            try
+            {
+                Mics.SendCommand(RoomSetup.Microphones, "MXA", Mics.tcpCommands["MXA_mute_off"]);
+                Mics.SendCommand(RoomSetup.Microphones, "ULXD", Mics.tcpCommands["ULXD_1_mute_off"]);
+                Mics.SendCommand(RoomSetup.Microphones, "ULXD", Mics.tcpCommands["ULXD_2_mute_off"]);
+                Mics.SendCommand(RoomSetup.Microphones, "ULXD", Mics.tcpCommands["ULXD_3_mute_off"]);
+                Mics.SendCommand(RoomSetup.Microphones, "ULXD", Mics.tcpCommands["ULXD_4_mute_off"]);
+            }
+            catch (Exception e)
+            {
+                CrestronConsole.PrintLine("Error in MuteOff: {0}", e.Message);
+            }
         }
 
         private static void SendCommand(List<Microphone> microphones, string targetType, string command)
-        { 
-            foreach (Microphone mic in microphones)
-            { 
-                if (mic.Type.ToLower() == targetType.ToLower())
+        {
+            try
+            {
+                foreach (Microphone mic in microphones)
                 {
-                    try
+                    if (mic.Type.ToLower() == targetType.ToLower())
                     {
-                        using (TcpClient client = new TcpClient(mic.IpAddress, Constants.ShurePort))
+                        try
                         {
-                            
-                            using (NetworkStream stream = client.GetStream())
+                            using (TcpClient client = new TcpClient(mic.IpAddress, Constants.ShurePort))
                             {
-                                byte[] data = Encoding.ASCII.GetBytes(command);
-                                stream.Write(data, 0, data.Length);
+
+                                using (NetworkStream stream = client.GetStream())
+                                {
+                                    byte[] data = Encoding.ASCII.GetBytes(command);
+                                    stream.Write(data, 0, data.Length);
+                                }
                             }
                         }
-                    }
-                    catch (Exception e)
-                    {
-                        CrestronConsole.PrintLine("Error sending command to {0}: {1}", mic.IpAddress, e.Message);
+                        catch (Exception e)
+                        {
+                            CrestronConsole.PrintLine("Error sending command to {0}: {1}", mic.IpAddress, e.Message);
+                        }
                     }
                 }
+            }
+            catch (Exception e)
+            {
+                CrestronConsole.PrintLine("Error in SendCommand: {0}", e.Message);
             }
         }
 

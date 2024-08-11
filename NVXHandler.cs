@@ -27,18 +27,23 @@ namespace NFAHRooms
 
         private static void disp1_BaseEvent(GenericBase currentDevice, BaseEventArgs args)
         {
-            
+
             ///
             ///btnPwrOff = 23,  //If power is on and you want to turn it off, it's this button
             ///btnPwrOn = 33,  //If power is off and you want to turn it on, it's this button
             ///btnPwrOnVis = 33 //If power is off this button should be visible
             ///
+
+            CrestronConsole.PrintLine("disp1 power on status {0}:", ControlSystem.disp1.Power.PowerOnFeedback.BoolValue);
+            CrestronConsole.PrintLine("disp1 power off status {0}:", ControlSystem.disp1.Power.PowerOffFeedback.BoolValue);
             try
             {
                 if (ControlSystem.disp1.Power.PowerOnFeedback.BoolValue && !ControlSystem.disp1.Power.PowerOffFeedback.BoolValue)  //Power On
                 {
+                    
+
                     ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = false;
-                    Mics.Mute("OFF");
+                    //Mics.Mute("OFF");
                     
                     if (ControlSystem.disp1.Video.Source.SourceSelect.UShortValue != 1)
                         ControlSystem.disp1.Video.Source.SourceSelect.UShortValue = 1;
@@ -47,21 +52,22 @@ namespace NFAHRooms
                 if (ControlSystem.disp1.Power.PowerOffFeedback.BoolValue && !ControlSystem.disp1.Power.PowerOnFeedback.BoolValue) //Power Off
                 {
                     ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = true;
-                    tp_ButtonStatus(((uint)EvertzOutputs.out_Disp1).ToString(), ((uint)EvertzInputs.in_Blank).ToString());
-                    Mics.Mute("ON");
+                    tp_ButtonStatus(((uint)NVXOutputs.out_Disp1).ToString(), ((uint)NVXInputs.in_Blank).ToString());
+                    //Mics.Mute("ON");
                 }
             }
             catch (Exception e)
             {
-                ErrorLog.Notice($"EvertzHandler disp1_BaseEvent Error:  {e.Message}");
-                CrestronConsole.PrintLine($"EvertzHandler disp1_BaseEvent Error:  {e.Message}");
-                Email.SendEmail(RoomSetup.MailSubject + " EvertzHandler disp1_BaseEvent Error", e.Message);
+                ErrorLog.Notice($"NVXHandler disp1_BaseEvent Error:  {e.Message}");
+                CrestronConsole.PrintLine($"NVXHandler disp1_BaseEvent Error:  {e.Message}");
+                Email.SendEmail(RoomSetup.MailSubject + " NVXHandler disp1_BaseEvent Error", e.Message);
             }
 
         }
 
         public static void tp_ButtonStatus(String Output, String Input)
         {
+            CrestronConsole.PrintLine($"tp_ButtonStatus Output: {Output} Input: {Input}");
             switch (Output)
             {
                 case "1":
@@ -286,43 +292,37 @@ namespace NFAHRooms
                                         case ((uint)Join.btn1_PCOff):
                                             {
                                                 SetOutput(((uint)Join.btn1_PCOff));
-
-                                                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((int)EvertzOutputs.out_Proj1).ToString(), ((uint)EvertzInputs.in_PCMain).ToString());
+                                                NVX.RouteNVX( ((uint)NVXInputs.in_PCMain).ToString() + "," + ((uint)NVXOutputs.out_Proj1).ToString());
                                                 break;
                                             }
                                         case ((uint)Join.btn1_ExtDeskOff):
                                             {
                                                 SetOutput((uint)Join.btn1_ExtDeskOff);
-
-                                                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj1).ToString(), ((uint)EvertzInputs.in_PCExtDesk).ToString());
+                                                NVX.RouteNVX(  ((uint)NVXInputs.in_PCExtDesk).ToString() + "," + ((uint)NVXOutputs.out_Proj1).ToString());
                                                 break;
                                             }
                                         case ((uint)Join.btn1_DocCamOff):
                                             {
                                                 SetOutput((uint)Join.btn1_DocCamOff);
-
-                                                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj1).ToString(), ((uint)EvertzInputs.in_DocCam).ToString());
+                                                NVX.RouteNVX(  ((uint)NVXInputs.in_DocCam).ToString() + "," + ((uint)NVXOutputs.out_Proj1).ToString());
                                                 break;
                                             }
                                         case ((uint)Join.btn1_AirMediaOff):
                                             {
                                                 SetOutput((uint)Join.btn1_AirMediaOff);
-
-                                                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj1).ToString(), ((uint)EvertzInputs.in_AirMedia).ToString());
+                                                NVX.RouteNVX(((uint)NVXInputs.in_AirMedia).ToString() + "," + ((uint)NVXOutputs.out_Proj1).ToString());
                                                 break;
                                             }
                                         case ((uint)Join.btn1_AuxOff):
                                             {
                                                 SetOutput((uint)Join.btn1_AuxOff);
-
-                                                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj1).ToString(), ((uint)EvertzInputs.in_Aux).ToString());
+                                                NVX.RouteNVX(((uint)NVXInputs.in_Aux).ToString() + "," + ((uint)NVXOutputs.out_Proj1).ToString());
                                                 break;
                                             }
                                         case ((uint)Join.btn1_DSPwrOff):
                                             {
                                                 SetOutput((uint)Join.btn1_AuxOff);
-
-                                                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj1).ToString(), ((uint)EvertzInputs.in_DS).ToString());
+                                                NVX.RouteNVX(((uint)NVXInputs.in_DS).ToString() + "," + ((uint)NVXOutputs.out_Proj1).ToString());
                                                 break;
                                             }
                                         case ((uint)Join.btn1_PwrOn):  //Power On
@@ -341,38 +341,35 @@ namespace NFAHRooms
                                             }
                                         case ((uint)Join.btn1_PwrOff):  //Power Off
                                             {                                                
-                                                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj1).ToString(), ((uint)EvertzInputs.in_Blank).ToString());
+                                                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)NVXOutputs.out_Proj1).ToString(), ((uint)EvertzInputs.in_Blank).ToString());
+                                                NVX.RouteNVX(((uint)NVXInputs.in_Blank).ToString() + "," + ((uint)NVXOutputs.out_Proj1).ToString());
                                                 break;
                                             }
                                         case ((uint)Join.btn2_PCOff):
                                             {
                                                 SetOutput(((uint)Join.btn2_PCOff));
-
-                                                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((int)EvertzOutputs.out_Proj2).ToString(), ((uint)EvertzInputs.in_PCMain).ToString());
+                                                NVX.RouteNVX(  ((uint)NVXInputs.in_PCMain).ToString() + "," + ((uint)NVXOutputs.out_Proj2).ToString());
                                                 break;
 
                                             }
                                         case ((uint)Join.btn2_ExtDeskOff):
                                             {
                                                 SetOutput((uint)Join.btn2_ExtDeskOff);
-
-                                                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj2).ToString(), ((uint)EvertzInputs.in_PCExtDesk).ToString());
+                                                NVX.RouteNVX(((uint)NVXInputs.in_PCExtDesk).ToString() + "," + ((uint)NVXOutputs.out_Proj2).ToString());
                                                 break;
 
                                             }
                                         case ((uint)Join.btn2_DocCamOff):
                                             {
                                                 SetOutput((uint)Join.btn2_DocCamOff);
-
-                                                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj2).ToString(), ((uint)EvertzInputs.in_DocCam).ToString());
+                                                NVX.RouteNVX(((uint)NVXInputs.in_DocCam).ToString() + "," + ((uint)NVXOutputs.out_Proj2).ToString());
                                                 break;
 
                                             }
                                         case ((uint)Join.btn2_AirMediaOff):
                                             {
                                                 SetOutput((uint)Join.btn2_AirMediaOff);
-
-                                                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj2).ToString(), ((uint)EvertzInputs.in_AirMedia).ToString());
+                                                NVX.RouteNVX(((uint)NVXInputs.in_AirMedia).ToString() + "," + ((uint)NVXOutputs.out_Proj2).ToString());
                                                 break;
 
                                             }
@@ -380,127 +377,143 @@ namespace NFAHRooms
                                             {
 
                                                 SetOutput((uint)Join.btn2_AuxOff);
-
-                                                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj2).ToString(), ((uint)EvertzInputs.in_Aux).ToString());
+                                                NVX.RouteNVX(((uint)NVXInputs.in_Aux).ToString() + "," + ((uint)NVXOutputs.out_Proj2).ToString());
                                                 break;
                                             }
                                         case ((uint)Join.btn2_DSPwrOff):
                                             {
                                                 SetOutput((uint)Join.btn2_AuxOff);
-
-                                                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj2).ToString(), ((uint)EvertzInputs.in_DS).ToString());
+                                                NVX.RouteNVX(((uint)NVXInputs.in_DS).ToString() + "," + ((uint)NVXOutputs.out_Proj2).ToString());
                                                 break;
-
                                             }
                                         case ((uint)Join.btn2_PwrOn):  //Power On
                                             {
-                                                if (ControlSystem.proj2.PowerOffFeedback.BoolValue)
-                                                    SetOutput((uint)Join.btn2_PwrOn);
+                                                //if (ControlSystem.proj2.PowerOffFeedback.BoolValue)
+                                                //    SetOutput((uint)Join.btn2_PwrOn);
+                                                if (RoomSetup.Display2 == "proj")
+                                                {
+                                                    if (ControlSystem.proj2.PowerOffFeedback.BoolValue)
+                                                        SetOutput((uint)Join.btn2_PwrOn);
+                                                }
+                                                else if (RoomSetup.Display2 == "tv")
+                                                {
+                                                    if (ControlSystem.disp2.Power.PowerOffFeedback.BoolValue)
+                                                        SetOutput((uint)Join.btn2_PwrOn);
+                                                }
                                                 break;
                                             }
                                         case ((uint)Join.btn2_PwrOff):  //Power Off
                                             {
-                                                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj2).ToString(), ((uint)EvertzInputs.in_Blank).ToString());
+                                                NVX.RouteNVX(((uint)NVXInputs.in_Blank).ToString() + "," + ((uint)NVXOutputs.out_Proj2).ToString());
                                                 break;
                                             }
                                         case ((uint)Join.btn3_PCOff):
                                             {
                                                 SetOutput(((uint)Join.btn3_PCOff));
-
-                                                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((int)EvertzOutputs.out_Proj3).ToString(), ((uint)EvertzInputs.in_PCMain).ToString());
+                                                NVX.RouteNVX(((uint)NVXInputs.in_PCMain).ToString() + "," + ((uint)NVXOutputs.out_Proj3).ToString());
                                                 break;
                                             }
                                         case ((uint)Join.btn3_ExtDeskOff):
                                             {
                                                 SetOutput((uint)Join.btn3_ExtDeskOff);
-
-                                                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj3).ToString(), ((uint)EvertzInputs.in_PCExtDesk).ToString());
+                                                NVX.RouteNVX(((uint)NVXInputs.in_PCExtDesk).ToString() + "," + ((uint)NVXOutputs.out_Proj3).ToString());
                                                 break;
                                             }
                                         case ((uint)Join.btn3_DocCamOff):
                                             {
                                                 SetOutput((uint)Join.btn3_DocCamOff);
-
-                                                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj3).ToString(), ((uint)EvertzInputs.in_DocCam).ToString());
+                                                NVX.RouteNVX(((uint)NVXInputs.in_DocCam).ToString() + "," + ((uint)NVXOutputs.out_Proj3).ToString());
                                                 break;
                                                 
                                             }
                                         case ((uint)Join.btn3_AirMediaOff):
                                             {
                                                 SetOutput((uint)Join.btn3_AirMediaOff);
-
-                                                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj3).ToString(), ((uint)EvertzInputs.in_AirMedia).ToString());
+                                                NVX.RouteNVX(((uint)NVXInputs.in_AirMedia).ToString() + "," + ((uint)NVXOutputs.out_Proj3).ToString());
                                                 break;
                                             }
                                         case ((uint)Join.btn3_AuxOff):
                                             {
-
                                                 SetOutput((uint)Join.btn3_AuxOff);
-
-                                                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj3).ToString(), ((uint)EvertzInputs.in_Aux).ToString());
+                                                NVX.RouteNVX(((uint)NVXInputs.in_Aux).ToString() + "," + ((uint)NVXOutputs.out_Proj3).ToString());
                                                 break;
                                             }
                                         case ((uint)Join.btn3_DSPwrOff):
                                             {
                                                 SetOutput((uint)Join.btn3_AuxOff);
-
-                                                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj3).ToString(), ((uint)EvertzInputs.in_DS).ToString());
+                                                NVX.RouteNVX(((uint)NVXInputs.in_DS).ToString() + "," + ((uint)NVXOutputs.out_Proj3).ToString());
                                                 break;
                                             }
                                         case ((uint)Join.btn3_PwrOn):  //Power On
                                             {
-                                                if (ControlSystem.proj3.PowerOffFeedback.BoolValue)
-                                                    SetOutput((uint)Join.btn3_PwrOn);
+                                                //if (ControlSystem.proj3.PowerOffFeedback.BoolValue)
+                                                //    SetOutput((uint)Join.btn3_PwrOn);
+                                                //break;
+                                                if (RoomSetup.Display3 == "proj")
+                                                {
+                                                    if (ControlSystem.proj3.PowerOffFeedback.BoolValue)
+                                                        SetOutput((uint)Join.btn3_PwrOn);
+                                                }
+                                                else if (RoomSetup.Display3 == "tv")
+                                                {
+                                                    if (ControlSystem.disp3.Power.PowerOffFeedback.BoolValue)
+                                                        SetOutput((uint)Join.btn3_PwrOn);
+                                                }
                                                 break;
                                             }
                                         case ((uint)Join.btn3_PwrOff):  //Power Off
                                             {
-                                                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj3).ToString(), ((uint)EvertzInputs.in_Blank).ToString());
+                                                NVX.RouteNVX(((uint)NVXInputs.in_Blank).ToString() + "," + ((uint)NVXOutputs.out_Proj3).ToString());
                                                 break;
                                             }
                                         case ((uint)Join.btn_VTCOpen):
                                             {
                                                 ControlSystem.tp.BooleanInput[((uint)Join.pgVTC)].BoolValue = true;
+                                                if (ControlSystem.tp.BooleanInput[((uint)Join.mode_StuCamVisibile)].BoolValue)
+                                                {
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.pgAIVis)].BoolValue = true;
+                                                }
                                                 break;
                                             }
                                         case ((uint)Join.btn_VTCClose):
                                             {
-                                                ControlSystem.tp.BooleanInput[((uint)Join.pgVTC)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.pgVTC)].BoolValue = false; 
+                                                ControlSystem.tp.BooleanInput[((uint)Join.pgAIVis)].BoolValue = false;
                                                 break;
                                             }
                                         case ((uint)Join.btn_VTCPCOff):
                                             {
-                                                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_VTC).ToString(), ((uint)EvertzInputs.in_PCMain).ToString());
+                                                NVX.RouteNVX(((uint)NVXInputs.in_PCMain).ToString() + "," + ((uint)NVXOutputs.out_VTC).ToString());
                                                 break;
                                             }
                                         case ((uint)Join.btn_VTCEXTOff):
                                             {
-                                                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_VTC).ToString(), ((uint)EvertzInputs.in_PCExtDesk).ToString());
+                                                NVX.RouteNVX(((uint)NVXInputs.in_PCExtDesk).ToString() + "," + ((uint)NVXOutputs.out_VTC).ToString());
                                                 break;
                                             }
                                         case ((uint)Join.btn_VTCDocCamOff):
                                             {
-                                                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_VTC).ToString(), ((uint)EvertzInputs.in_DocCam).ToString());
+                                                NVX.RouteNVX(((uint)NVXInputs.in_DocCam).ToString() + "," + ((uint)NVXOutputs.out_VTC).ToString());
                                                 break;
                                             }
                                         case ((uint)Join.btn_VTCAirMediaOff):
                                             {
-                                                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_VTC).ToString(), ((uint)EvertzInputs.in_AirMedia).ToString());
+                                                NVX.RouteNVX(((uint)NVXInputs.in_AirMedia).ToString() + "," + ((uint)NVXOutputs.out_VTC).ToString());
                                                 break;
                                             }
                                         case ((uint)Join.btn_VTCAuxOff):
                                             {
-                                                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_VTC).ToString(), ((uint)EvertzInputs.in_Aux).ToString());
+                                                NVX.RouteNVX(((uint)NVXInputs.in_Aux).ToString() + "," + ((uint)NVXOutputs.out_VTC).ToString());
                                                 break;
                                             }
                                         case ((uint)Join.btn_VTCTeachCamOff):
                                             {
-                                                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_VTC).ToString(), ((uint)EvertzInputs.in_TeachCam).ToString());
+                                                NVX.RouteNVX(((uint)NVXInputs.in_TeachCam).ToString() + "," + ((uint)NVXOutputs.out_VTC).ToString());
                                                 break;
                                             }
                                         case ((uint)Join.btn_VTCStudentCamOff):
                                             {
-                                                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_VTC).ToString(), ((uint)EvertzInputs.in_StudentCam).ToString());
+                                                NVX.RouteNVX(((uint)NVXInputs.in_StudentCam).ToString() + "," + ((uint)NVXOutputs.out_VTC).ToString());
                                                 break;
                                             }
                                         case (uint)Join.btn_Up:
@@ -937,8 +950,8 @@ namespace NFAHRooms
             }
             catch (Exception e)
             {
-                ErrorLog.Notice($"EvertzHandler Error:  {e.Message}");
-                CrestronConsole.PrintLine($"EvertzHandler Error:  {e.Message}");
+                ErrorLog.Notice($"NVXHandler Error:  {e.Message}");
+                CrestronConsole.PrintLine($"NVXHandler Error:  {e.Message}");
                 Email.SendEmail(RoomSetup.MailSubject + " TP_SigChange", e.Message);
             }
         }
@@ -956,6 +969,8 @@ namespace NFAHRooms
                 } 
                 else if (RoomSetup.Display1 == "tv")
                 {
+                    CrestronConsole.PrintLine("Setoutput is tv");
+                    CrestronConsole.PrintLine("Setoutput is tv power off feedback {0}", ControlSystem.disp1.Power.PowerOffFeedback.BoolValue);
                     if (ControlSystem.disp1.Power.PowerOffFeedback.BoolValue)
                         ControlSystem.disp1.Power.PowerOn();
 
@@ -983,7 +998,7 @@ namespace NFAHRooms
                 }
             }
             if (OutputNum > 300 && OutputNum < 400)
-            {
+            {CrestronConsole.PrintLine("SetOutpt {0}",OutputNum);
                 if (RoomSetup.Display3 == "proj")
                 {
                     if (ControlSystem.proj3.PowerOffFeedback.BoolValue)
@@ -992,11 +1007,16 @@ namespace NFAHRooms
                     if (!ControlSystem.proj3.SourceSelectFeedbackSigs[((uint)SonyProjInputs.ProjHDMI)].BoolValue)
                         ControlSystem.proj3.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
                 }
-                else if (RoomSetup.Display2 == "tv")
+                else if (RoomSetup.Display3 == "tv")
                 {
+                    CrestronConsole.PrintLine("Setoutput is tv");
+                    CrestronConsole.PrintLine("Setoutput is tv power off feedback {0}", ControlSystem.disp3.Power.PowerOffFeedback.BoolValue);
+                    //if (((ushort)OutputNum) == ((ushort)Join.btn3_PCOff))
+                    //    ControlSystem.disp3.Power.PowerOn();
+
                     if (ControlSystem.disp3.Power.PowerOffFeedback.BoolValue)
                         ControlSystem.disp3.Power.PowerOn();
-
+                    
                     if (ControlSystem.disp3.Video.Source.SourceSelect.UShortValue != 1)
                         ControlSystem.disp3.Video.Source.SourceSelect.UShortValue = 1;
                 }
@@ -1140,7 +1160,7 @@ namespace NFAHRooms
                     await Task.Delay(1000);
                     if (ControlSystem.proj1.PowerOffFeedback.BoolValue)
                     {
-                        await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj1).ToString(), ((uint)EvertzInputs.in_Blank).ToString());
+                        NVX.RouteNVX($"{NVXOutputs.out_Proj1},{NVXInputs.in_Blank}");
                         Mics.Mute("On");
                     }
                 }
@@ -1152,8 +1172,8 @@ namespace NFAHRooms
             }
             catch (Exception e)
             {
-                ErrorLog.Notice($"EvertzHandler proj1_BaseEvent Error:  {e.Message}");
-                CrestronConsole.PrintLine($"EvertzHandler proj1_BaseEvent Error  {e.Message}");
+                ErrorLog.Notice($"NVXHandler proj1_BaseEvent Error:  {e.Message}");
+                CrestronConsole.PrintLine($"NVXHandler proj1_BaseEvent Error  {e.Message}");
                 Email.SendEmail(RoomSetup.MailSubject + " proj2_BaseEvent", e.Message);
             }
         }
@@ -1201,7 +1221,7 @@ namespace NFAHRooms
                     await Task.Delay(1000);
                     if (ControlSystem.proj2.PowerOffFeedback.BoolValue)
                     {
-                        await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj2).ToString(), ((uint)EvertzInputs.in_Blank).ToString());
+                        NVX.RouteNVX($"{NVXOutputs.out_Proj2},{NVXInputs.in_Blank}");
                         Mics.Mute("On");
                     }
                 }
@@ -1213,8 +1233,8 @@ namespace NFAHRooms
             }
             catch (Exception e)
             {
-                ErrorLog.Notice($"EvertzHandler proj2_BaseEvent Error:  {e.Message}");
-                CrestronConsole.PrintLine($"EvertzHandler proj2_BaseEvent Error  {e.Message}");
+                ErrorLog.Notice($"NVXHandler proj2_BaseEvent Error:  {e.Message}");
+                CrestronConsole.PrintLine($"NVXHandler proj2_BaseEvent Error  {e.Message}");
                 Email.SendEmail(RoomSetup.MailSubject + " proj2_BaseEvent", e.Message);
             }
         }
@@ -1262,7 +1282,7 @@ namespace NFAHRooms
                     await Task.Delay(1000);
                     if (ControlSystem.proj3.PowerOffFeedback.BoolValue)
                     {
-                        await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj3).ToString(), ((uint)EvertzInputs.in_Blank).ToString());
+                        NVX.RouteNVX($"{NVXOutputs.out_Proj3},{NVXInputs.in_Blank}");
                         Mics.Mute("On");
                     }
                 }
@@ -1274,8 +1294,8 @@ namespace NFAHRooms
             }
             catch (Exception e)
             {
-                ErrorLog.Notice($"EvertzHandler proj3_BaseEvent Error:  {e.Message}");
-                CrestronConsole.PrintLine($"EvertzHandler proj3_BaseEvent Error  {e.Message}");
+                ErrorLog.Notice($"NVXHandler proj3_BaseEvent Error:  {e.Message}");
+                CrestronConsole.PrintLine($"NVXHandler proj3_BaseEvent Error  {e.Message}");
                 Email.SendEmail(RoomSetup.MailSubject + " proj3_BaseEvent", e.Message);
             }
         }
@@ -1311,25 +1331,49 @@ namespace NFAHRooms
                 if (ControlSystem.disp2.Power.PowerOnFeedback.BoolValue && !ControlSystem.disp2.Power.PowerOffFeedback.BoolValue)  //Power On
                 {
                     ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = false;
+                    Mics.Mute("OFF");
 
-                    if (ControlSystem.disp2.Video.Source.SourceSelect.UShortValue != 1)
-                        ControlSystem.disp2.Video.Source.SourceSelect.UShortValue = 1;
-                    
+                    if (ControlSystem.disp1.Video.Source.SourceSelect.UShortValue != 1)
+                        ControlSystem.disp1.Video.Source.SourceSelect.UShortValue = 1;
                 }
 
                 if (ControlSystem.disp2.Power.PowerOffFeedback.BoolValue && !ControlSystem.disp2.Power.PowerOnFeedback.BoolValue) //Power Off
                 {
                     ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = true;
-                    tp_ButtonStatus(((uint)EvertzOutputs.out_Disp2).ToString(), ((uint)EvertzInputs.in_Blank).ToString());
-                                        
+                    tp_ButtonStatus(((uint)NVXOutputs.out_Disp2).ToString(), ((uint)NVXInputs.in_Blank).ToString());
+                    Mics.Mute("ON");
                 }
             }
             catch (Exception e)
             {
-                ErrorLog.Notice($"EvertzHandler disp2_BaseEvent Error:  {e.Message}");
-                CrestronConsole.PrintLine($"EvertzHandler disp2_BaseEvent Error:  {e.Message}");
-                Email.SendEmail(RoomSetup.MailSubject + " EvertzHandler disp2_BaseEvent Error", e.Message);
+                ErrorLog.Notice($"NVXHandler disp2_BaseEvent Error:  {e.Message}");
+                CrestronConsole.PrintLine($"NVXHandler disp2_BaseEvent Error:  {e.Message}");
+                Email.SendEmail(RoomSetup.MailSubject + " NVXHandler disp3_BaseEvent Error", e.Message);
             }
+            //try
+            //{
+            //    if (ControlSystem.disp2.Power.PowerOnFeedback.BoolValue && !ControlSystem.disp2.Power.PowerOffFeedback.BoolValue)  //Power On
+            //    {
+            //        ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = false;
+
+            //        if (ControlSystem.disp2.Video.Source.SourceSelect.UShortValue != 1)
+            //            ControlSystem.disp2.Video.Source.SourceSelect.UShortValue = 1;
+
+            //    }
+
+            //    if (ControlSystem.disp2.Power.PowerOffFeedback.BoolValue && !ControlSystem.disp2.Power.PowerOnFeedback.BoolValue) //Power Off
+            //    {
+            //        ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = true;
+            //        tp_ButtonStatus(((uint)NVXOutputs.out_Disp2).ToString(), ((uint)NVXInputs.in_Blank).ToString());
+
+            //    }
+            //}
+            //catch (Exception e)
+            //{
+            //    ErrorLog.Notice($"NVXHandler disp2_BaseEvent Error:  {e.Message}");
+            //    CrestronConsole.PrintLine($"NVXHandler disp2_BaseEvent Error:  {e.Message}");
+            //    Email.SendEmail(RoomSetup.MailSubject + " NVXHandler disp2_BaseEvent Error", e.Message);
+            //}
         }
         private static void disp3_OnlineStatusChange(GenericBase currentDevice, OnlineOfflineEventArgs args)
         {
@@ -1358,36 +1402,63 @@ namespace NFAHRooms
         }
         private static void disp3_BaseEvent(GenericBase currentDevice, BaseEventArgs args)
         {
-            try
-            {
+            CrestronConsole.PrintLine("disp3 power on status {0}:", ControlSystem.disp3.Power.PowerOnFeedback.BoolValue);
+            CrestronConsole.PrintLine("disp3 power off status {0}:", ControlSystem.disp3.Power.PowerOffFeedback.BoolValue);
+            //try
+            //{
                 if (ControlSystem.disp3.Power.PowerOnFeedback.BoolValue && !ControlSystem.disp3.Power.PowerOffFeedback.BoolValue)  //Power On
                 {
                     ControlSystem.tp.BooleanInput[((uint)Join.btn3_PwrOnVis)].BoolValue = false;
+                    Mics.Mute("OFF");
 
-                    if (ControlSystem.disp3.Video.Source.SourceSelect.UShortValue != 1)
-                        ControlSystem.disp3.Video.Source.SourceSelect.UShortValue = 1;
-                    
+                    if (ControlSystem.disp1.Video.Source.SourceSelect.UShortValue != 1)
+                        ControlSystem.disp1.Video.Source.SourceSelect.UShortValue = 1;
                 }
 
                 if (ControlSystem.disp3.Power.PowerOffFeedback.BoolValue && !ControlSystem.disp3.Power.PowerOnFeedback.BoolValue) //Power Off
                 {
                     ControlSystem.tp.BooleanInput[((uint)Join.btn3_PwrOnVis)].BoolValue = true;
-                    tp_ButtonStatus(((uint)EvertzOutputs.out_Disp3).ToString(), ((uint)EvertzInputs.in_Blank).ToString());
-
+                    tp_ButtonStatus(((uint)NVXOutputs.out_Disp3).ToString(), ((uint)NVXInputs.in_Blank).ToString());
+                    Mics.Mute("ON");
                 }
-            }
-            catch (Exception e)
-            {
-                ErrorLog.Notice($"EvertzHandler disp3_BaseEvent Error:  {e.Message}");
-                CrestronConsole.PrintLine($"EvertzHandler disp3_BaseEvent Error:  {e.Message}");
-                Email.SendEmail(RoomSetup.MailSubject + " EvertzHandler disp3_BaseEvent Error", e.Message);
-            }
+            //}
+            //catch (Exception e)
+            //{
+            //    ErrorLog.Notice($"NVXHandler disp3_BaseEvent Error:  {e.Message}");
+            //    CrestronConsole.PrintLine($"NVXHandler disp3_BaseEvent Error:  {e.Message}, {e.StackTrace}");
+            //    Email.SendEmail(RoomSetup.MailSubject + " NVXHandler disp3_BaseEvent Error", e.Message);
+            //}
+            //try
+            //{
+            //    if (ControlSystem.disp3.Power.PowerOnFeedback.BoolValue && !ControlSystem.disp3.Power.PowerOffFeedback.BoolValue)  //Power On
+            //    {
+            //        ControlSystem.tp.BooleanInput[((uint)Join.btn3_PwrOnVis)].BoolValue = false;
+
+            //        if (ControlSystem.disp3.Video.Source.SourceSelect.UShortValue != 1)
+            //            ControlSystem.disp3.Video.Source.SourceSelect.UShortValue = 1;
+
+            //    }
+
+            //    if (ControlSystem.disp3.Power.PowerOffFeedback.BoolValue && !ControlSystem.disp3.Power.PowerOnFeedback.BoolValue) //Power Off
+            //    {
+            //        ControlSystem.tp.BooleanInput[((uint)Join.btn3_PwrOnVis)].BoolValue = true;
+            //        tp_ButtonStatus(((uint)NVXOutputs.out_Disp3).ToString(), ((uint)NVXInputs.in_Blank).ToString());
+
+            //    }
+            //}
+            //catch (Exception e)
+            //{
+            //    ErrorLog.Notice($"NVXHandler disp3_BaseEvent Error:  {e.Message}");
+            //    CrestronConsole.PrintLine($"NVXHandler disp3_BaseEvent Error:  {e.Message}");
+            //    Email.SendEmail(RoomSetup.MailSubject + " NVXHandler disp3_BaseEvent Error", e.Message);
+            //}
         }
 
-        public static async void Initialize()
+        public static void Initialize()
         {
             try
             {
+            
                 ControlSystem.tp.ExtenderButtonToolbarReservedSigs.Use();
                 ControlSystem.tp.ExtenderButtonToolbarReservedSigs.DeviceExtenderSigChange += tp_EXTSSSigChange;
                 ControlSystem.tp.ExtenderSystemReservedSigs.Use();
@@ -1396,20 +1467,23 @@ namespace NFAHRooms
                 ControlSystem.tp.ExtenderScreenSaverReservedSigs.DeviceExtenderSigChange += tp_EXTSSSigChange;
                 ControlSystem.tp.ExtenderSystem3ReservedSigs.Use();
                 ControlSystem.tp.ExtenderSystem3ReservedSigs.DeviceExtenderSigChange += tp_EXTSSSigChange;
-                
-                
+
+
 
                 if (ControlSystem.tp.Register() != eDeviceRegistrationUnRegistrationResponse.Success)
                     throw new Exception(ControlSystem.tp.RegistrationFailureReason.ToString());
 
-                    ControlSystem.tp.SigChange += new SigEventHandler(tp_SigChange);
-                    ControlSystem.tp.OnlineStatusChange += new OnlineStatusChangeEventHandler(tp_OnlineStatusChange);
+                ControlSystem.tp.SigChange += new SigEventHandler(tp_SigChange);
+                ControlSystem.tp.OnlineStatusChange += new OnlineStatusChangeEventHandler(tp_OnlineStatusChange);
 
                 if (ControlSystem.am3200.Register() != eDeviceRegistrationUnRegistrationResponse.Success)
                     throw new Exception(ControlSystem.am3200.RegistrationFailureReason.ToString());
 
-                    ControlSystem.am3200.OnlineStatusChange += new OnlineStatusChangeEventHandler(am3200_OnlineStatusChange);
-                
+                ControlSystem.am3200.OnlineStatusChange += new OnlineStatusChangeEventHandler(am3200_OnlineStatusChange);
+
+                if (ControlSystem.EISC.Register() != eDeviceRegistrationUnRegistrationResponse.Success)
+                    throw new Exception(ControlSystem.EISC.RegistrationFailureReason.ToString());
+
                 if (RoomSetup.Display1 == "proj")
                 {
                     if (ControlSystem.proj1.Register() != eDeviceRegistrationUnRegistrationResponse.Success)
@@ -1426,10 +1500,6 @@ namespace NFAHRooms
 
                     ControlSystem.disp1.OnlineStatusChange += new OnlineStatusChangeEventHandler(disp1_OnlineStatusChange);
                     ControlSystem.disp1.BaseEvent += new BaseEventHandler(disp1_BaseEvent);
-
-                    
-
-                   
                 }
 
                 if (RoomSetup.Display2 == "proj")
@@ -1449,7 +1519,7 @@ namespace NFAHRooms
                     ControlSystem.disp2.OnlineStatusChange += new OnlineStatusChangeEventHandler(disp2_OnlineStatusChange);
                     ControlSystem.disp2.BaseEvent += new BaseEventHandler(disp2_BaseEvent);
                 }
-            
+
 
                 if (RoomSetup.Display3 == "proj")
                 {
@@ -1468,82 +1538,65 @@ namespace NFAHRooms
                     ControlSystem.disp3.OnlineStatusChange += new OnlineStatusChangeEventHandler(disp3_OnlineStatusChange);
                     ControlSystem.disp3.BaseEvent += new BaseEventHandler(disp3_BaseEvent);
                 }
-                
-                //Determine which Touchpanel Layout to use
-                switch (RoomSetup.Touchpanel.TP_RoomType.ToLower())
-                {
-                    case "evertz_1":
-                        CrestronConsole.PrintLine("Evertz Room Setup 1");
-                        ControlSystem.tp.BooleanInput[((uint)Join.pg1Proj)].BoolValue = true;
-                        ControlSystem.tp.BooleanInput[((uint)Join.pg2Proj)].BoolValue = false;
-                        ControlSystem.tp.BooleanInput[((uint)Join.pg3Display)].BoolValue = false;
-                        break;
-                    case "evertz_2":
-                        CrestronConsole.PrintLine("Evertz Room Setup 2");
-                        ControlSystem.tp.BooleanInput[((uint)Join.pg1Proj)].BoolValue = false;
-                        ControlSystem.tp.BooleanInput[((uint)Join.pg2Proj)].BoolValue = true;
-                        ControlSystem.tp.BooleanInput[((uint)Join.pg3Display)].BoolValue = false;
-                        break;
-                    case "evertz_3":
-                        CrestronConsole.PrintLine("Evertz Room Setup 3");
-                        ControlSystem.tp.BooleanInput[((uint)Join.pg1Proj)].BoolValue = false;
-                        ControlSystem.tp.BooleanInput[((uint)Join.pg2Proj)].BoolValue = false;
-                        ControlSystem.tp.BooleanInput[((uint)Join.pg3Display)].BoolValue = true;
-                        break;
-                }
+            
+
+
+            CrestronConsole.PrintLine("Touchpanel Layout: {0}", RoomSetup.Touchpanel.TP_RoomType.ToLower());
+            //Determine which Touchpanel Layout to use
+            switch (RoomSetup.Touchpanel.TP_RoomType.ToLower())
+            {
+
+                case "evertz_1":
+                    CrestronConsole.PrintLine("NVX Room Setup 1");
+                    ControlSystem.tp.BooleanInput[((uint)Join.pg1Proj)].BoolValue = true;
+                    ControlSystem.tp.BooleanInput[((uint)Join.pg2Proj)].BoolValue = false;
+                    ControlSystem.tp.BooleanInput[((uint)Join.pg3Display)].BoolValue = false;
+                    break;
+                case "evertz_2":
+                    CrestronConsole.PrintLine("NVX Room Setup 2");
+                    ControlSystem.tp.BooleanInput[((uint)Join.pg1Proj)].BoolValue = false;
+                    ControlSystem.tp.BooleanInput[((uint)Join.pg2Proj)].BoolValue = true;
+                    ControlSystem.tp.BooleanInput[((uint)Join.pg3Display)].BoolValue = false;
+                    break;
+                case "evertz_3":
+                    CrestronConsole.PrintLine("NVX Room Setup 3");
+                    ControlSystem.tp.BooleanInput[((uint)Join.pg1Proj)].BoolValue = false;
+                    ControlSystem.tp.BooleanInput[((uint)Join.pg2Proj)].BoolValue = false;
+                    ControlSystem.tp.BooleanInput[((uint)Join.pg3Display)].BoolValue = true;
+                    break;
+            }
 
                 string IP = CrestronEthernetHelper.GetEthernetParameter(CrestronEthernetHelper.ETHERNET_PARAMETER_TO_GET.GET_CURRENT_IP_ADDRESS, 0);
 
                 Mics.MicList();
                 ControlSystem.tp.StringInput[((uint)Join.lblRoomName)].StringValue = RoomSetup.Touchpanel.RoomText;
-                ControlSystem.tp.ExtenderSystemReservedSigs.LcdBrightnessAutoOff();
                 Sony.MakeDictionary();
                 ControlSystem.tp.BooleanInput[((uint)Join.mode_TeachCamVisibile)].BoolValue = true;
                 ControlSystem.tp.BooleanInput[((uint)Join.mode_StuCamVisibile)].BoolValue = false;
                 ControlSystem.tp.StringInput[((uint)Join.serial_Stream)].StringValue = Constants.rtsp + RoomSetup.SonyCameras.CommonProperties.TeacherIP + Constants.rtspStream;
-                ControlSystem.tp.UShortInput[((uint)Join.analog_StreamType)].UShortValue = ((ushort)Join.mode_H264);
-                
+                //ControlSystem.tp.UShortInput[((uint)Join.analog_StreamType)].UShortValue = ((ushort)Join.mode_H264);            
+            
                 ControlSystem.tp.StringInput[((uint)Join.serial_TPS1)].StringValue = Constants.http + IP + Constants.PresetHTMLFolder + "1" + Constants.PresetFileSuffix;
                 ControlSystem.tp.StringInput[((uint)Join.serial_TPS2)].StringValue = Constants.http + IP + Constants.PresetHTMLFolder + "2" + Constants.PresetFileSuffix;
                 ControlSystem.tp.StringInput[((uint)Join.serial_TPS3)].StringValue = Constants.http + IP + Constants.PresetHTMLFolder + "3" + Constants.PresetFileSuffix;
-                ControlSystem.tp.StringInput[((uint)Join.serial_SPS1)].StringValue = Constants.http + IP + Constants.PresetHTMLFolder + "4" + Constants.PresetFileSuffix;
-                ControlSystem.tp.StringInput[((uint)Join.serial_SPS2)].StringValue = Constants.http + IP + Constants.PresetHTMLFolder + "5" + Constants.PresetFileSuffix;
-                ControlSystem.tp.StringInput[((uint)Join.serial_SPS3)].StringValue = Constants.http + IP + Constants.PresetHTMLFolder + "6" + Constants.PresetFileSuffix;
-                Evertz.Initialize();
+                ControlSystem.tp.StringInput[((uint)Join.serial_SPS1)].StringValue = Constants.http + IP + Constants.PresetHTMLFolder + "1" + Constants.PresetFileSuffix;
+                ControlSystem.tp.StringInput[((uint)Join.serial_SPS2)].StringValue = Constants.http + IP + Constants.PresetHTMLFolder + "2" + Constants.PresetFileSuffix;
+                ControlSystem.tp.StringInput[((uint)Join.serial_SPS3)].StringValue = Constants.http + IP + Constants.PresetHTMLFolder + "3" + Constants.PresetFileSuffix;
+                NVX.InitializeSystem();
+            
+                if (RoomSetup.NvxSettings.OutputDictionary.ContainsKey("5"))
+                {
+                    NVX.RouteNVX(((uint)NVXInputs.in_PCExtDesk).ToString() + "," + ((uint)NVXOutputs.out_EXTDisplay).ToString());
+                }
 
-                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_VTC).ToString(), ((uint)EvertzInputs.in_Blank).ToString());
-                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param2, ((uint)EvertzOutputs.Dante1).ToString(), ((uint)EvertzInputs.HDMI_Audio1).ToString());
-                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param2, ((uint)EvertzOutputs.Dante2).ToString(), ((uint)EvertzInputs.HDMI_Audio2).ToString());
-                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param2, ((uint)EvertzOutputs.Dante3).ToString(), ((uint)EvertzInputs.HDMI_Audio3).ToString());
-                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param2, ((uint)EvertzOutputs.Dante4).ToString(), ((uint)EvertzInputs.HDMI_Audio4).ToString());
-                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param2, ((uint)EvertzOutputs.Dante5).ToString(), ((uint)EvertzInputs.HDMI_Audio5).ToString());
-                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param2, ((uint)EvertzOutputs.Dante6).ToString(), ((uint)EvertzInputs.HDMI_Audio6).ToString());
-                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param2, ((uint)EvertzOutputs.Dante7).ToString(), ((uint)EvertzInputs.HDMI_Audio7).ToString());
-                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param2, ((uint)EvertzOutputs.Dante8).ToString(), ((uint)EvertzInputs.HDMI_Audio8).ToString());
-
-                if (RoomSetup.Evertz.DefEvertzOut.Out1 >= 0)
-                {
-                    await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_VTC).ToString(), RoomSetup.Evertz.DefEvertzOut.Out1.ToString());
-                }
-                if (RoomSetup.Evertz.DefEvertzOut.Out2 >= 0)
-                {
-                    await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj1).ToString(), RoomSetup.Evertz.DefEvertzOut.Out2.ToString());
-                }
-                if (RoomSetup.Evertz.DefEvertzOut.Out3 >= 0)
-                {
-                    await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj2).ToString(), RoomSetup.Evertz.DefEvertzOut.Out3.ToString());
-                }
-                if (RoomSetup.Evertz.DefEvertzOut.Out4 >= 0)
-                {
-                    await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_EXTDisplay).ToString(), RoomSetup.Evertz.DefEvertzOut.Out4.ToString());
-                }
             }
             catch (Exception e)
             {
-                CrestronConsole.PrintLine("Error initializing EvertzHandler: {0}", e.Message);
-                CrestronConsole.PrintLine("Error initializing EvertzHandler: {0}", e.StackTrace);
-                ErrorLog.Error("Error initializing EvertzHandler: {0}", e.Message);
-                Email.SendEmail(RoomSetup.MailSubject + " Error initializing EvertzHandler", e.Message);
+                CrestronConsole.PrintLine("Error initializing NVXHandler: {0}", e.Message);
+                CrestronConsole.PrintLine("Error initializing NVXHandler: {0}", e.StackTrace);
+                CrestronConsole.PrintLine("error initializing nvxhandler: {0}", e.Data);
+                ErrorLog.Error("Error initializing NVXHandler: {0}", e.Message);
+                Email.SendEmail(RoomSetup.MailSubject + " Error initializing NVXHandler", e.Message);
             }
         }
 
