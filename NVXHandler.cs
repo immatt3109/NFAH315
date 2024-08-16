@@ -5,6 +5,9 @@ using Crestron.SimplSharpPro.DeviceSupport;
 using System.Threading;
 using static Crestron.SimplSharpPro.DM.Audio;
 using System.Threading.Tasks;
+using System.Reflection;
+using System.Net.Sockets;
+using System.Text;
 
 namespace NFAHRooms
 {
@@ -27,41 +30,41 @@ namespace NFAHRooms
 
         private static void disp1_BaseEvent(GenericBase currentDevice, BaseEventArgs args)
         {
-
+            return;
             ///
             ///btnPwrOff = 23,  //If power is on and you want to turn it off, it's this button
             ///btnPwrOn = 33,  //If power is off and you want to turn it on, it's this button
             ///btnPwrOnVis = 33 //If power is off this button should be visible
             ///
 
-            CrestronConsole.PrintLine("disp1 power on status {0}:", ControlSystem.disp1.Power.PowerOnFeedback.BoolValue);
-            CrestronConsole.PrintLine("disp1 power off status {0}:", ControlSystem.disp1.Power.PowerOffFeedback.BoolValue);
-            try
-            {
-                if (ControlSystem.disp1.Power.PowerOnFeedback.BoolValue && !ControlSystem.disp1.Power.PowerOffFeedback.BoolValue)  //Power On
-                {
+            //CrestronConsole.PrintLine("disp1 power on status {0}:", ControlSystem.disp1.Power.PowerOnFeedback.BoolValue);
+            //CrestronConsole.PrintLine("disp1 power off status {0}:", ControlSystem.disp1.Power.PowerOffFeedback.BoolValue);
+            //try
+            //{
+            //    if (ControlSystem.disp1.Power.PowerOnFeedback.BoolValue && !ControlSystem.disp1.Power.PowerOffFeedback.BoolValue)  //Power On
+            //    {
                     
 
-                    ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = false;
-                    //Mics.Mute("OFF");
+            //        ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = false;
+            //        //Mics.Mute("OFF");
                     
-                    if (ControlSystem.disp1.Video.Source.SourceSelect.UShortValue != 1)
-                        ControlSystem.disp1.Video.Source.SourceSelect.UShortValue = 1;
-                }
+            //        if (ControlSystem.disp1.Video.Source.SourceSelect.UShortValue != 1)
+            //            ControlSystem.disp1.Video.Source.SourceSelect.UShortValue = 1;
+            //    }
 
-                if (ControlSystem.disp1.Power.PowerOffFeedback.BoolValue && !ControlSystem.disp1.Power.PowerOnFeedback.BoolValue) //Power Off
-                {
-                    ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = true;
-                    tp_ButtonStatus(((uint)NVXOutputs.out_Disp1).ToString(), ((uint)NVXInputs.in_Blank).ToString());
-                    //Mics.Mute("ON");
-                }
-            }
-            catch (Exception e)
-            {
-                ErrorLog.Notice($"NVXHandler disp1_BaseEvent Error:  {e.Message}");
-                CrestronConsole.PrintLine($"NVXHandler disp1_BaseEvent Error:  {e.Message}");
-                Email.SendEmail(RoomSetup.MailSubject + " NVXHandler disp1_BaseEvent Error", e.Message);
-            }
+            //    if (ControlSystem.disp1.Power.PowerOffFeedback.BoolValue && !ControlSystem.disp1.Power.PowerOnFeedback.BoolValue) //Power Off
+            //    {
+            //        ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = true;
+            //        tp_ButtonStatus(((uint)NVXOutputs.out_Disp1).ToString(), ((uint)NVXInputs.in_Blank).ToString());
+            //        //Mics.Mute("ON");
+            //    }
+            //}
+            //catch (Exception e)
+            //{
+            //    ErrorLog.Notice($"NVXHandler disp1_BaseEvent Error:  {e.Message}");
+            //    CrestronConsole.PrintLine($"NVXHandler disp1_BaseEvent Error:  {e.Message}");
+            //    Email.SendEmail(RoomSetup.MailSubject + " NVXHandler disp1_BaseEvent Error", e.Message);
+            //}
 
         }
 
@@ -70,7 +73,7 @@ namespace NFAHRooms
             CrestronConsole.PrintLine($"tp_ButtonStatus Output: {Output} Input: {Input}");
             switch (Output)
             {
-                case "1":
+                case "2":
                     tp_ClearButtonStatus(((uint)NVXOutputs.out_Proj1).ToString());
                         if (Input != "0")
                         {
@@ -98,23 +101,27 @@ namespace NFAHRooms
                                 ControlSystem.tp.BooleanInput[((uint)Join.btn1_DSPwrOn)].BoolValue = true;
                                 break;
                             case "0":
-                            
-                            if (RoomSetup.Display1 == "proj")
-                                {
-                                    if (ControlSystem.proj1.PowerOnFeedback.BoolValue)
-                                        ControlSystem.proj1.PowerOff();
-                                }
-                                else if (RoomSetup.Display1 == "tv")
-                                {
-                                
-                                    if (ControlSystem.disp1.Power.PowerOnFeedback.BoolValue)
-                                        ControlSystem.disp1.Power.PowerOff();
-                                }
-                                break;
+                                //    using (TcpClient client = new TcpClient("172.16.1.238", ((int)SonyPort.ControlPort)))
+                                //    {
+                                //        string command = "power \"off\"";
+                                //        using (NetworkStream stream = client.GetStream())
+                                //        {
+                                //            byte[] data = Encoding.ASCII.GetBytes(command);
+                                //            stream.Write(data, 0, data.Length);
+                                //        }
+                                //        Thread.Sleep(500);
+                                //        ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = true;
+                                //        Thread.Sleep(500);
+                                //        Mics.Mute("on");
+                                ControlSystem.proj1.PowerOff();
+                                Thread.Sleep(500);
+                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = true;
+                                Mics.Mute("on");
+                             break;
                         }
                         break;
                     
-                case "2":
+                case "3":
                     tp_ClearButtonStatus(((uint)NVXOutputs.out_Proj2).ToString());
                     if (Input != "0")
                     {
@@ -141,20 +148,36 @@ namespace NFAHRooms
                                 ControlSystem.tp.BooleanInput[((uint)Join.btn2_DSPwrOn)].BoolValue = true;
                                 break;
                             case "0":
-                            if (RoomSetup.Display2 == "proj")
-                            {
-                                if (ControlSystem.proj2.PowerOnFeedback.BoolValue)
-                                    ControlSystem.proj2.PowerOff();
-                            }
-                            else if (RoomSetup.Display2 == "tv")
-                            {
-                                if (ControlSystem.disp2.Power.PowerOnFeedback.BoolValue)
-                                    ControlSystem.disp2.Power.PowerOff();
-                            }
+                            //if (RoomSetup.Display2 == "proj")
+                            //{
+                            //using (TcpClient client = new TcpClient("172.16.1.237", ((int)SonyPort.ControlPort)))
+                            //{
+                            //    string command = "power \"off\"";
+                            //    using (NetworkStream stream = client.GetStream())
+                            //    {
+                            //        byte[] data = Encoding.ASCII.GetBytes(command);
+                            //        stream.Write(data, 0, data.Length);
+                            //    }
+                            //    Thread.Sleep(500);
+                            //    ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = true;
+                            //    Thread.Sleep(500);
+                            //    Mics.Mute("on");
+                            //if (ControlSystem.proj1.PowerOffFeedback.BoolValue)
+                            //    ControlSystem.proj1.PowerOn();
+
+                            //if (!ControlSystem.proj1.SourceSelectFeedbackSigs[((uint)SonyProjInputs.ProjHDMI)].BoolValue)
+                            //    ControlSystem.proj1.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
+                            //}
+                            //if (ControlSystem.proj2.PowerOnFeedback.BoolValue)
+                            ControlSystem.proj2.PowerOff();
+                            Thread.Sleep(500);
+                            ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = true;
+                            Mics.Mute("on");
+                            
                             break;
                     }
                         break;
-                case "3":
+                case "4":
                     tp_ClearButtonStatus(((uint)NVXOutputs.out_Proj3).ToString());
                     if (Input != "0")
                     {
@@ -181,20 +204,15 @@ namespace NFAHRooms
                                 ControlSystem.tp.BooleanInput[((uint)Join.btn3_DSPwrOn)].BoolValue = true;
                                 break;
                             case "0":
-                            if (RoomSetup.Display3 == "proj")
-                            {
-                                if (ControlSystem.proj3.PowerOnFeedback.BoolValue)
-                                    ControlSystem.proj3.PowerOff();
-                            }
-                            else if (RoomSetup.Display3 == "tv")
-                            {
-                                if (ControlSystem.disp3.Power.PowerOnFeedback.BoolValue)
-                                    ControlSystem.disp3.Power.PowerOff();
-                            }
+                            ControlSystem.disp3.Power.PowerOff();
+                            Thread.Sleep(500);
+                            ControlSystem.tp.BooleanInput[((uint)Join.btn3_PwrOnVis)].BoolValue = true;
+                            Thread.Sleep(500);
+                            Mics.Mute("on");
                             break;
                         }
                         break;
-                case "0":
+                case "8":
                     tp_ClearButtonStatus(((uint)NVXOutputs.out_VTC).ToString());
                     
                     switch (Input)
@@ -236,7 +254,7 @@ namespace NFAHRooms
         {   
             switch (Output)
             {
-                case "1":
+                case "2":
                     ControlSystem.tp.BooleanInput[((uint)Join.btn1_PCOn)].BoolValue = false;
                     ControlSystem.tp.BooleanInput[((uint)Join.btn1_ExtDeskOn)].BoolValue = false;
                     ControlSystem.tp.BooleanInput[((uint)Join.btn1_DocCamOn)].BoolValue = false;
@@ -244,7 +262,7 @@ namespace NFAHRooms
                     ControlSystem.tp.BooleanInput[((uint)Join.btn1_AuxOn)].BoolValue = false;
                     ControlSystem.tp.BooleanInput[((uint)Join.btn1_DSPwrOn)].BoolValue = false;
                     break;
-                case "2":
+                case "3":
                     ControlSystem.tp.BooleanInput[((uint)Join.btn2_PCOn)].BoolValue = false;
                     ControlSystem.tp.BooleanInput[((uint)Join.btn2_ExtDeskOn)].BoolValue = false;
                     ControlSystem.tp.BooleanInput[((uint)Join.btn2_DocCamOn)].BoolValue = false;
@@ -252,7 +270,7 @@ namespace NFAHRooms
                     ControlSystem.tp.BooleanInput[((uint)Join.btn2_AuxOn)].BoolValue = false;
                     ControlSystem.tp.BooleanInput[((uint)Join.btn2_DSPwrOn)].BoolValue = false;
                     break;
-                case "3":
+                case "4":
                     ControlSystem.tp.BooleanInput[((uint)Join.btn3_PCOn)].BoolValue = false;
                     ControlSystem.tp.BooleanInput[((uint)Join.btn3_ExtDeskOn)].BoolValue = false;
                     ControlSystem.tp.BooleanInput[((uint)Join.btn3_DocCamOn)].BoolValue = false;
@@ -260,7 +278,7 @@ namespace NFAHRooms
                     ControlSystem.tp.BooleanInput[((uint)Join.btn3_AuxOn)].BoolValue = false;
                     ControlSystem.tp.BooleanInput[((uint)Join.btn3_DSPwrOn)].BoolValue = false;
                     break;
-                case "0":
+                case "8":
                     ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCPCOn)].BoolValue = false;
                     ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCEXTOn)].BoolValue = false;
                     ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCDocCamOn)].BoolValue = false;
@@ -327,16 +345,16 @@ namespace NFAHRooms
                                             }
                                         case ((uint)Join.btn1_PwrOn):  //Power On
                                             {
-                                                if (RoomSetup.Display1 == "proj")
-                                                {
-                                                    if (ControlSystem.proj1.PowerOffFeedback.BoolValue)
+                                                //if (RoomSetup.Display1 == "proj")
+                                                //{
+                                                //    if (ControlSystem.proj1.PowerOffFeedback.BoolValue)
+                                                //        SetOutput((uint)Join.btn1_PwrOn);
+                                                //}
+                                                //else if (RoomSetup.Display1 == "tv")
+                                                //{
+                                                //    if (ControlSystem.disp1.Power.PowerOffFeedback.BoolValue)
                                                         SetOutput((uint)Join.btn1_PwrOn);
-                                                }
-                                                else if (RoomSetup.Display1 == "tv")
-                                                {
-                                                    if (ControlSystem.disp1.Power.PowerOffFeedback.BoolValue)
-                                                        SetOutput((uint)Join.btn1_PwrOn);
-                                                }
+                                                //}
                                                 break;
                                             }
                                         case ((uint)Join.btn1_PwrOff):  //Power Off
@@ -390,16 +408,16 @@ namespace NFAHRooms
                                             {
                                                 //if (ControlSystem.proj2.PowerOffFeedback.BoolValue)
                                                 //    SetOutput((uint)Join.btn2_PwrOn);
-                                                if (RoomSetup.Display2 == "proj")
-                                                {
-                                                    if (ControlSystem.proj2.PowerOffFeedback.BoolValue)
+                                                //if (RoomSetup.Display2 == "proj")
+                                                //{
+                                                //    if (ControlSystem.proj2.PowerOffFeedback.BoolValue)
+                                                //        SetOutput((uint)Join.btn2_PwrOn);
+                                                //}
+                                                //else if (RoomSetup.Display2 == "tv")
+                                                //{
+                                                //    if (ControlSystem.disp2.Power.PowerOffFeedback.BoolValue)
                                                         SetOutput((uint)Join.btn2_PwrOn);
-                                                }
-                                                else if (RoomSetup.Display2 == "tv")
-                                                {
-                                                    if (ControlSystem.disp2.Power.PowerOffFeedback.BoolValue)
-                                                        SetOutput((uint)Join.btn2_PwrOn);
-                                                }
+                                                //}
                                                 break;
                                             }
                                         case ((uint)Join.btn2_PwrOff):  //Power Off
@@ -449,16 +467,16 @@ namespace NFAHRooms
                                                 //if (ControlSystem.proj3.PowerOffFeedback.BoolValue)
                                                 //    SetOutput((uint)Join.btn3_PwrOn);
                                                 //break;
-                                                if (RoomSetup.Display3 == "proj")
-                                                {
-                                                    if (ControlSystem.proj3.PowerOffFeedback.BoolValue)
+                                                //if (RoomSetup.Display3 == "proj")
+                                               // {
+                                                    //if (ControlSystem.proj3.PowerOffFeedback.BoolValue)
+                                                //        SetOutput((uint)Join.btn3_PwrOn);
+                                                //}
+                                                //else if (RoomSetup.Display3 == "tv")
+                                                //{
+                                                //    if (ControlSystem.disp3.Power.PowerOffFeedback.BoolValue)
                                                         SetOutput((uint)Join.btn3_PwrOn);
-                                                }
-                                                else if (RoomSetup.Display3 == "tv")
-                                                {
-                                                    if (ControlSystem.disp3.Power.PowerOffFeedback.BoolValue)
-                                                        SetOutput((uint)Join.btn3_PwrOn);
-                                                }
+                                                //}
                                                 break;
                                             }
                                         case ((uint)Join.btn3_PwrOff):  //Power Off
@@ -959,67 +977,130 @@ namespace NFAHRooms
         {
             if (OutputNum > 100 && OutputNum < 200)
             {
-                if (RoomSetup.Display1 == "proj")
-                {
-                    if (ControlSystem.proj1.PowerOffFeedback.BoolValue)
-                        ControlSystem.proj1.PowerOn();
+                //if (RoomSetup.Display1 == "proj")
+                //{
+                //    using (TcpClient client = new TcpClient("172.16.1.238", ((int)SonyPort.ControlPort)))
+                //    {
+                //        //string command = "power \"on\"";
+                //        string command = "power_status ?";
+                //        using (NetworkStream stream = client.GetStream())
+                //        {
+                //            byte[] data = Encoding.ASCII.GetBytes(command);
+                //            stream.Write(data, 0, data.Length);
+                //            stream.Read(data, 0, data.Length);
+                //            CrestronConsole.PrintLine("Sony Power Status {0}", Encoding.ASCII.GetString(data));
+                //        }
+                //        Thread.Sleep(500);
+                //        ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = false;
+                //        Thread.Sleep(500);
+                //        Mics.Mute("off");
+                        //if (ControlSystem.proj1.PowerOffFeedback.BoolValue)
+                ControlSystem.proj1.PowerOn();
+                Thread.Sleep(500);
+                ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = false;
+                Thread.Sleep(500);
+                Mics.Mute("off");
 
-                    if (!ControlSystem.proj1.SourceSelectFeedbackSigs[((uint)SonyProjInputs.ProjHDMI)].BoolValue)
-                        ControlSystem.proj1.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
-                } 
-                else if (RoomSetup.Display1 == "tv")
-                {
-                    CrestronConsole.PrintLine("Setoutput is tv");
-                    CrestronConsole.PrintLine("Setoutput is tv power off feedback {0}", ControlSystem.disp1.Power.PowerOffFeedback.BoolValue);
-                    if (ControlSystem.disp1.Power.PowerOffFeedback.BoolValue)
-                        ControlSystem.disp1.Power.PowerOn();
+                //if (!ControlSystem.proj1.SourceSelectFeedbackSigs[((uint)SonyProjInputs.ProjHDMI)].BoolValue)
+                //    ControlSystem.proj1.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
+                //    }
+                //}
+                //else if (RoomSetup.Display1 == "tv")
+                //{
+                //    ControlSystem.disp1.Power.PowerOn();
+                //    ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = false;
 
-                    if (ControlSystem.disp1.Video.Source.SourceSelect.UShortValue != 1)
-                        ControlSystem.disp1.Video.Source.SourceSelect.UShortValue = 1;
-                }
+                //    //}
+
+                //    //    if (ControlSystem.disp3.Video.Source.SourceSelect.UShortValue != 1)
+                //    ControlSystem.disp1.Video.Source.SourceSelect.UShortValue = 1;
+                //CrestronConsole.PrintLine("Setoutput is tv");
+                //CrestronConsole.PrintLine("Setoutput is tv power off feedback {0}", ControlSystem.disp1.Power.PowerOffFeedback.BoolValue);
+                //if (ControlSystem.disp1.Power.PowerOffFeedback.BoolValue)
+                //    ControlSystem.disp1.Power.PowerOn();
+
+                //if (ControlSystem.disp1.Video.Source.SourceSelect.UShortValue != 1)
+                //    ControlSystem.disp1.Video.Source.SourceSelect.UShortValue = 1;
+                //}
             }
             if (OutputNum > 200 && OutputNum < 300)
             {
-                if (RoomSetup.Display2 == "proj")
-                {
-                    if (ControlSystem.proj2.PowerOffFeedback.BoolValue)
-                        ControlSystem.proj2.PowerOn();
+                //if (RoomSetup.Display2 == "proj")
+                //{
+                    //if (ControlSystem.proj2.PowerOffFeedback.BoolValue)
+                    ControlSystem.proj2.PowerOn();
+                    Thread.Sleep(500);
+                    ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = false;
+                    Thread.Sleep(500);
+                    Mics.Mute("off");
+                    //using (TcpClient client = new TcpClient("172.16.1.237", ((int)SonyPort.ControlPort)))
+                    //{
+                    //    string command = "power \"on\"";
+                    //    using (NetworkStream stream = client.GetStream())
+                    //    {
+                    //        byte[] data = Encoding.ASCII.GetBytes(command);
+                    //        stream.Write(data, 0, data.Length);
+                    //    }
+                    //    Thread.Sleep(500);
+                    //    ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = false;
+                    //    Thread.Sleep(500);
+                    //    Mics.Mute("off");
 
-                    if (!ControlSystem.proj2.SourceSelectFeedbackSigs[((uint)SonyProjInputs.ProjHDMI)].BoolValue)
-                        ControlSystem.proj2.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
-                }
-                else if (RoomSetup.Display2 == "tv")
-                {
-                    if (ControlSystem.disp2.Power.PowerOffFeedback.BoolValue)
-                        ControlSystem.disp2.Power.PowerOn();
 
-                    if (ControlSystem.disp2.Video.Source.SourceSelect.UShortValue != 1)
-                        ControlSystem.disp2.Video.Source.SourceSelect.UShortValue = 1;
-                }
+
+                    //if (!ControlSystem.proj2.SourceSelectFeedbackSigs[((uint)SonyProjInputs.ProjHDMI)].BoolValue)
+                    //ControlSystem.proj2.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
+                //}
+            //}
+                //else if (RoomSetup.Display2 == "tv")
+                //{
+                //    ControlSystem.disp2.Power.PowerOn();
+                //    ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = false;
+
+                //    //}
+
+                //    //    if (ControlSystem.disp3.Video.Source.SourceSelect.UShortValue != 1)
+                //    ControlSystem.disp2.Video.Source.SourceSelect.UShortValue = 1;
+                //    //if (ControlSystem.disp2.Power.PowerOffFeedback.BoolValue)
+                //    //    ControlSystem.disp2.Power.PowerOn();
+
+
+
+                //    //    if (ControlSystem.disp2.Video.Source.SourceSelect.UShortValue != 1)
+                //    //    ControlSystem.disp2.Video.Source.SourceSelect.UShortValue = 1;
+                //}
             }
             if (OutputNum > 300 && OutputNum < 400)
-            {CrestronConsole.PrintLine("SetOutpt {0}",OutputNum);
-                if (RoomSetup.Display3 == "proj")
-                {
-                    if (ControlSystem.proj3.PowerOffFeedback.BoolValue)
-                        ControlSystem.proj3.PowerOn();
-
-                    if (!ControlSystem.proj3.SourceSelectFeedbackSigs[((uint)SonyProjInputs.ProjHDMI)].BoolValue)
-                        ControlSystem.proj3.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
-                }
-                else if (RoomSetup.Display3 == "tv")
-                {
-                    CrestronConsole.PrintLine("Setoutput is tv");
-                    CrestronConsole.PrintLine("Setoutput is tv power off feedback {0}", ControlSystem.disp3.Power.PowerOffFeedback.BoolValue);
+            {//CrestronConsole.PrintLine("SetOutpt {0}",OutputNum);
+                //if (RoomSetup.Display3 == "proj")
+                //{
+                //  //  if (ControlSystem.proj3.PowerOffFeedback.BoolValue)
+                //        ControlSystem.proj3.PowerOn();
+                //    ControlSystem.tp.BooleanInput[((uint)Join.btn3_PwrOnVis)].BoolValue = false;
+                //    // if (!ControlSystem.proj3.SourceSelectFeedbackSigs[((uint)SonyProjInputs.ProjHDMI)].BoolValue)
+                //    ControlSystem.proj3.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
+                        
+                //}
+                //else if (RoomSetup.Display3 == "tv")
+                //{
+                    //CrestronConsole.PrintLine("Setoutput is tv");
+                    //CrestronConsole.PrintLine("Setoutput is tv power off feedback {0}", ControlSystem.disp3.Power.PowerOffFeedback.BoolValue);
                     //if (((ushort)OutputNum) == ((ushort)Join.btn3_PCOff))
                     //    ControlSystem.disp3.Power.PowerOn();
 
-                    if (ControlSystem.disp3.Power.PowerOffFeedback.BoolValue)
-                        ControlSystem.disp3.Power.PowerOn();
-                    
-                    if (ControlSystem.disp3.Video.Source.SourceSelect.UShortValue != 1)
-                        ControlSystem.disp3.Video.Source.SourceSelect.UShortValue = 1;
-                }
+                    //if (ControlSystem.disp3.Power.PowerOffFeedback.BoolValue)
+                    //{
+                    ControlSystem.disp3.Power.PowerOn();
+                    Thread.Sleep(500);
+                    ControlSystem.tp.BooleanInput[((uint)Join.btn3_PwrOnVis)].BoolValue = false;
+                    Thread.Sleep(500);
+                    Mics.Mute("off");
+
+                    //}
+
+                    //    if (ControlSystem.disp3.Video.Source.SourceSelect.UShortValue != 1)
+                    //ControlSystem.disp3.Video.Source.SourceSelect.UShortValue = 1;
+                //}
             }
 
         }
@@ -1141,41 +1222,42 @@ namespace NFAHRooms
                 Email.SendEmail(RoomSetup.MailSubject + " Display_OnlineStatusChange", e.Message);
             }
         }
-        private static async void proj1_BaseEvent(GenericBase currentDevice, BaseEventArgs args)
+        private static void proj1_BaseEvent(GenericBase currentDevice, BaseEventArgs args)
         {
-            try
-            {
-                if (ControlSystem.proj1.PowerOnFeedback.BoolValue && !Proj1On)  //Power On
-                {
-                    ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = false;
-                    ControlSystem.proj1.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
-                    Mics.Mute("Off");
-                    Proj1On = true;
-                }
+            return;
+            //try
+            //{
+            //    if (ControlSystem.proj1.PowerOnFeedback.BoolValue && !Proj1On)  //Power On
+            //    {
+            //        ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = false;
+            //        ControlSystem.proj1.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
+            //        Mics.Mute("Off");
+            //        Proj1On = true;
+            //    }
 
-                if (ControlSystem.proj1.PowerOffFeedback.BoolValue && Proj1On) //Power Off
-                { 
-                    ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = true;
-                    Proj1On = false;
-                    await Task.Delay(1000);
-                    if (ControlSystem.proj1.PowerOffFeedback.BoolValue)
-                    {
-                        NVX.RouteNVX($"{NVXOutputs.out_Proj1},{NVXInputs.in_Blank}");
-                        Mics.Mute("On");
-                    }
-                }
+            //    if (ControlSystem.proj1.PowerOffFeedback.BoolValue && Proj1On) //Power Off
+            //    { 
+            //        ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = true;
+            //        Proj1On = false;
+            //        await Task.Delay(1000);
+            //        if (ControlSystem.proj1.PowerOffFeedback.BoolValue)
+            //        {
+            //            NVX.RouteNVX($"{NVXOutputs.out_Proj1},{NVXInputs.in_Blank}");
+            //            Mics.Mute("On");
+            //        }
+            //    }
 
-                if (!ControlSystem.proj1.SourceSelectFeedbackSigs[((uint)SonyProjInputs.ProjHDMI)].BoolValue)
-                {
-                    ControlSystem.proj1.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
-                }   
-            }
-            catch (Exception e)
-            {
-                ErrorLog.Notice($"NVXHandler proj1_BaseEvent Error:  {e.Message}");
-                CrestronConsole.PrintLine($"NVXHandler proj1_BaseEvent Error  {e.Message}");
-                Email.SendEmail(RoomSetup.MailSubject + " proj2_BaseEvent", e.Message);
-            }
+            //    if (!ControlSystem.proj1.SourceSelectFeedbackSigs[((uint)SonyProjInputs.ProjHDMI)].BoolValue)
+            //    {
+            //        ControlSystem.proj1.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
+            //    }   
+            //}
+            //catch (Exception e)
+            //{
+            //    ErrorLog.Notice($"NVXHandler proj1_BaseEvent Error:  {e.Message}");
+            //    CrestronConsole.PrintLine($"NVXHandler proj1_BaseEvent Error  {e.Message}");
+            //    Email.SendEmail(RoomSetup.MailSubject + " proj2_BaseEvent", e.Message);
+            //}
         }
         private static void proj2_OnlineStatusChange(GenericBase currentDevice, OnlineOfflineEventArgs args)
         {
@@ -1202,41 +1284,42 @@ namespace NFAHRooms
                 Email.SendEmail(RoomSetup.MailSubject + " Display_OnlineStatusChange", e.Message);
             }
         }
-        private static async void proj2_BaseEvent(GenericBase currentDevice, BaseEventArgs args)
+        private static void proj2_BaseEvent(GenericBase currentDevice, BaseEventArgs args)
         {
-            try
-            {
-                if (ControlSystem.proj2.PowerOnFeedback.BoolValue && !Proj2On)  //Power On
-                {
-                    ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = false;
-                    ControlSystem.proj2.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
-                    Mics.Mute("Off");
-                    Proj2On = true;
-                }
+            return;
+            //try
+            //{
+            //    if (ControlSystem.proj2.PowerOnFeedback.BoolValue && !Proj2On)  //Power On
+            //    {
+            //        ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = false;
+            //        ControlSystem.proj2.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
+            //        Mics.Mute("Off");
+            //        Proj2On = true;
+            //    }
 
-                if (ControlSystem.proj2.PowerOffFeedback.BoolValue && Proj2On) //Power Off
-                {
-                    ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = true;
-                    Proj2On = false;
-                    await Task.Delay(1000);
-                    if (ControlSystem.proj2.PowerOffFeedback.BoolValue)
-                    {
-                        NVX.RouteNVX($"{NVXOutputs.out_Proj2},{NVXInputs.in_Blank}");
-                        Mics.Mute("On");
-                    }
-                }
+            //    if (ControlSystem.proj2.PowerOffFeedback.BoolValue && Proj2On) //Power Off
+            //    {
+            //        ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = true;
+            //        Proj2On = false;
+            //        await Task.Delay(1000);
+            //        if (ControlSystem.proj2.PowerOffFeedback.BoolValue)
+            //        {
+            //            NVX.RouteNVX($"{NVXOutputs.out_Proj2},{NVXInputs.in_Blank}");
+            //            Mics.Mute("On");
+            //        }
+            //    }
 
-                if (!ControlSystem.proj2.SourceSelectFeedbackSigs[((uint)SonyProjInputs.ProjHDMI)].BoolValue)
-                {
-                    ControlSystem.proj2.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
-                }
-            }
-            catch (Exception e)
-            {
-                ErrorLog.Notice($"NVXHandler proj2_BaseEvent Error:  {e.Message}");
-                CrestronConsole.PrintLine($"NVXHandler proj2_BaseEvent Error  {e.Message}");
-                Email.SendEmail(RoomSetup.MailSubject + " proj2_BaseEvent", e.Message);
-            }
+            //    if (!ControlSystem.proj2.SourceSelectFeedbackSigs[((uint)SonyProjInputs.ProjHDMI)].BoolValue)
+            //    {
+            //        ControlSystem.proj2.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
+            //    }
+            //}
+            //catch (Exception e)
+            //{
+            //    ErrorLog.Notice($"NVXHandler proj2_BaseEvent Error:  {e.Message}");
+            //    CrestronConsole.PrintLine($"NVXHandler proj2_BaseEvent Error  {e.Message}");
+            //    Email.SendEmail(RoomSetup.MailSubject + " proj2_BaseEvent", e.Message);
+            //}
         }
         private static void proj3_OnlineStatusChange(GenericBase currentDevice, OnlineOfflineEventArgs args)
         {
@@ -1263,41 +1346,41 @@ namespace NFAHRooms
                 Email.SendEmail(RoomSetup.MailSubject + " Display_OnlineStatusChange", e.Message);
             }
         }
-        private static async void proj3_BaseEvent(GenericBase currentDevice, BaseEventArgs args)
-        {
-            try
-            {
-                if (ControlSystem.proj3.PowerOnFeedback.BoolValue && !Proj3On)  //Power On
-                {
-                    ControlSystem.tp.BooleanInput[((uint)Join.btn3_PwrOnVis)].BoolValue = false;
-                    ControlSystem.proj3.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
-                    Mics.Mute("Off");
-                    Proj3On = true;
-                }
+        private static void proj3_BaseEvent(GenericBase currentDevice, BaseEventArgs args)
+        { return;
+            //try
+            //{
+            //    if (ControlSystem.proj3.PowerOnFeedback.BoolValue && !Proj3On)  //Power On
+            //    {
+            //        ControlSystem.tp.BooleanInput[((uint)Join.btn3_PwrOnVis)].BoolValue = false;
+            //        ControlSystem.proj3.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
+            //        Mics.Mute("Off");
+            //        Proj3On = true;
+            //    }
 
-                if (ControlSystem.proj3.PowerOffFeedback.BoolValue && Proj3On) //Power Off
-                {
-                    ControlSystem.tp.BooleanInput[((uint)Join.btn3_PwrOnVis)].BoolValue = true;
-                    Proj3On = false;
-                    await Task.Delay(1000);
-                    if (ControlSystem.proj3.PowerOffFeedback.BoolValue)
-                    {
-                        NVX.RouteNVX($"{NVXOutputs.out_Proj3},{NVXInputs.in_Blank}");
-                        Mics.Mute("On");
-                    }
-                }
+            //    if (ControlSystem.proj3.PowerOffFeedback.BoolValue && Proj3On) //Power Off
+            //    {
+            //        ControlSystem.tp.BooleanInput[((uint)Join.btn3_PwrOnVis)].BoolValue = true;
+            //        Proj3On = false;
+            //        await Task.Delay(1000);
+            //        if (ControlSystem.proj3.PowerOffFeedback.BoolValue)
+            //        {
+            //            NVX.RouteNVX($"{NVXOutputs.out_Proj3},{NVXInputs.in_Blank}");
+            //            Mics.Mute("On");
+            //        }
+            //    }
 
-                if (!ControlSystem.proj3.SourceSelectFeedbackSigs[((uint)SonyProjInputs.ProjHDMI)].BoolValue)
-                {
-                    ControlSystem.proj3.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
-                }
-            }
-            catch (Exception e)
-            {
-                ErrorLog.Notice($"NVXHandler proj3_BaseEvent Error:  {e.Message}");
-                CrestronConsole.PrintLine($"NVXHandler proj3_BaseEvent Error  {e.Message}");
-                Email.SendEmail(RoomSetup.MailSubject + " proj3_BaseEvent", e.Message);
-            }
+            //    if (!ControlSystem.proj3.SourceSelectFeedbackSigs[((uint)SonyProjInputs.ProjHDMI)].BoolValue)
+            //    {
+            //        ControlSystem.proj3.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
+            //    }
+            //}
+            //catch (Exception e)
+            //{
+            //    ErrorLog.Notice($"NVXHandler proj3_BaseEvent Error:  {e.Message}");
+            //    CrestronConsole.PrintLine($"NVXHandler proj3_BaseEvent Error  {e.Message}");
+            //    Email.SendEmail(RoomSetup.MailSubject + " proj3_BaseEvent", e.Message);
+            //}
         }
         private static void disp2_OnlineStatusChange(GenericBase currentDevice, OnlineOfflineEventArgs args)
         {
@@ -1326,30 +1409,31 @@ namespace NFAHRooms
         }
         private static void disp2_BaseEvent(GenericBase currentDevice, BaseEventArgs args)
         {
-            try
-            {
-                if (ControlSystem.disp2.Power.PowerOnFeedback.BoolValue && !ControlSystem.disp2.Power.PowerOffFeedback.BoolValue)  //Power On
-                {
-                    ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = false;
-                    Mics.Mute("OFF");
+            return;
+            //try
+            //{
+            //    if (ControlSystem.disp2.Power.PowerOnFeedback.BoolValue && !ControlSystem.disp2.Power.PowerOffFeedback.BoolValue)  //Power On
+            //    {
+            //        ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = false;
+            //        Mics.Mute("OFF");
 
-                    if (ControlSystem.disp1.Video.Source.SourceSelect.UShortValue != 1)
-                        ControlSystem.disp1.Video.Source.SourceSelect.UShortValue = 1;
-                }
+            //        if (ControlSystem.disp1.Video.Source.SourceSelect.UShortValue != 1)
+            //            ControlSystem.disp1.Video.Source.SourceSelect.UShortValue = 1;
+            //    }
 
-                if (ControlSystem.disp2.Power.PowerOffFeedback.BoolValue && !ControlSystem.disp2.Power.PowerOnFeedback.BoolValue) //Power Off
-                {
-                    ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = true;
-                    tp_ButtonStatus(((uint)NVXOutputs.out_Disp2).ToString(), ((uint)NVXInputs.in_Blank).ToString());
-                    Mics.Mute("ON");
-                }
-            }
-            catch (Exception e)
-            {
-                ErrorLog.Notice($"NVXHandler disp2_BaseEvent Error:  {e.Message}");
-                CrestronConsole.PrintLine($"NVXHandler disp2_BaseEvent Error:  {e.Message}");
-                Email.SendEmail(RoomSetup.MailSubject + " NVXHandler disp3_BaseEvent Error", e.Message);
-            }
+            //    if (ControlSystem.disp2.Power.PowerOffFeedback.BoolValue && !ControlSystem.disp2.Power.PowerOnFeedback.BoolValue) //Power Off
+            //    {
+            //        ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = true;
+            //        tp_ButtonStatus(((uint)NVXOutputs.out_Disp2).ToString(), ((uint)NVXInputs.in_Blank).ToString());
+            //        Mics.Mute("ON");
+            //    }
+            //}
+            //catch (Exception e)
+            //{
+            //    ErrorLog.Notice($"NVXHandler disp2_BaseEvent Error:  {e.Message}");
+            //    CrestronConsole.PrintLine($"NVXHandler disp2_BaseEvent Error:  {e.Message}");
+            //    Email.SendEmail(RoomSetup.MailSubject + " NVXHandler disp3_BaseEvent Error", e.Message);
+            //}
             //try
             //{
             //    if (ControlSystem.disp2.Power.PowerOnFeedback.BoolValue && !ControlSystem.disp2.Power.PowerOffFeedback.BoolValue)  //Power On
@@ -1401,26 +1485,26 @@ namespace NFAHRooms
             }
         }
         private static void disp3_BaseEvent(GenericBase currentDevice, BaseEventArgs args)
-        {
-            CrestronConsole.PrintLine("disp3 power on status {0}:", ControlSystem.disp3.Power.PowerOnFeedback.BoolValue);
-            CrestronConsole.PrintLine("disp3 power off status {0}:", ControlSystem.disp3.Power.PowerOffFeedback.BoolValue);
+        {CrestronConsole.PrintLine("args: {0}", args.Index.ToString());
+           
             //try
             //{
-                if (ControlSystem.disp3.Power.PowerOnFeedback.BoolValue && !ControlSystem.disp3.Power.PowerOffFeedback.BoolValue)  //Power On
-                {
-                    ControlSystem.tp.BooleanInput[((uint)Join.btn3_PwrOnVis)].BoolValue = false;
-                    Mics.Mute("OFF");
+            //if (ControlSystem.disp3.Power.PowerOnFeedback.BoolValue) ;// && !ControlSystem.disp3.Power.PowerOffFeedback.BoolValue)  //Power On
+            //    {
+            //        ControlSystem.tp.BooleanInput[((uint)Join.btn3_PwrOnVis)].BoolValue = false;
+            //        //Mics.Mute("OFF");
 
-                    if (ControlSystem.disp1.Video.Source.SourceSelect.UShortValue != 1)
-                        ControlSystem.disp1.Video.Source.SourceSelect.UShortValue = 1;
-                }
-
-                if (ControlSystem.disp3.Power.PowerOffFeedback.BoolValue && !ControlSystem.disp3.Power.PowerOnFeedback.BoolValue) //Power Off
-                {
-                    ControlSystem.tp.BooleanInput[((uint)Join.btn3_PwrOnVis)].BoolValue = true;
-                    tp_ButtonStatus(((uint)NVXOutputs.out_Disp3).ToString(), ((uint)NVXInputs.in_Blank).ToString());
-                    Mics.Mute("ON");
-                }
+            //        if (ControlSystem.disp1.Video.Source.SourceSelect.UShortValue != 1)
+            //            ControlSystem.disp1.Video.Source.SourceSelect.UShortValue = 1;
+            //    }
+            //var x = ControlSystem.disp3.Power.PowerOnFeedback.UShortValue;
+            //CrestronConsole.PrintLine("disp3 power on status {0}:", ControlSystem.disp3.Power.PowerOnFeedback.UShortValue);
+            //if (ControlSystem.disp3.Power.PowerOffFeedback.UShortValue == 1) ;// && !ControlSystem.disp3.Power.PowerOnFeedback.BoolValue) //Power Off
+            //    {CrestronConsole.PrintLine("disp3 power off status {0}:", ControlSystem.disp3.Power.PowerOffFeedback.BoolValue);
+            //        ControlSystem.tp.BooleanInput[((uint)Join.btn3_PwrOnVis)].BoolValue = true;
+            //        tp_ButtonStatus(((uint)NVXOutputs.out_Disp3).ToString(), ((uint)NVXInputs.in_Blank).ToString());
+            //        //Mics.Mute("ON");
+            //    }
             //}
             //catch (Exception e)
             //{
@@ -1584,10 +1668,11 @@ namespace NFAHRooms
                 ControlSystem.tp.StringInput[((uint)Join.serial_SPS3)].StringValue = Constants.http + IP + Constants.PresetHTMLFolder + "3" + Constants.PresetFileSuffix;
                 NVX.InitializeSystem();
             
-                if (RoomSetup.NvxSettings.OutputDictionary.ContainsKey("5"))
-                {
-                    NVX.RouteNVX(((uint)NVXInputs.in_PCExtDesk).ToString() + "," + ((uint)NVXOutputs.out_EXTDisplay).ToString());
-                }
+                //if (RoomSetup.NvxSettings.OutputDictionary.ContainsKey("5"))
+                //{
+                NVX.RouteNVX(((uint)NVXInputs.in_PCExtDesk).ToString() + "," + ((uint)NVXOutputs.out_EXTDisplay).ToString());
+                NVX.RouteNVX(((uint)NVXInputs.in_TeachCam).ToString() + "," + ((uint)NVXOutputs.out_VTC).ToString());
+                //}
 
             }
             catch (Exception e)

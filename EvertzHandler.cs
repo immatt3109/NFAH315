@@ -28,7 +28,7 @@ namespace NFAHRooms
 
         private static void disp1_BaseEvent(GenericBase currentDevice, BaseEventArgs args)
         {
-            
+
             ///
             ///btnPwrOff = 23,  //If power is on and you want to turn it off, it's this button
             ///btnPwrOn = 33,  //If power is off and you want to turn it on, it's this button
@@ -40,7 +40,7 @@ namespace NFAHRooms
                 {
                     ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = false;
                     Mics.Mute("OFF");
-                    
+
                     if (ControlSystem.disp1.Video.Source.SourceSelect.UShortValue != 1)
                         ControlSystem.disp1.Video.Source.SourceSelect.UShortValue = 1;
                 }
@@ -96,15 +96,19 @@ namespace NFAHRooms
                             
                             if (RoomSetup.Display1 == "proj")
                                 {
-                                    if (ControlSystem.proj1.PowerOnFeedback.BoolValue)
-                                        ControlSystem.proj1.PowerOff();
+                                    //if (ControlSystem.proj1.PowerOnFeedback.BoolValue)
+                                ControlSystem.proj1.PowerOff();
+                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = true;
+                                Mics.Mute("On");
                                 }
                                 else if (RoomSetup.Display1 == "tv")
                                 {
                                 
-                                    if (ControlSystem.disp1.Power.PowerOnFeedback.BoolValue)
-                                        ControlSystem.disp1.Power.PowerOff();
-                                }
+                                    //if (ControlSystem.disp1.Power.PowerOnFeedback.BoolValue)
+                                ControlSystem.disp1.Power.PowerOff();
+                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = true;
+                                Mics.Mute("On");
+                            }
                                 break;
                         }
                         break;
@@ -138,13 +142,17 @@ namespace NFAHRooms
                             case "0":
                             if (RoomSetup.Display2 == "proj")
                             {
-                                if (ControlSystem.proj2.PowerOnFeedback.BoolValue)
+                                //if (ControlSystem.proj2.PowerOnFeedback.BoolValue)
                                     ControlSystem.proj2.PowerOff();
+                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = true;
+                                Mics.Mute("On");
                             }
                             else if (RoomSetup.Display2 == "tv")
                             {
-                                if (ControlSystem.disp2.Power.PowerOnFeedback.BoolValue)
+                                //if (ControlSystem.disp2.Power.PowerOnFeedback.BoolValue)
                                     ControlSystem.disp2.Power.PowerOff();
+                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = true;
+                                Mics.Mute("On");
                             }
                             break;
                     }
@@ -178,13 +186,18 @@ namespace NFAHRooms
                             case "0":
                             if (RoomSetup.Display3 == "proj")
                             {
-                                if (ControlSystem.proj3.PowerOnFeedback.BoolValue)
+                                //if (ControlSystem.proj3.PowerOnFeedback.BoolValue)
                                     ControlSystem.proj3.PowerOff();
+                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_PwrOnVis)].BoolValue = true;
+                                Mics.Mute("On");
                             }
                             else if (RoomSetup.Display3 == "tv")
                             {
-                                if (ControlSystem.disp3.Power.PowerOnFeedback.BoolValue)
+                                //if (ControlSystem.disp3.Power.PowerOnFeedback.BoolValue)
                                     ControlSystem.disp3.Power.PowerOff();
+                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_PwrOnVis)].BoolValue = true;
+                                
+                                Mics.Mute("On");
                             }
                             break;
                         }
@@ -289,6 +302,7 @@ namespace NFAHRooms
                                                 SetOutput(((uint)Join.btn1_PCOff));
 
                                                 await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((int)EvertzOutputs.out_Proj1).ToString(), ((uint)EvertzInputs.in_PCMain).ToString());
+                                                tp_ClearButtonStatus("1");
                                                 break;
                                             }
                                         case ((uint)Join.btn1_ExtDeskOff):
@@ -296,6 +310,7 @@ namespace NFAHRooms
                                                 SetOutput((uint)Join.btn1_ExtDeskOff);
 
                                                 await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj1).ToString(), ((uint)EvertzInputs.in_PCExtDesk).ToString());
+                                                tp_ClearButtonStatus("1");
                                                 break;
                                             }
                                         case ((uint)Join.btn1_DocCamOff):
@@ -303,6 +318,7 @@ namespace NFAHRooms
                                                 SetOutput((uint)Join.btn1_DocCamOff);
 
                                                 await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj1).ToString(), ((uint)EvertzInputs.in_DocCam).ToString());
+                                                tp_ClearButtonStatus("1");
                                                 break;
                                             }
                                         case ((uint)Join.btn1_AirMediaOff):
@@ -310,6 +326,7 @@ namespace NFAHRooms
                                                 SetOutput((uint)Join.btn1_AirMediaOff);
 
                                                 await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj1).ToString(), ((uint)EvertzInputs.in_AirMedia).ToString());
+                                                tp_ClearButtonStatus("1");
                                                 break;
                                             }
                                         case ((uint)Join.btn1_AuxOff):
@@ -317,6 +334,7 @@ namespace NFAHRooms
                                                 SetOutput((uint)Join.btn1_AuxOff);
 
                                                 await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj1).ToString(), ((uint)EvertzInputs.in_Aux).ToString());
+                                                tp_ClearButtonStatus("1");
                                                 break;
                                             }
                                         case ((uint)Join.btn1_DSPwrOff):
@@ -324,18 +342,19 @@ namespace NFAHRooms
                                                 SetOutput((uint)Join.btn1_AuxOff);
 
                                                 await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj1).ToString(), ((uint)EvertzInputs.in_DS).ToString());
+                                                tp_ClearButtonStatus("1");
                                                 break;
                                             }
                                         case ((uint)Join.btn1_PwrOn):  //Power On
                                             {
                                                 if (RoomSetup.Display1 == "proj")
                                                 {
-                                                    if (ControlSystem.proj1.PowerOffFeedback.BoolValue)
+                                                    //if (ControlSystem.proj1.PowerOffFeedback.BoolValue)
                                                         SetOutput((uint)Join.btn1_PwrOn);
                                                 }
                                                 else if (RoomSetup.Display1 == "tv")
                                                 {
-                                                    if (ControlSystem.disp1.Power.PowerOffFeedback.BoolValue)
+                                                    //if (ControlSystem.disp1.Power.PowerOffFeedback.BoolValue)
                                                         SetOutput((uint)Join.btn1_PwrOn);
                                                 }
                                                 break;
@@ -350,6 +369,7 @@ namespace NFAHRooms
                                                 SetOutput(((uint)Join.btn2_PCOff));
 
                                                 await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((int)EvertzOutputs.out_Proj2).ToString(), ((uint)EvertzInputs.in_PCMain).ToString());
+                                                tp_ClearButtonStatus("2");
                                                 break;
 
                                             }
@@ -358,6 +378,7 @@ namespace NFAHRooms
                                                 SetOutput((uint)Join.btn2_ExtDeskOff);
 
                                                 await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj2).ToString(), ((uint)EvertzInputs.in_PCExtDesk).ToString());
+                                                tp_ClearButtonStatus("2");
                                                 break;
 
                                             }
@@ -366,6 +387,7 @@ namespace NFAHRooms
                                                 SetOutput((uint)Join.btn2_DocCamOff);
 
                                                 await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj2).ToString(), ((uint)EvertzInputs.in_DocCam).ToString());
+                                                tp_ClearButtonStatus("2");
                                                 break;
 
                                             }
@@ -374,6 +396,7 @@ namespace NFAHRooms
                                                 SetOutput((uint)Join.btn2_AirMediaOff);
 
                                                 await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj2).ToString(), ((uint)EvertzInputs.in_AirMedia).ToString());
+                                                tp_ClearButtonStatus("2");
                                                 break;
 
                                             }
@@ -383,6 +406,7 @@ namespace NFAHRooms
                                                 SetOutput((uint)Join.btn2_AuxOff);
 
                                                 await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj2).ToString(), ((uint)EvertzInputs.in_Aux).ToString());
+                                                tp_ClearButtonStatus("2");
                                                 break;
                                             }
                                         case ((uint)Join.btn2_DSPwrOff):
@@ -390,6 +414,7 @@ namespace NFAHRooms
                                                 SetOutput((uint)Join.btn2_AuxOff);
 
                                                 await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj2).ToString(), ((uint)EvertzInputs.in_DS).ToString());
+                                                tp_ClearButtonStatus("2");
                                                 break;
 
                                             }
@@ -397,12 +422,12 @@ namespace NFAHRooms
                                             {
                                                 if (RoomSetup.Display2 == "proj")
                                                 {
-                                                    if (ControlSystem.proj2.PowerOffFeedback.BoolValue)
+                                                    //if (ControlSystem.proj2.PowerOffFeedback.BoolValue)
                                                         SetOutput((uint)Join.btn2_PwrOn);
                                                 }
                                                 else if (RoomSetup.Display2 == "tv")
                                                 {
-                                                    if (ControlSystem.disp2.Power.PowerOffFeedback.BoolValue)
+                                                    //if (ControlSystem.disp2.Power.PowerOffFeedback.BoolValue)
                                                         SetOutput((uint)Join.btn2_PwrOn);
                                                 }
                                                 break;
@@ -419,7 +444,9 @@ namespace NFAHRooms
                                             {
                                                 SetOutput(((uint)Join.btn3_PCOff));
 
+                                                
                                                 await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((int)EvertzOutputs.out_Proj3).ToString(), ((uint)EvertzInputs.in_PCMain).ToString());
+                                                tp_ClearButtonStatus("3");
                                                 break;
                                             }
                                         case ((uint)Join.btn3_ExtDeskOff):
@@ -427,6 +454,7 @@ namespace NFAHRooms
                                                 SetOutput((uint)Join.btn3_ExtDeskOff);
 
                                                 await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj3).ToString(), ((uint)EvertzInputs.in_PCExtDesk).ToString());
+                                                tp_ClearButtonStatus("3");
                                                 break;
                                             }
                                         case ((uint)Join.btn3_DocCamOff):
@@ -434,6 +462,7 @@ namespace NFAHRooms
                                                 SetOutput((uint)Join.btn3_DocCamOff);
 
                                                 await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj3).ToString(), ((uint)EvertzInputs.in_DocCam).ToString());
+                                                tp_ClearButtonStatus("3");
                                                 break;
                                                 
                                             }
@@ -442,6 +471,7 @@ namespace NFAHRooms
                                                 SetOutput((uint)Join.btn3_AirMediaOff);
 
                                                 await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj3).ToString(), ((uint)EvertzInputs.in_AirMedia).ToString());
+                                                tp_ClearButtonStatus("3");
                                                 break;
                                             }
                                         case ((uint)Join.btn3_AuxOff):
@@ -450,6 +480,7 @@ namespace NFAHRooms
                                                 SetOutput((uint)Join.btn3_AuxOff);
 
                                                 await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj3).ToString(), ((uint)EvertzInputs.in_Aux).ToString());
+                                                tp_ClearButtonStatus("3");
                                                 break;
                                             }
                                         case ((uint)Join.btn3_DSPwrOff):
@@ -457,18 +488,19 @@ namespace NFAHRooms
                                                 SetOutput((uint)Join.btn3_AuxOff);
 
                                                 await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj3).ToString(), ((uint)EvertzInputs.in_DS).ToString());
+                                                tp_ClearButtonStatus("3");
                                                 break;
                                             }
                                         case ((uint)Join.btn3_PwrOn):  //Power On
                                             {
                                                 if (RoomSetup.Display3 == "proj")
                                                 {
-                                                    if (ControlSystem.proj3.PowerOffFeedback.BoolValue)
+                                                    //if (ControlSystem.proj3.PowerOffFeedback.BoolValue)
                                                         SetOutput((uint)Join.btn3_PwrOn);
                                                 }
                                                 else if (RoomSetup.Display3 == "tv")
                                                 {
-                                                    if (ControlSystem.disp3.Power.PowerOffFeedback.BoolValue)
+                                                    //if (ControlSystem.disp3.Power.PowerOffFeedback.BoolValue)
                                                         SetOutput((uint)Join.btn3_PwrOn);
                                                 }
                                                 break;
@@ -976,16 +1008,24 @@ namespace NFAHRooms
             {
                 if (RoomSetup.Display1 == "proj")
                 {
-                    if (ControlSystem.proj1.PowerOffFeedback.BoolValue)
-                        ControlSystem.proj1.PowerOn();
+                    //if (ControlSystem.proj1.PowerOffFeedback.BoolValue)
+                    ControlSystem.proj1.PowerOn();
+                    Thread.Sleep(500);
+                    ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = false;
+                    Thread.Sleep(500);
+                    Mics.Mute("off");
 
-                    if (!ControlSystem.proj1.SourceSelectFeedbackSigs[((uint)SonyProjInputs.ProjHDMI)].BoolValue)
-                        ControlSystem.proj1.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
+                    //if (!ControlSystem.proj1.SourceSelectFeedbackSigs[((uint)SonyProjInputs.ProjHDMI)].BoolValue)
+                    //    ControlSystem.proj1.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
                 } 
                 else if (RoomSetup.Display1 == "tv")
                 {
-                    if (ControlSystem.disp1.Power.PowerOffFeedback.BoolValue)
-                        ControlSystem.disp1.Power.PowerOn();
+                    //if (ControlSystem.disp1.Power.PowerOffFeedback.BoolValue)
+                    ControlSystem.disp1.Power.PowerOn();
+                    Thread.Sleep(500);
+                    ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = false;
+                    Thread.Sleep(500);
+                    Mics.Mute("off");
 
                     if (ControlSystem.disp1.Video.Source.SourceSelect.UShortValue != 1)
                         ControlSystem.disp1.Video.Source.SourceSelect.UShortValue = 1;
@@ -995,16 +1035,24 @@ namespace NFAHRooms
             {
                 if (RoomSetup.Display2 == "proj")
                 {
-                    if (ControlSystem.proj2.PowerOffFeedback.BoolValue)
-                        ControlSystem.proj2.PowerOn();
+                    //if (ControlSystem.proj2.PowerOffFeedback.BoolValue)
+                    ControlSystem.proj2.PowerOn();
+                    Thread.Sleep(500);
+                    ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = false;
+                    Thread.Sleep(500);
+                    Mics.Mute("off");
 
-                    if (!ControlSystem.proj2.SourceSelectFeedbackSigs[((uint)SonyProjInputs.ProjHDMI)].BoolValue)
-                        ControlSystem.proj2.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
+                    //if (!ControlSystem.proj2.SourceSelectFeedbackSigs[((uint)SonyProjInputs.ProjHDMI)].BoolValue)
+                    //    ControlSystem.proj2.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
                 }
                 else if (RoomSetup.Display2 == "tv")
                 {
-                    if (ControlSystem.disp2.Power.PowerOffFeedback.BoolValue)
-                        ControlSystem.disp2.Power.PowerOn();
+                    //if (ControlSystem.disp2.Power.PowerOffFeedback.BoolValue)
+                    ControlSystem.disp2.Power.PowerOn();
+                    Thread.Sleep(500);
+                    ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = false;
+                    Thread.Sleep(500);
+                    Mics.Mute("off");
 
                     if (ControlSystem.disp2.Video.Source.SourceSelect.UShortValue != 1)
                         ControlSystem.disp2.Video.Source.SourceSelect.UShortValue = 1;
@@ -1014,16 +1062,24 @@ namespace NFAHRooms
             {
                 if (RoomSetup.Display3 == "proj")
                 {
-                    if (ControlSystem.proj3.PowerOffFeedback.BoolValue)
-                        ControlSystem.proj3.PowerOn();
+                    //if (ControlSystem.proj3.PowerOffFeedback.BoolValue)
+                    ControlSystem.proj3.PowerOn();
+                    Thread.Sleep(500);
+                    ControlSystem.tp.BooleanInput[((uint)Join.btn3_PwrOnVis)].BoolValue = false;
+                    Thread.Sleep(500);
+                    Mics.Mute("off");
 
-                    if (!ControlSystem.proj3.SourceSelectFeedbackSigs[((uint)SonyProjInputs.ProjHDMI)].BoolValue)
-                        ControlSystem.proj3.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
+                    //if (!ControlSystem.proj3.SourceSelectFeedbackSigs[((uint)SonyProjInputs.ProjHDMI)].BoolValue)
+                    //    ControlSystem.proj3.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
                 }
                 else if (RoomSetup.Display2 == "tv")
                 {
-                    if (ControlSystem.disp3.Power.PowerOffFeedback.BoolValue)
-                        ControlSystem.disp3.Power.PowerOn();
+                    //if (ControlSystem.disp3.Power.PowerOffFeedback.BoolValue)
+                    ControlSystem.disp3.Power.PowerOn();
+                    Thread.Sleep(500);
+                    ControlSystem.tp.BooleanInput[((uint)Join.btn3_PwrOnVis)].BoolValue = false;
+                    Thread.Sleep(500);
+                    Mics.Mute("off");
 
                     if (ControlSystem.disp3.Video.Source.SourceSelect.UShortValue != 1)
                         ControlSystem.disp3.Video.Source.SourceSelect.UShortValue = 1;
@@ -1156,7 +1212,7 @@ namespace NFAHRooms
                 if (ControlSystem.proj1.PowerOnFeedback.BoolValue && !Proj1On)  //Power On
                 {
                     ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = false;
-                    ControlSystem.proj1.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
+                    //ControlSystem.proj1.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
                     Mics.Mute("Off");
                     Proj1On = true;
                 }
@@ -1173,10 +1229,10 @@ namespace NFAHRooms
                     }
                 }
 
-                if (!ControlSystem.proj1.SourceSelectFeedbackSigs[((uint)SonyProjInputs.ProjHDMI)].BoolValue)
-                {
-                    ControlSystem.proj1.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
-                }   
+                //if (!ControlSystem.proj1.SourceSelectFeedbackSigs[((uint)SonyProjInputs.ProjHDMI)].BoolValue)
+                //{
+                //    ControlSystem.proj1.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
+                //}   
             }
             catch (Exception e)
             {
@@ -1217,7 +1273,7 @@ namespace NFAHRooms
                 if (ControlSystem.proj2.PowerOnFeedback.BoolValue && !Proj2On)  //Power On
                 {
                     ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = false;
-                    ControlSystem.proj2.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
+                  //  ControlSystem.proj2.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
                     Mics.Mute("Off");
                     Proj2On = true;
                 }
@@ -1234,10 +1290,10 @@ namespace NFAHRooms
                     }
                 }
 
-                if (!ControlSystem.proj2.SourceSelectFeedbackSigs[((uint)SonyProjInputs.ProjHDMI)].BoolValue)
-                {
-                    ControlSystem.proj2.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
-                }
+                //if (!ControlSystem.proj2.SourceSelectFeedbackSigs[((uint)SonyProjInputs.ProjHDMI)].BoolValue)
+                //{
+                //    ControlSystem.proj2.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
+                //}
             }
             catch (Exception e)
             {
@@ -1295,10 +1351,10 @@ namespace NFAHRooms
                     }
                 }
 
-                if (!ControlSystem.proj3.SourceSelectFeedbackSigs[((uint)SonyProjInputs.ProjHDMI)].BoolValue)
-                {
-                    ControlSystem.proj3.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
-                }
+                //if (!ControlSystem.proj3.SourceSelectFeedbackSigs[((uint)SonyProjInputs.ProjHDMI)].BoolValue)
+                //{
+                //    ControlSystem.proj3.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
+                //}
             }
             catch (Exception e)
             {
@@ -1492,8 +1548,8 @@ namespace NFAHRooms
                         throw new Exception(ControlSystem.proj1.RegistrationFailureReason.ToString());
 
                     ControlSystem.proj1.OnlineStatusChange += new OnlineStatusChangeEventHandler(proj1_OnlineStatusChange);
-                    ControlSystem.proj1.BaseEvent += new BaseEventHandler(proj1_BaseEvent);
-                    Proj1On = true;
+                    //ControlSystem.proj1.BaseEvent += new BaseEventHandler(proj1_BaseEvent);
+                    //Proj1On = true;
                 }
                 if (RoomSetup.Display1 == "tv")
                 {
@@ -1501,7 +1557,7 @@ namespace NFAHRooms
                         throw new Exception(ControlSystem.disp1.RegistrationFailureReason.ToString());
 
                     ControlSystem.disp1.OnlineStatusChange += new OnlineStatusChangeEventHandler(disp1_OnlineStatusChange);
-                    ControlSystem.disp1.BaseEvent += new BaseEventHandler(disp1_BaseEvent);
+                    //ControlSystem.disp1.BaseEvent += new BaseEventHandler(disp1_BaseEvent);
 
                     
 
@@ -1514,8 +1570,8 @@ namespace NFAHRooms
                         throw new Exception(ControlSystem.proj2.RegistrationFailureReason.ToString());
 
                     ControlSystem.proj2.OnlineStatusChange += new OnlineStatusChangeEventHandler(proj2_OnlineStatusChange);
-                    ControlSystem.proj2.BaseEvent += new BaseEventHandler(proj2_BaseEvent);
-                    Proj2On = true;
+                    //ControlSystem.proj2.BaseEvent += new BaseEventHandler(proj2_BaseEvent);
+                    //Proj2On = true;
                 }
                 if (RoomSetup.Display2 == "tv")
                 {
@@ -1523,7 +1579,7 @@ namespace NFAHRooms
                         throw new Exception(ControlSystem.disp2.RegistrationFailureReason.ToString());
 
                     ControlSystem.disp2.OnlineStatusChange += new OnlineStatusChangeEventHandler(disp2_OnlineStatusChange);
-                    ControlSystem.disp2.BaseEvent += new BaseEventHandler(disp2_BaseEvent);
+                    //ControlSystem.disp2.BaseEvent += new BaseEventHandler(disp2_BaseEvent);
                 }
             
 
@@ -1533,8 +1589,8 @@ namespace NFAHRooms
                         throw new Exception(ControlSystem.proj3.RegistrationFailureReason.ToString());
 
                     ControlSystem.proj3.OnlineStatusChange += new OnlineStatusChangeEventHandler(proj3_OnlineStatusChange);
-                    ControlSystem.proj3.BaseEvent += new BaseEventHandler(proj3_BaseEvent);
-                    Proj3On = true;
+                    //ControlSystem.proj3.BaseEvent += new BaseEventHandler(proj3_BaseEvent);
+                    //Proj3On = true;
                 }
                 if (RoomSetup.Display3 == "tv")
                 {
@@ -1542,7 +1598,7 @@ namespace NFAHRooms
                         throw new Exception(ControlSystem.disp3.RegistrationFailureReason.ToString());
 
                     ControlSystem.disp3.OnlineStatusChange += new OnlineStatusChangeEventHandler(disp3_OnlineStatusChange);
-                    ControlSystem.disp3.BaseEvent += new BaseEventHandler(disp3_BaseEvent);
+                    //ControlSystem.disp3.BaseEvent += new BaseEventHandler(disp3_BaseEvent);
                 }
                 
                 //Determine which Touchpanel Layout to use

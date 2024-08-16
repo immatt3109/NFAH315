@@ -253,16 +253,16 @@
     }
 
     public enum NVXOutputs
-    {      out_VTC = 0,
-           out_Proj1 = 1,
-           out_Proj2 = 2,
-           out_Proj3 = 3,
+    {      out_VTC = 8,
+           out_Proj1 = 2,
+           out_Proj2 = 3,
+           out_Proj3 = 4,
                               
-           out_Disp3 = 3,
-           out_Disp2 = 2,
-           out_Disp1 = 1,
+           out_Disp3 = 4,
+           out_Disp2 = 3,
+           out_Disp1 = 2,
                
-           out_EXTDisplay = 5,
+           out_EXTDisplay = 1,
     }
 
     public enum EvertzInputs
@@ -307,6 +307,11 @@
     public enum NVXRoutes
     {
         RouteOutput = 1,
+    }
+
+    public enum SonyPort
+    {
+        ControlPort = 53595,
     }
 }
 

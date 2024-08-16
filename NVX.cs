@@ -22,28 +22,28 @@ namespace NFAHRooms
                 input = data[0];
                 output = data[1];
 
-                RoomSetup.NvxSettings.InputDictionary.TryGetValue(input, out var inputValue);
-                RoomSetup.NvxSettings.OutputDictionary.TryGetValue(output, out var outputValue);
+                //RoomSetup.NvxSettings.InputDictionary.TryGetValue(input, out var inputValue);
+                //RoomSetup.NvxSettings.OutputDictionary.TryGetValue(output, out var outputValue);
 
-                if (ControlSystem.Is131)
-                {
-                    CrestronConsole.PrintLine("Is131: {0}", ControlSystem.Is131);
-                    if (outputValue.ToString() == "4")
+                //if (ControlSystem.Is131)
+                //{
+                //    CrestronConsole.PrintLine("Is131: {0}", ControlSystem.Is131);
+                    if (output == "4")
                     {
-                        CrestronConsole.PrintLine("output 4?: {0}", output);
-                        ControlSystem.EISC.StringInput[((uint)NVXRoutes.RouteOutput)].StringValue = inputValue.InputNVX + "," + outputValue.OutputNVX;
-
-                        for (int i = 6; i <= 8; i++)
+                        //CrestronConsole.PrintLine("output 4?: {0}", output);
+                        ControlSystem.EISC.StringInput[((uint)NVXRoutes.RouteOutput)].StringValue = input + "," + output;
+                
+                        for (int i = 5; i <= 7; i++)
                         {
-                            RoomSetup.NvxSettings.OutputDictionary.TryGetValue(i.ToString(), out var outputValue2);
-                            ControlSystem.EISC.StringInput[((uint)NVXRoutes.RouteOutput)].StringValue = inputValue.InputNVX + "," + outputValue2.OutputNVX;
+                //            RoomSetup.NvxSettings.OutputDictionary.TryGetValue(i.ToString(), out var outputValue2);
+                            ControlSystem.EISC.StringInput[((uint)NVXRoutes.RouteOutput)].StringValue = input + "," + i.ToString();
                         }
                     }
-                }
+                //}
                 else
                 {
-                    ControlSystem.EISC.StringInput[((uint)NVXRoutes.RouteOutput)].StringValue = inputValue.InputNVX + "," + outputValue.OutputNVX;
-                    CrestronConsole.PrintLine("NVX Route Sent to NVX: {0}", inputValue.InputNVX + "," + outputValue.OutputNVX);
+                    ControlSystem.EISC.StringInput[((uint)NVXRoutes.RouteOutput)].StringValue = input + "," + output;
+                    CrestronConsole.PrintLine("NVX Route Sent to NVX: {0}", input + "," + output);
                 }
 
             }
@@ -62,26 +62,27 @@ namespace NFAHRooms
                     case eSigType.String:
                         if (args.Sig.Number == 1)
                         {
-                            CrestronConsole.PrintLine("NVX Route Returned from NVX: {0}", args.Sig.StringValue);
+                            //CrestronConsole.PrintLine("NVX Route Returned from NVX: {0}", args.Sig.StringValue);
 
                             var data = args.Sig.StringValue.Split(',');
                             string input, output;
                             output = data[1];
                             input = data[0];
 
-                            CrestronConsole.PrintLine("Input: {0} Output: {1}", input, output);
+                            //CrestronConsole.PrintLine("Input: {0} Output: {1}", input, output);
 
-                            var ReverseInputDictionary = RoomSetup.NvxSettings.InputDictionary.ToDictionary(x => x.Value.InputNVX, x => x.Value);
-                            var ReverseOutputDictionary = RoomSetup.NvxSettings.OutputDictionary.ToDictionary(x => x.Value.OutputNVX, x => x.Value);
+                            //var ReverseInputDictionary = RoomSetup.NvxSettings.InputDictionary.ToDictionary(x => x.Value.InputNVX, x => x.Value);
+                            //var ReverseOutputDictionary = RoomSetup.NvxSettings.OutputDictionary.ToDictionary(x => x.Value.OutputNVX, x => x.Value);
 
-                            ReverseInputDictionary.TryGetValue(input, out var inputValue);
-                            ReverseOutputDictionary.TryGetValue(output, out var outputValue);
+                            //ReverseInputDictionary.TryGetValue(input, out var inputValue);
+                            //ReverseOutputDictionary.TryGetValue(output, out var outputValue);
 
-                            CrestronConsole.PrintLine($"Original input: {inputValue.InputProg} Original output: {outputValue.OutputProg}");
-                            if (Convert.ToInt32(outputValue.OutputProg) < ((int)NVXOutputs.out_EXTDisplay))
-                            {
-                                NVXHandler.tp_ButtonStatus(outputValue.OutputProg, inputValue.InputProg);
-                            }
+                            //CrestronConsole.PrintLine($"Original input: {input} Original output: {output}");
+                            //if(Convert.ToInt32(outputValue.OutputProg) < ((int)NVXOutputs.out_EXTDisplay))
+                            //{
+                            if (Convert.ToInt16(output) > 1 && Convert.ToInt16(output) <= 4)
+                                NVXHandler.tp_ButtonStatus(output, input);
+                            //}
                         }
                         break;
                 }

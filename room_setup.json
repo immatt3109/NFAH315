@@ -42,8 +42,8 @@
       "password": "NfaH2024!",
       "pan": 10,
       "zoom": 5,
-	  "teacher_IP":"192.168.1.85",
-	  "student_IP":"192.168.1.151"}
+	  "teacher_IP":"192.168.1.151",
+	  "student_IP":"192.168.1.85"}
     },
 "microphones": [
     

@@ -74,7 +74,7 @@ namespace NFAHRooms
                     }
                     else if (RoomSetup.Touchpanel.TP_RoomType.ToLower() == "evertz_3")
                     {
-                        if ((ControlSystem.disp1.Power.PowerOffFeedback.BoolValue || ControlSystem.proj1.PowerOffFeedback.BoolValue) && (ControlSystem.disp2.Power.PowerOffFeedback.BoolValue || ControlSystem.proj2.PowerOffFeedback.BoolValue) && (ControlSystem.disp3.Power.PowerOffFeedback.BoolValue || ControlSystem.proj3.PowerOffFeedback.BoolValue))
+                        if ((ControlSystem.tp.BooleanInput[((uint)Join.btn3_PwrOnVis)].BoolValue) && (ControlSystem.tp.BooleanInput[((uint)Join.btn3_PwrOnVis)].BoolValue) && (ControlSystem.tp.BooleanInput[((uint)Join.btn3_PwrOnVis)].BoolValue))
                         {
                             MuteOn();
                             await TCC2Mute("on");

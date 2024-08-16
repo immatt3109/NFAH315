@@ -141,7 +141,7 @@ namespace NFAHRooms
                         default:
                             break;
                     }
-
+//need to fix the file names here for getting them off camera and placing them into the correct folder with the correct filename.
                 if (!Directory.Exists(Constants.localFolderPath))
                     Directory.CreateDirectory(Constants.localFolderPath);
                 
