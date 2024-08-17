@@ -40,6 +40,9 @@ namespace NFAHRooms
             urls.Add("Lay_Full", Constants.http + RoomSetup.SonyCameras.CommonProperties.TeacherIP + Constants.AICommand + "PtzAutoFramingShotMode=fullbody");
             urls.Add("Lay_Top", Constants.http + RoomSetup.SonyCameras.CommonProperties.TeacherIP + Constants.AICommand + "PtzAutoFramingShotMode=waist");
             urls.Add("Lay_Head", Constants.http + RoomSetup.SonyCameras.CommonProperties.TeacherIP + Constants.AICommand + "PtzAutoFramingShotMode=closeup");
+            urls.Add("Lay_FullHeight", Constants.http + RoomSetup.SonyCameras.CommonProperties.TeacherIP + Constants.AICommand + "PtzAutoFramingShotMode=height3");
+            urls.Add("Lay_TopHeight", Constants.http + RoomSetup.SonyCameras.CommonProperties.TeacherIP + Constants.AICommand + "PtzAutoFramingShotMode=height4");
+            urls.Add("Lay_HeadHeight", Constants.http + RoomSetup.SonyCameras.CommonProperties.TeacherIP + Constants.AICommand + "PtzAutoFramingShotMode=height1");
             
             urls.Add("Student_MoveUP", Constants.http + RoomSetup.SonyCameras.CommonProperties.StudentIP + Constants.command + Constants.ptzf + "up," + movespeed);
             urls.Add("Student_MoveDOWN", Constants.http + RoomSetup.SonyCameras.CommonProperties.StudentIP + Constants.command + Constants.ptzf + "down," + movespeed);
@@ -108,7 +111,8 @@ namespace NFAHRooms
 
         public static async Task DownloadThumbnail(string Preset)
         {
-            string fileName = null;
+            string CamFileName = null;
+            string LocalFileName = null;
             string localFilePath = null;
             string TeachfileUrl = Constants.http + RoomSetup.SonyCameras.CommonProperties.TeacherIP + Constants.presetfolder;
             string StudfileUrl = Constants.http + RoomSetup.SonyCameras.CommonProperties.StudentIP + Constants.presetfolder;
@@ -121,34 +125,40 @@ namespace NFAHRooms
                     switch (Preset)
                     {
                         case "TPS1":
-                            fileName = "presetimg1.jpg";
+                            CamFileName = "presetimg1.jpg";
+                            LocalFileName = "presetimg1.jpg";
                             break;
                         case "TPS2":
-                            fileName = "presetimg2.jpg";
+                            CamFileName = "presetimg2.jpg";
+                            LocalFileName = "presetimg2.jpg";
                             break;
                         case "TPS3":
-                            fileName = "presetimg3.jpg";
+                            CamFileName = "presetimg3.jpg";
+                            LocalFileName = "presetimg3.jpg";
                             break;
                         case "SPS1":
-                            fileName = "presetimg4.jpg";
+                            CamFileName = "presetimg1.jpg";
+                            LocalFileName = "presetimg4.jpg";
                             break;
                         case "SPS2":
-                            fileName = "presetimg5.jpg";
+                            CamFileName = "presetimg2.jpg";
+                            LocalFileName = "presetimg5.jpg";
                             break;
                         case "SPS3":
-                            fileName = "presetimg6.jpg";
+                            CamFileName = "presetimg3.jpg";
+                            LocalFileName = "presetimg6.jpg";
                             break;
                         default:
                             break;
                     }
-//need to fix the file names here for getting them off camera and placing them into the correct folder with the correct filename.
+
                 if (!Directory.Exists(Constants.localFolderPath))
                     Directory.CreateDirectory(Constants.localFolderPath);
                 
                 if (Preset.Contains("TPS"))
-                    TeachfileUrl += fileName;
+                    TeachfileUrl += CamFileName;
                 else if (Preset.Contains("SPS"))
-                    StudfileUrl += fileName;
+                    StudfileUrl += CamFileName;
                 
                 HttpClientHandler handler = new HttpClientHandler
                 {
@@ -162,17 +172,24 @@ namespace NFAHRooms
                         HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, TeachfileUrl);
                         request.Headers.Referrer = new Uri(Constants.http + RoomSetup.SonyCameras.CommonProperties.TeacherIP + "/");
                         fileData = await client.GetByteArrayAsync(TeachfileUrl);
+
+                        localFilePath = Path.Combine(Constants.localFolderPath, LocalFileName);
+
+                        System.IO.File.WriteAllBytes(localFilePath, fileData);
+
                     }
                     else if (Preset.Contains("SPS"))
                     {
                         HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, StudfileUrl);
                         request.Headers.Referrer = new Uri(Constants.http + RoomSetup.SonyCameras.CommonProperties.StudentIP + "/");
                         fileData = await client.GetByteArrayAsync(StudfileUrl);
+
+                        localFilePath = Path.Combine(Constants.localFolderPath, LocalFileName);
+
+                        System.IO.File.WriteAllBytes(localFilePath, fileData);
                     }
                     
-                    localFilePath = Path.Combine(Constants.localFolderPath, fileName);
-
-                    System.IO.File.WriteAllBytes(localFilePath, fileData);
+                    
                     
                 }
             }

@@ -66,7 +66,7 @@ namespace NFAHRooms
             switch (Output)
             {
                 case "1":
-                    tp_ClearButtonStatus(((uint)EvertzOutputs.out_Proj1).ToString());
+                    //tp_ClearButtonStatus(((uint)EvertzOutputs.out_Proj1).ToString());
                         if (Input != "0")
                         {
                             SetOutput(101);
@@ -75,22 +75,22 @@ namespace NFAHRooms
                         switch (Input)
                         {
                             case "1":
-                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_PCOn)].BoolValue = true;
+                                //ControlSystem.tp.BooleanInput[((uint)Join.btn1_PCOn)].BoolValue = true;
                                 break;
                             case "2":
-                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_ExtDeskOn)].BoolValue = true;
+                                //ControlSystem.tp.BooleanInput[((uint)Join.btn1_ExtDeskOn)].BoolValue = true;
                                 break;
                             case "3":
-                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_DocCamOn)].BoolValue = true;
+                                //ControlSystem.tp.BooleanInput[((uint)Join.btn1_DocCamOn)].BoolValue = true;
                                 break;
                             case "4":
-                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_AirMediaOn)].BoolValue = true;
+                                //ControlSystem.tp.BooleanInput[((uint)Join.btn1_AirMediaOn)].BoolValue = true;
                                 break;
                             case "5":
-                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_AuxOn)].BoolValue = true;
+                                //ControlSystem.tp.BooleanInput[((uint)Join.btn1_AuxOn)].BoolValue = true;
                                 break;
                             case "8":
-                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_DSPwrOn)].BoolValue = true;
+                                //ControlSystem.tp.BooleanInput[((uint)Join.btn1_DSPwrOn)].BoolValue = true;
                                 break;
                             case "0":
                             
@@ -98,6 +98,7 @@ namespace NFAHRooms
                                 {
                                     //if (ControlSystem.proj1.PowerOnFeedback.BoolValue)
                                 ControlSystem.proj1.PowerOff();
+                                tp_ClearButtonStatus(((uint)EvertzOutputs.out_Proj1).ToString());
                                 ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = true;
                                 Mics.Mute("On");
                                 }
@@ -106,6 +107,7 @@ namespace NFAHRooms
                                 
                                     //if (ControlSystem.disp1.Power.PowerOnFeedback.BoolValue)
                                 ControlSystem.disp1.Power.PowerOff();
+                                tp_ClearButtonStatus(((uint)EvertzOutputs.out_Proj1).ToString());
                                 ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = true;
                                 Mics.Mute("On");
                             }
@@ -114,7 +116,7 @@ namespace NFAHRooms
                         break;
                     
                 case "2":
-                    tp_ClearButtonStatus(((uint)EvertzOutputs.out_Proj2).ToString());
+                    //tp_ClearButtonStatus(((uint)EvertzOutputs.out_Proj2).ToString());
                     if (Input != "0")
                     {
                         SetOutput(201);
@@ -122,35 +124,38 @@ namespace NFAHRooms
                         switch (Input)
                         {
                             case "1":
-                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_PCOn)].BoolValue = true;
+                                //ControlSystem.tp.BooleanInput[((uint)Join.btn2_PCOn)].BoolValue = true;
                                 break;
                             case "2":
-                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_ExtDeskOn)].BoolValue = true;
+                                //ControlSystem.tp.BooleanInput[((uint)Join.btn2_ExtDeskOn)].BoolValue = true;
                                 break;
                             case "3":
-                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_DocCamOn)].BoolValue = true;
+                                //ControlSystem.tp.BooleanInput[((uint)Join.btn2_DocCamOn)].BoolValue = true;
                                 break;
                             case "4":
-                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_AirMediaOn)].BoolValue = true;
+                                //ControlSystem.tp.BooleanInput[((uint)Join.btn2_AirMediaOn)].BoolValue = true;
                                 break;
                             case "5":
-                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_AuxOn)].BoolValue = true;
+                                //ControlSystem.tp.BooleanInput[((uint)Join.btn2_AuxOn)].BoolValue = true;
                                 break;
                             case "8":
-                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_DSPwrOn)].BoolValue = true;
+                                //ControlSystem.tp.BooleanInput[((uint)Join.btn2_DSPwrOn)].BoolValue = true;
                                 break;
                             case "0":
                             if (RoomSetup.Display2 == "proj")
                             {
                                 //if (ControlSystem.proj2.PowerOnFeedback.BoolValue)
                                     ControlSystem.proj2.PowerOff();
+                                tp_ClearButtonStatus(((uint)EvertzOutputs.out_Proj2).ToString());
                                 ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = true;
+                                
                                 Mics.Mute("On");
                             }
                             else if (RoomSetup.Display2 == "tv")
                             {
                                 //if (ControlSystem.disp2.Power.PowerOnFeedback.BoolValue)
                                     ControlSystem.disp2.Power.PowerOff();
+                                tp_ClearButtonStatus(((uint)EvertzOutputs.out_Proj2).ToString());
                                 ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = true;
                                 Mics.Mute("On");
                             }
@@ -158,7 +163,7 @@ namespace NFAHRooms
                     }
                         break;
                 case "3":
-                    tp_ClearButtonStatus(((uint)EvertzOutputs.out_Proj3).ToString());
+                    //tp_ClearButtonStatus(((uint)EvertzOutputs.out_Proj3).ToString());
                     if (Input != "0")
                     {
                         SetOutput(301);
@@ -166,28 +171,29 @@ namespace NFAHRooms
                         switch (Input)
                         {
                             case "1":
-                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_PCOn)].BoolValue = true;
+                                //ControlSystem.tp.BooleanInput[((uint)Join.btn3_PCOn)].BoolValue = true;
                                 break;
                             case "2":
-                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_ExtDeskOn)].BoolValue = true;
+                                //ControlSystem.tp.BooleanInput[((uint)Join.btn3_ExtDeskOn)].BoolValue = true;
                                 break;
                             case "3":
-                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_DocCamOn)].BoolValue = true;
+                                //ControlSystem.tp.BooleanInput[((uint)Join.btn3_DocCamOn)].BoolValue = true;
                                 break;
                             case "4":
-                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_AirMediaOn)].BoolValue = true;
+                                //ControlSystem.tp.BooleanInput[((uint)Join.btn3_AirMediaOn)].BoolValue = true;
                                 break;
                             case "5":
-                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_AuxOn)].BoolValue = true;
+                                //ControlSystem.tp.BooleanInput[((uint)Join.btn3_AuxOn)].BoolValue = true;
                                 break;
                             case "8":
-                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_DSPwrOn)].BoolValue = true;
+                                //ControlSystem.tp.BooleanInput[((uint)Join.btn3_DSPwrOn)].BoolValue = true;
                                 break;
                             case "0":
                             if (RoomSetup.Display3 == "proj")
                             {
                                 //if (ControlSystem.proj3.PowerOnFeedback.BoolValue)
                                     ControlSystem.proj3.PowerOff();
+                                tp_ClearButtonStatus(((uint)EvertzOutputs.out_Proj3).ToString());
                                 ControlSystem.tp.BooleanInput[((uint)Join.btn3_PwrOnVis)].BoolValue = true;
                                 Mics.Mute("On");
                             }
@@ -195,6 +201,7 @@ namespace NFAHRooms
                             {
                                 //if (ControlSystem.disp3.Power.PowerOnFeedback.BoolValue)
                                     ControlSystem.disp3.Power.PowerOff();
+                                tp_ClearButtonStatus(((uint)EvertzOutputs.out_Proj3).ToString());
                                 ControlSystem.tp.BooleanInput[((uint)Join.btn3_PwrOnVis)].BoolValue = true;
                                 
                                 Mics.Mute("On");
@@ -240,7 +247,7 @@ namespace NFAHRooms
                     break;
             }
         }
-        private static void tp_ClearButtonStatus(String Output)
+        public static void tp_ClearButtonStatus(String Output)
         {   
             switch (Output)
             {
@@ -300,49 +307,85 @@ namespace NFAHRooms
                                         case ((uint)Join.btn1_PCOff):
                                             {
                                                 SetOutput(((uint)Join.btn1_PCOff));
-
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_ExtDeskOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_DocCamOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_AirMediaOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_AuxOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_DSPwrOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_PCOn)].BoolValue = true;
                                                 await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((int)EvertzOutputs.out_Proj1).ToString(), ((uint)EvertzInputs.in_PCMain).ToString());
-                                                tp_ClearButtonStatus("1");
+                                                
+                                                
                                                 break;
                                             }
                                         case ((uint)Join.btn1_ExtDeskOff):
                                             {
                                                 SetOutput((uint)Join.btn1_ExtDeskOff);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_PCOn)].BoolValue = false;
 
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_DocCamOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_AirMediaOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_AuxOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_DSPwrOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_ExtDeskOn)].BoolValue = true;
                                                 await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj1).ToString(), ((uint)EvertzInputs.in_PCExtDesk).ToString());
-                                                tp_ClearButtonStatus("1");
+                                                
                                                 break;
                                             }
                                         case ((uint)Join.btn1_DocCamOff):
                                             {
                                                 SetOutput((uint)Join.btn1_DocCamOff);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_PCOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_ExtDeskOn)].BoolValue = false;
 
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_AirMediaOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_AuxOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_DSPwrOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_DocCamOn)].BoolValue = true;
                                                 await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj1).ToString(), ((uint)EvertzInputs.in_DocCam).ToString());
-                                                tp_ClearButtonStatus("1");
+                                                
                                                 break;
                                             }
                                         case ((uint)Join.btn1_AirMediaOff):
                                             {
                                                 SetOutput((uint)Join.btn1_AirMediaOff);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_PCOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_ExtDeskOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_DocCamOn)].BoolValue = false;
 
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_AuxOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_DSPwrOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_AirMediaOn)].BoolValue = true;
                                                 await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj1).ToString(), ((uint)EvertzInputs.in_AirMedia).ToString());
-                                                tp_ClearButtonStatus("1");
+                                                
                                                 break;
                                             }
                                         case ((uint)Join.btn1_AuxOff):
                                             {
                                                 SetOutput((uint)Join.btn1_AuxOff);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_PCOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_ExtDeskOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_DocCamOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_AirMediaOn)].BoolValue = false;
 
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_DSPwrOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_AuxOn)].BoolValue = true;
                                                 await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj1).ToString(), ((uint)EvertzInputs.in_Aux).ToString());
-                                                tp_ClearButtonStatus("1");
+                                                
                                                 break;
                                             }
                                         case ((uint)Join.btn1_DSPwrOff):
                                             {
                                                 SetOutput((uint)Join.btn1_AuxOff);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_PCOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_ExtDeskOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_DocCamOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_AirMediaOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_AuxOn)].BoolValue = false;
 
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_DSPwrOn)].BoolValue = true;
                                                 await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj1).ToString(), ((uint)EvertzInputs.in_DS).ToString());
-                                                tp_ClearButtonStatus("1");
+                                                
                                                 break;
                                             }
                                         case ((uint)Join.btn1_PwrOn):  //Power On
@@ -360,43 +403,84 @@ namespace NFAHRooms
                                                 break;
                                             }
                                         case ((uint)Join.btn1_PwrOff):  //Power Off
-                                            {                                                
+                                            {
+                                                if (RoomSetup.Display1 == "proj")
+                                                {
+                                                    //if (ControlSystem.proj1.PowerOnFeedback.BoolValue)
+                                                    ControlSystem.proj1.PowerOff();
+                                                    tp_ClearButtonStatus(((uint)EvertzOutputs.out_Proj1).ToString());
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = true;
+                                                    Mics.Mute("On");
+                                                }
+                                                else if (RoomSetup.Display1 == "tv")
+                                                {
+
+                                                    //if (ControlSystem.disp1.Power.PowerOnFeedback.BoolValue)
+                                                    ControlSystem.disp1.Power.PowerOff();
+                                                    tp_ClearButtonStatus(((uint)EvertzOutputs.out_Proj1).ToString());
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = true;
+                                                    Mics.Mute("On");
+                                                }
                                                 await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj1).ToString(), ((uint)EvertzInputs.in_Blank).ToString());
                                                 break;
                                             }
                                         case ((uint)Join.btn2_PCOff):
                                             {
                                                 SetOutput(((uint)Join.btn2_PCOff));
-
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_ExtDeskOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_DocCamOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_AirMediaOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_AuxOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_DSPwrOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_PCOn)].BoolValue = true;
                                                 await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((int)EvertzOutputs.out_Proj2).ToString(), ((uint)EvertzInputs.in_PCMain).ToString());
-                                                tp_ClearButtonStatus("2");
+                                                
+                                                
                                                 break;
 
                                             }
                                         case ((uint)Join.btn2_ExtDeskOff):
                                             {
                                                 SetOutput((uint)Join.btn2_ExtDeskOff);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_PCOn)].BoolValue = false;
 
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_DocCamOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_AirMediaOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_AuxOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_DSPwrOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_ExtDeskOn)].BoolValue = true;
                                                 await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj2).ToString(), ((uint)EvertzInputs.in_PCExtDesk).ToString());
-                                                tp_ClearButtonStatus("2");
+                                                
                                                 break;
 
                                             }
                                         case ((uint)Join.btn2_DocCamOff):
                                             {
                                                 SetOutput((uint)Join.btn2_DocCamOff);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_PCOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_ExtDeskOn)].BoolValue = false;
 
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_AirMediaOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_AuxOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_DSPwrOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_DocCamOn)].BoolValue = true;
                                                 await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj2).ToString(), ((uint)EvertzInputs.in_DocCam).ToString());
-                                                tp_ClearButtonStatus("2");
+                                                
                                                 break;
 
                                             }
                                         case ((uint)Join.btn2_AirMediaOff):
                                             {
                                                 SetOutput((uint)Join.btn2_AirMediaOff);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_PCOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_ExtDeskOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_DocCamOn)].BoolValue = false;
 
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_AuxOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_DSPwrOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_AirMediaOn)].BoolValue = true;
                                                 await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj2).ToString(), ((uint)EvertzInputs.in_AirMedia).ToString());
-                                                tp_ClearButtonStatus("2");
+                                                
                                                 break;
 
                                             }
@@ -404,17 +488,29 @@ namespace NFAHRooms
                                             {
 
                                                 SetOutput((uint)Join.btn2_AuxOff);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_PCOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_ExtDeskOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_DocCamOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_AirMediaOn)].BoolValue = false;
 
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_DSPwrOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_AuxOn)].BoolValue = true;
                                                 await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj2).ToString(), ((uint)EvertzInputs.in_Aux).ToString());
-                                                tp_ClearButtonStatus("2");
+                                                
                                                 break;
                                             }
                                         case ((uint)Join.btn2_DSPwrOff):
                                             {
-                                                SetOutput((uint)Join.btn2_AuxOff);
+                                                SetOutput((uint)Join.btn2_DSPwrOff);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_PCOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_ExtDeskOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_DocCamOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_AirMediaOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_AuxOn)].BoolValue = false;
 
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_DSPwrOn)].BoolValue = true;
                                                 await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj2).ToString(), ((uint)EvertzInputs.in_DS).ToString());
-                                                tp_ClearButtonStatus("2");
+                                                
                                                 break;
 
                                             }
@@ -437,58 +533,111 @@ namespace NFAHRooms
                                             }
                                         case ((uint)Join.btn2_PwrOff):  //Power Off
                                             {
+                                                if (RoomSetup.Display2 == "proj")
+                                                {
+                                                    //if (ControlSystem.proj2.PowerOnFeedback.BoolValue)
+                                                    ControlSystem.proj2.PowerOff();
+                                                    tp_ClearButtonStatus(((uint)EvertzOutputs.out_Proj2).ToString());
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = true;
+
+                                                    Mics.Mute("On");
+                                                }
+                                                else if (RoomSetup.Display2 == "tv")
+                                                {
+                                                    //if (ControlSystem.disp2.Power.PowerOnFeedback.BoolValue)
+                                                    ControlSystem.disp2.Power.PowerOff();
+                                                    tp_ClearButtonStatus(((uint)EvertzOutputs.out_Proj2).ToString());
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = true;
+                                                    Mics.Mute("On");
+                                                }
                                                 await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj2).ToString(), ((uint)EvertzInputs.in_Blank).ToString());
                                                 break;
                                             }
                                         case ((uint)Join.btn3_PCOff):
                                             {
                                                 SetOutput(((uint)Join.btn3_PCOff));
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_ExtDeskOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_DocCamOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_AirMediaOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_AuxOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_DSPwrOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_PCOn)].BoolValue = true;
 
-                                                
                                                 await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((int)EvertzOutputs.out_Proj3).ToString(), ((uint)EvertzInputs.in_PCMain).ToString());
-                                                tp_ClearButtonStatus("3");
+                                                
+                                                
                                                 break;
                                             }
                                         case ((uint)Join.btn3_ExtDeskOff):
                                             {
                                                 SetOutput((uint)Join.btn3_ExtDeskOff);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_PCOn)].BoolValue = false;
 
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_DocCamOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_AirMediaOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_AuxOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_DSPwrOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_ExtDeskOn)].BoolValue = true;
                                                 await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj3).ToString(), ((uint)EvertzInputs.in_PCExtDesk).ToString());
-                                                tp_ClearButtonStatus("3");
+                                                
                                                 break;
                                             }
                                         case ((uint)Join.btn3_DocCamOff):
                                             {
                                                 SetOutput((uint)Join.btn3_DocCamOff);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_PCOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_ExtDeskOn)].BoolValue = false;
 
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_AirMediaOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_AuxOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_DSPwrOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_DocCamOn)].BoolValue = true;
                                                 await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj3).ToString(), ((uint)EvertzInputs.in_DocCam).ToString());
-                                                tp_ClearButtonStatus("3");
+                                                
                                                 break;
                                                 
                                             }
                                         case ((uint)Join.btn3_AirMediaOff):
                                             {
                                                 SetOutput((uint)Join.btn3_AirMediaOff);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_PCOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_ExtDeskOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_DocCamOn)].BoolValue = false;
 
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_AuxOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_DSPwrOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_AirMediaOn)].BoolValue = true;
                                                 await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj3).ToString(), ((uint)EvertzInputs.in_AirMedia).ToString());
-                                                tp_ClearButtonStatus("3");
+                                                
                                                 break;
                                             }
                                         case ((uint)Join.btn3_AuxOff):
                                             {
 
                                                 SetOutput((uint)Join.btn3_AuxOff);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_PCOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_ExtDeskOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_DocCamOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_AirMediaOn)].BoolValue = false;
 
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_DSPwrOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_AuxOn)].BoolValue = true;
                                                 await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj3).ToString(), ((uint)EvertzInputs.in_Aux).ToString());
-                                                tp_ClearButtonStatus("3");
+                                                
                                                 break;
                                             }
                                         case ((uint)Join.btn3_DSPwrOff):
                                             {
                                                 SetOutput((uint)Join.btn3_AuxOff);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_PCOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_ExtDeskOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_DocCamOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_AirMediaOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_AuxOn)].BoolValue = false;
 
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_DSPwrOn)].BoolValue = true;
                                                 await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj3).ToString(), ((uint)EvertzInputs.in_DS).ToString());
-                                                tp_ClearButtonStatus("3");
+                                                
                                                 break;
                                             }
                                         case ((uint)Join.btn3_PwrOn):  //Power On
@@ -510,6 +659,23 @@ namespace NFAHRooms
                                             }
                                         case ((uint)Join.btn3_PwrOff):  //Power Off
                                             {
+                                                if (RoomSetup.Display3 == "proj")
+                                                {
+                                                    //if (ControlSystem.proj3.PowerOnFeedback.BoolValue)
+                                                    ControlSystem.proj3.PowerOff();
+                                                    tp_ClearButtonStatus(((uint)EvertzOutputs.out_Proj3).ToString());
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn3_PwrOnVis)].BoolValue = true;
+                                                    Mics.Mute("On");
+                                                }
+                                                else if (RoomSetup.Display3 == "tv")
+                                                {
+                                                    //if (ControlSystem.disp3.Power.PowerOnFeedback.BoolValue)
+                                                    ControlSystem.disp3.Power.PowerOff();
+                                                    tp_ClearButtonStatus(((uint)EvertzOutputs.out_Proj3).ToString());
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn3_PwrOnVis)].BoolValue = true;
+
+                                                    Mics.Mute("On");
+                                                }
                                                 await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj3).ToString(), ((uint)EvertzInputs.in_Blank).ToString());
                                                 break;
                                             }
@@ -767,6 +933,8 @@ namespace NFAHRooms
                                             _ = Sony.SendRequest(Sony.urls["AI_OFF"]);
                                             Thread.Sleep(1000);
                                             _ = Sony.SendRequest(Sony.urls["Lay_Full"]);
+                                            Thread.Sleep(500);
+                                            _ = Sony.SendRequest(Sony.urls["Lay_FullHeight"]);
                                             Thread.Sleep(1000);
                                             _ = Sony.SendRequest(Sony.urls["AI_ON"]);
                                             ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutTopOnVis)].BoolValue = false;
@@ -777,6 +945,8 @@ namespace NFAHRooms
                                             _ = Sony.SendRequest(Sony.urls["AI_OFF"]);
                                             Thread.Sleep(1000);
                                             _ = Sony.SendRequest(Sony.urls["Lay_Top"]);
+                                            Thread.Sleep(500);
+                                            _ = Sony.SendRequest(Sony.urls["Lay_TopHeight"]);
                                             Thread.Sleep(1000);
                                             _ = Sony.SendRequest(Sony.urls["AI_ON"]);
                                             ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutTopOnVis)].BoolValue = true;
@@ -787,6 +957,8 @@ namespace NFAHRooms
                                             _ = Sony.SendRequest(Sony.urls["AI_OFF"]);
                                             Thread.Sleep(1000);
                                             _ = Sony.SendRequest(Sony.urls["Lay_Head"]);
+                                            Thread.Sleep(500);
+                                            _ = Sony.SendRequest(Sony.urls["Lay_HeadHeight"]);
                                             Thread.Sleep(1000);
                                             _ = Sony.SendRequest(Sony.urls["AI_ON"]);
                                             ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutTopOnVis)].BoolValue = false;
@@ -1609,25 +1781,31 @@ namespace NFAHRooms
                         ControlSystem.tp.BooleanInput[((uint)Join.pg1Proj)].BoolValue = true;
                         ControlSystem.tp.BooleanInput[((uint)Join.pg2Proj)].BoolValue = false;
                         ControlSystem.tp.BooleanInput[((uint)Join.pg3Display)].BoolValue = false;
+                        tp_ButtonStatus("1", "0");
                         break;
                     case "evertz_2":
                         CrestronConsole.PrintLine("Evertz Room Setup 2");
                         ControlSystem.tp.BooleanInput[((uint)Join.pg1Proj)].BoolValue = false;
                         ControlSystem.tp.BooleanInput[((uint)Join.pg2Proj)].BoolValue = true;
                         ControlSystem.tp.BooleanInput[((uint)Join.pg3Display)].BoolValue = false;
+                        tp_ButtonStatus("1", "0");
+                        tp_ButtonStatus("2", "0");
                         break;
                     case "evertz_3":
                         CrestronConsole.PrintLine("Evertz Room Setup 3");
                         ControlSystem.tp.BooleanInput[((uint)Join.pg1Proj)].BoolValue = false;
                         ControlSystem.tp.BooleanInput[((uint)Join.pg2Proj)].BoolValue = false;
                         ControlSystem.tp.BooleanInput[((uint)Join.pg3Display)].BoolValue = true;
+                        tp_ButtonStatus("1", "0");
+                        tp_ButtonStatus("2", "0");
+                        tp_ButtonStatus("3", "0");
                         break;
                 }
 
                 string IP = CrestronEthernetHelper.GetEthernetParameter(CrestronEthernetHelper.ETHERNET_PARAMETER_TO_GET.GET_CURRENT_IP_ADDRESS, 0);
-                
-                
 
+
+                
                 Mics.MicList();
                 ControlSystem.tp.StringInput[((uint)Join.lblRoomName)].StringValue = RoomSetup.Touchpanel.RoomText;
                 ControlSystem.tp.ExtenderSystemReservedSigs.LcdBrightnessAutoOff();
@@ -1674,6 +1852,25 @@ namespace NFAHRooms
                 if (RoomSetup.Evertz.DefEvertzOut.Out4 >= 0)
                 {
                     await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_EXTDisplay).ToString(), RoomSetup.Evertz.DefEvertzOut.Out4.ToString());
+                }
+
+                switch (RoomSetup.Touchpanel.TP_RoomType.ToLower())
+                {
+                    case "evertz_1":
+                        
+                        tp_ButtonStatus("1", "0");
+                        break;
+                    case "evertz_2":
+                        
+                        tp_ButtonStatus("1", "0");
+                        tp_ButtonStatus("2", "0");
+                        break;
+                    case "evertz_3":
+                       
+                        tp_ButtonStatus("1", "0");
+                        tp_ButtonStatus("2", "0");
+                        tp_ButtonStatus("3", "0");
+                        break;
                 }
             }
             catch (Exception e)

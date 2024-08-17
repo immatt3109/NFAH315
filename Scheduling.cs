@@ -7,6 +7,7 @@ using Crestron.SimplSharpPro;
 using Crestron.SimplSharpPro.DM.AirMedia;
 using Crestron.SimplSharpPro.CrestronConnected;
 using Crestron.SimplSharpPro.DM;
+using System.Net.Http;
 
 
 
@@ -328,9 +329,96 @@ namespace NFAHRooms
                 {
                     ControlSystem.disp1.Power.PowerOff();
                 }
+
+                if (RoomSetup.RoomType.ToLower() == "evertz_room")
+                {
+
+                    string ParameterURL = "http://" + RoomSetup.Evertz.IpAddress + "/v.api/apis/EV/SET/parameter/217/1";
+
+                    using (HttpClient client = new HttpClient())
+                    {
+                        try
+                        {
+                            HttpResponseMessage DelServerResponse = client.GetAsync(ParameterURL).Result;
+                            DelServerResponse.EnsureSuccessStatusCode();
+                        }
+                        catch (Exception e)
+                        {
+                            ErrorLog.Error("Could not send Evertz Dante Reset Command", e.Message);
+                            CrestronConsole.PrintLine($"ERROR - Could Not Send Evertz Dante Reseet Shutdown Command - Message: {e.Message}");
+                            Email.SendEmail(RoomSetup.MailSubject, $"ERROR - Evertz Dante Reset Command: {e.Message} {e.Source} {e.StackTrace}");
+                        }
+                    }
+
+                    if (RoomSetup.Touchpanel.TP_RoomType == "evertz_1")
+                    {
+                        if (RoomSetup.Display1 == "proj")
+                        {
+                            //if (ControlSystem.proj1.PowerOnFeedback.BoolValue)
+                            ControlSystem.proj1.PowerOff();
+                            EvertzHandler.tp_ClearButtonStatus(((uint)EvertzOutputs.out_Proj1).ToString());
+                            ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = true;
+                            Mics.Mute("On");
+                        }
+                        else if (RoomSetup.Display1 == "tv")
+                        {
+
+                            //if (ControlSystem.disp1.Power.PowerOnFeedback.BoolValue)
+                            ControlSystem.disp1.Power.PowerOff();
+                            EvertzHandler.tp_ClearButtonStatus(((uint)EvertzOutputs.out_Proj1).ToString());
+                            ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = true;
+                            Mics.Mute("On");
+                        }
+                        Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj1).ToString(), ((uint)EvertzInputs.in_Blank).ToString());
+                    }
+
+                    if (RoomSetup.Touchpanel.TP_RoomType == "evertz_2")
+                    {
+                        if (RoomSetup.Display2 == "proj")
+                        {
+                            //if (ControlSystem.proj2.PowerOnFeedback.BoolValue)
+                            ControlSystem.proj2.PowerOff();
+                            EvertzHandler.tp_ClearButtonStatus(((uint)EvertzOutputs.out_Proj2).ToString());
+                            ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = true;
+                            Mics.Mute("On");
+                        }
+                        else if (RoomSetup.Display2 == "tv")
+                        {
+
+                            //if (ControlSystem.disp2.Power.PowerOnFeedback.BoolValue)
+                            ControlSystem.disp2.Power.PowerOff();
+                            EvertzHandler.tp_ClearButtonStatus(((uint)EvertzOutputs.out_Proj2).ToString());
+                            ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = true;
+                            Mics.Mute("On");
+                        }
+                        Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj2).ToString(), ((uint)EvertzInputs.in_Blank).ToString());
+                    }
+
+                    if (RoomSetup.Touchpanel.TP_RoomType == "evertz_3")
+                    {
+                        if (RoomSetup.Display3 == "proj")
+                        {
+                            //if (ControlSystem.proj3.PowerOnFeedback.BoolValue)
+                            ControlSystem.proj3.PowerOff();
+                            EvertzHandler.tp_ClearButtonStatus(((uint)EvertzOutputs.out_Proj3).ToString());
+                            ControlSystem.tp.BooleanInput[((uint)Join.btn3_PwrOnVis)].BoolValue = true;
+                            Mics.Mute("On");
+                        }
+                        else if (RoomSetup.Display3 == "tv")
+                        {
+
+                            //if (ControlSystem.disp3.Power.PowerOnFeedback.BoolValue)
+                            ControlSystem.disp3.Power.PowerOff();
+                            EvertzHandler.tp_ClearButtonStatus(((uint)EvertzOutputs.out_Proj3).ToString());
+                            ControlSystem.tp.BooleanInput[((uint)Join.btn3_PwrOnVis)].BoolValue = true;
+                            Mics.Mute("On");
+                        }
+                        Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj3).ToString(), ((uint)EvertzInputs.in_Blank).ToString());
+                    }
+                }
             }
 
-            if (schEvent.Name.ToString().Length > 1 && schEvent.Name.ToString().Substring(0, schEvent.Name.ToString().Length - 1).Equals("airmediareboot", StringComparison.OrdinalIgnoreCase))
+                if (schEvent.Name.ToString().Length > 1 && schEvent.Name.ToString().Substring(0, schEvent.Name.ToString().Length - 1).Equals("airmediareboot", StringComparison.OrdinalIgnoreCase))
             {
                 ControlSystem.am3200.AirMedia.DeviceReboot();
             }

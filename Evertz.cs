@@ -14,7 +14,7 @@ namespace NFAHRooms
     public static class Evertz
     {
         //private static Crestron.SimplSharp.CrestronSockets.UDPServer ResponseServer;
-
+        
         public class EvertzResponse
         {
             public string ID { get; set; }
@@ -99,11 +99,16 @@ namespace NFAHRooms
                     response.EnsureSuccessStatusCode();
                     string responseBody = await response.Content.ReadAsStringAsync();
                     return responseBody;
+                            //response.EnsureSuccessStatusCode();
+                            //string responseBody = await response.Content.ReadAsStringAsync();
+                            //return responseBody;
+                       
                 }
+
                 catch (HttpRequestException e)
                 {
                     ErrorLog.Error("Error in GetEvertzData: {0}", e.Message);
-                    return null;
+                   return null;
                 }
             }     
 

@@ -74,7 +74,7 @@ namespace NFAHRooms
             switch (Output)
             {
                 case "2":
-                    tp_ClearButtonStatus(((uint)NVXOutputs.out_Proj1).ToString());
+                    //tp_ClearButtonStatus(((uint)NVXOutputs.out_Proj1).ToString());
                         if (Input != "0")
                         {
                             SetOutput(101);
@@ -83,22 +83,22 @@ namespace NFAHRooms
                         switch (Input)
                         {
                             case "1":
-                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_PCOn)].BoolValue = true;
+                                //ControlSystem.tp.BooleanInput[((uint)Join.btn1_PCOn)].BoolValue = true;
                                 break;
                             case "2":
-                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_ExtDeskOn)].BoolValue = true;
+                                //ControlSystem.tp.BooleanInput[((uint)Join.btn1_ExtDeskOn)].BoolValue = true;
                                 break;
                             case "3":
-                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_DocCamOn)].BoolValue = true;
+                                //ControlSystem.tp.BooleanInput[((uint)Join.btn1_DocCamOn)].BoolValue = true;
                                 break;
                             case "4":
-                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_AirMediaOn)].BoolValue = true;
+                                //ControlSystem.tp.BooleanInput[((uint)Join.btn1_AirMediaOn)].BoolValue = true;
                                 break;
                             case "5":
-                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_AuxOn)].BoolValue = true;
+                                //ControlSystem.tp.BooleanInput[((uint)Join.btn1_AuxOn)].BoolValue = true;
                                 break;
                             case "8":
-                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_DSPwrOn)].BoolValue = true;
+                                //ControlSystem.tp.BooleanInput[((uint)Join.btn1_DSPwrOn)].BoolValue = true;
                                 break;
                             case "0":
                                 //    using (TcpClient client = new TcpClient("172.16.1.238", ((int)SonyPort.ControlPort)))
@@ -113,16 +113,16 @@ namespace NFAHRooms
                                 //        ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = true;
                                 //        Thread.Sleep(500);
                                 //        Mics.Mute("on");
-                                ControlSystem.proj1.PowerOff();
-                                Thread.Sleep(500);
-                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = true;
-                                Mics.Mute("on");
+                                //ControlSystem.proj1.PowerOff();
+                                //Thread.Sleep(500);
+                                //ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = true;
+                                //Mics.Mute("on");
                              break;
                         }
                         break;
                     
                 case "3":
-                    tp_ClearButtonStatus(((uint)NVXOutputs.out_Proj2).ToString());
+                    //tp_ClearButtonStatus(((uint)NVXOutputs.out_Proj2).ToString());
                     if (Input != "0")
                     {
                         SetOutput(201);
@@ -130,22 +130,22 @@ namespace NFAHRooms
                         switch (Input)
                         {
                             case "1":
-                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_PCOn)].BoolValue = true;
+                                //ControlSystem.tp.BooleanInput[((uint)Join.btn2_PCOn)].BoolValue = true;
                                 break;
                             case "2":
-                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_ExtDeskOn)].BoolValue = true;
+                                //ControlSystem.tp.BooleanInput[((uint)Join.btn2_ExtDeskOn)].BoolValue = true;
                                 break;
                             case "3":
-                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_DocCamOn)].BoolValue = true;
+                                //ControlSystem.tp.BooleanInput[((uint)Join.btn2_DocCamOn)].BoolValue = true;
                                 break;
                             case "4":
-                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_AirMediaOn)].BoolValue = true;
+                                //ControlSystem.tp.BooleanInput[((uint)Join.btn2_AirMediaOn)].BoolValue = true;
                                 break;
                             case "5":
-                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_AuxOn)].BoolValue = true;
+                                //ControlSystem.tp.BooleanInput[((uint)Join.btn2_AuxOn)].BoolValue = true;
                                 break;
                             case "8":
-                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_DSPwrOn)].BoolValue = true;
+                                //ControlSystem.tp.BooleanInput[((uint)Join.btn2_DSPwrOn)].BoolValue = true;
                                 break;
                             case "0":
                             //if (RoomSetup.Display2 == "proj")
@@ -169,16 +169,16 @@ namespace NFAHRooms
                             //    ControlSystem.proj1.SourceSelectSigs[((uint)SonyProjInputs.ProjHDMI)].Pulse();
                             //}
                             //if (ControlSystem.proj2.PowerOnFeedback.BoolValue)
-                            ControlSystem.proj2.PowerOff();
-                            Thread.Sleep(500);
-                            ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = true;
-                            Mics.Mute("on");
+                            //ControlSystem.proj2.PowerOff();
+                            //Thread.Sleep(500);
+                            //ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = true;
+                            //Mics.Mute("on");
                             
                             break;
                     }
                         break;
                 case "4":
-                    tp_ClearButtonStatus(((uint)NVXOutputs.out_Proj3).ToString());
+                    //tp_ClearButtonStatus(((uint)NVXOutputs.out_Proj3).ToString());
                     if (Input != "0")
                     {
                         SetOutput(301);
@@ -186,22 +186,22 @@ namespace NFAHRooms
                         switch (Input)
                         {
                             case "1":
-                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_PCOn)].BoolValue = true;
+                                //ControlSystem.tp.BooleanInput[((uint)Join.btn3_PCOn)].BoolValue = true;
                                 break;
                             case "2":
-                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_ExtDeskOn)].BoolValue = true;
+                                //ControlSystem.tp.BooleanInput[((uint)Join.btn3_ExtDeskOn)].BoolValue = true;
                                 break;
                             case "3":
-                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_DocCamOn)].BoolValue = true;
+                                //ControlSystem.tp.BooleanInput[((uint)Join.btn3_DocCamOn)].BoolValue = true;
                                 break;
                             case "4":
-                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_AirMediaOn)].BoolValue = true;
+                                //ControlSystem.tp.BooleanInput[((uint)Join.btn3_AirMediaOn)].BoolValue = true;
                                 break;
                             case "5":
-                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_AuxOn)].BoolValue = true;
+                                //ControlSystem.tp.BooleanInput[((uint)Join.btn3_AuxOn)].BoolValue = true;
                                 break;
                             case "8":
-                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_DSPwrOn)].BoolValue = true;
+                                //ControlSystem.tp.BooleanInput[((uint)Join.btn3_DSPwrOn)].BoolValue = true;
                                 break;
                             case "0":
                             ControlSystem.disp3.Power.PowerOff();
@@ -290,7 +290,7 @@ namespace NFAHRooms
             }
             
         }
-        private static async void tp_SigChange(BasicTriList currentDevice, SigEventArgs args)
+        private static void tp_SigChange(BasicTriList currentDevice, SigEventArgs args)
         {
             
             try
@@ -310,62 +310,153 @@ namespace NFAHRooms
                                         case ((uint)Join.btn1_PCOff):
                                             {
                                                 SetOutput(((uint)Join.btn1_PCOff));
+                                                
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_ExtDeskOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_DocCamOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_AirMediaOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_AuxOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_DSPwrOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_PCOn)].BoolValue = true;
+
+                                                
                                                 NVX.RouteNVX( ((uint)NVXInputs.in_PCMain).ToString() + "," + ((uint)NVXOutputs.out_Proj1).ToString());
                                                 break;
                                             }
                                         case ((uint)Join.btn1_ExtDeskOff):
                                             {
                                                 SetOutput((uint)Join.btn1_ExtDeskOff);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_PCOn)].BoolValue = false;
+                                                
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_DocCamOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_AirMediaOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_AuxOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_DSPwrOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_ExtDeskOn)].BoolValue = true;
+
+                                                
+
                                                 NVX.RouteNVX(  ((uint)NVXInputs.in_PCExtDesk).ToString() + "," + ((uint)NVXOutputs.out_Proj1).ToString());
                                                 break;
                                             }
                                         case ((uint)Join.btn1_DocCamOff):
                                             {
                                                 SetOutput((uint)Join.btn1_DocCamOff);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_PCOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_ExtDeskOn)].BoolValue = false;
+                                                
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_AirMediaOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_AuxOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_DSPwrOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_DocCamOn)].BoolValue = true;
+
+
+                                                
                                                 NVX.RouteNVX(  ((uint)NVXInputs.in_DocCam).ToString() + "," + ((uint)NVXOutputs.out_Proj1).ToString());
                                                 break;
                                             }
                                         case ((uint)Join.btn1_AirMediaOff):
                                             {
                                                 SetOutput((uint)Join.btn1_AirMediaOff);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_PCOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_ExtDeskOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_DocCamOn)].BoolValue = false;
+                                                
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_AuxOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_DSPwrOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_AirMediaOn)].BoolValue = true;
+                                                
                                                 NVX.RouteNVX(((uint)NVXInputs.in_AirMedia).ToString() + "," + ((uint)NVXOutputs.out_Proj1).ToString());
                                                 break;
                                             }
                                         case ((uint)Join.btn1_AuxOff):
                                             {
                                                 SetOutput((uint)Join.btn1_AuxOff);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_PCOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_ExtDeskOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_DocCamOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_AirMediaOn)].BoolValue = false;
+                                                
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_DSPwrOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_AuxOn)].BoolValue = true;
+                                                
                                                 NVX.RouteNVX(((uint)NVXInputs.in_Aux).ToString() + "," + ((uint)NVXOutputs.out_Proj1).ToString());
                                                 break;
                                             }
                                         case ((uint)Join.btn1_DSPwrOff):
                                             {
                                                 SetOutput((uint)Join.btn1_AuxOff);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_PCOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_ExtDeskOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_DocCamOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_AirMediaOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_AuxOn)].BoolValue = false;
+                                                
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn1_DSPwrOn)].BoolValue = true;
+                                                
                                                 NVX.RouteNVX(((uint)NVXInputs.in_DS).ToString() + "," + ((uint)NVXOutputs.out_Proj1).ToString());
                                                 break;
                                             }
                                         case ((uint)Join.btn1_PwrOn):  //Power On
                                             {
-                                                //if (RoomSetup.Display1 == "proj")
-                                                //{
-                                                //    if (ControlSystem.proj1.PowerOffFeedback.BoolValue)
-                                                //        SetOutput((uint)Join.btn1_PwrOn);
-                                                //}
-                                                //else if (RoomSetup.Display1 == "tv")
-                                                //{
-                                                //    if (ControlSystem.disp1.Power.PowerOffFeedback.BoolValue)
-                                                        SetOutput((uint)Join.btn1_PwrOn);
-                                                //}
+                                                if (RoomSetup.Display1 == "proj")
+                                                {
+                                                    //if (ControlSystem.proj1.PowerOffFeedback.BoolValue)
+                                                    SetOutput((uint)Join.btn1_PwrOn);
+                                                }
+                                                else if (RoomSetup.Display1 == "tv")
+                                                {
+                                                    //if (ControlSystem.disp1.Power.PowerOffFeedback.BoolValue)
+                                                    SetOutput((uint)Join.btn1_PwrOn);
+                                                }
                                                 break;
                                             }
                                         case ((uint)Join.btn1_PwrOff):  //Power Off
-                                            {                                                
-                                                await Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)NVXOutputs.out_Proj1).ToString(), ((uint)EvertzInputs.in_Blank).ToString());
+                                            {
+                                                if (RoomSetup.Display1 == "proj")
+                                                {
+                                                    //if (ControlSystem.proj1.PowerOnFeedback.BoolValue)
+                                                    ControlSystem.proj1.PowerOff();
+
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn1_PCOn)].BoolValue = false;
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn1_ExtDeskOn)].BoolValue = false;
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn1_DocCamOn)].BoolValue = false;
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn1_AirMediaOn)].BoolValue = false;
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn1_AuxOn)].BoolValue = false;
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn1_DSPwrOn)].BoolValue = false;
+                                                    //tp_ClearButtonStatus(((uint)EvertzOutputs.out_Proj1).ToString());
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = true;
+                                                    Mics.Mute("On");
+                                                }
+                                                else if (RoomSetup.Display1 == "tv")
+                                                {
+
+                                                    //if (ControlSystem.disp1.Power.PowerOnFeedback.BoolValue)
+                                                    ControlSystem.disp1.Power.PowerOff();
+
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn1_PCOn)].BoolValue = false;
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn1_ExtDeskOn)].BoolValue = false;
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn1_DocCamOn)].BoolValue = false;
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn1_AirMediaOn)].BoolValue = false;
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn1_AuxOn)].BoolValue = false;
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn1_DSPwrOn)].BoolValue = false;
+                                                    //tp_ClearButtonStatus(((uint)EvertzOutputs.out_Proj1).ToString());
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = true;
+                                                    Mics.Mute("On");
+                                                }
                                                 NVX.RouteNVX(((uint)NVXInputs.in_Blank).ToString() + "," + ((uint)NVXOutputs.out_Proj1).ToString());
                                                 break;
                                             }
                                         case ((uint)Join.btn2_PCOff):
                                             {
                                                 SetOutput(((uint)Join.btn2_PCOff));
+                                                
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_ExtDeskOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_DocCamOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_AirMediaOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_AuxOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_DSPwrOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_PCOn)].BoolValue = true;
+
                                                 NVX.RouteNVX(  ((uint)NVXInputs.in_PCMain).ToString() + "," + ((uint)NVXOutputs.out_Proj2).ToString());
                                                 break;
 
@@ -373,6 +464,15 @@ namespace NFAHRooms
                                         case ((uint)Join.btn2_ExtDeskOff):
                                             {
                                                 SetOutput((uint)Join.btn2_ExtDeskOff);
+
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_PCOn)].BoolValue = false;
+                                                
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_DocCamOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_AirMediaOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_AuxOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_DSPwrOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_ExtDeskOn)].BoolValue = true;
+
                                                 NVX.RouteNVX(((uint)NVXInputs.in_PCExtDesk).ToString() + "," + ((uint)NVXOutputs.out_Proj2).ToString());
                                                 break;
 
@@ -380,6 +480,15 @@ namespace NFAHRooms
                                         case ((uint)Join.btn2_DocCamOff):
                                             {
                                                 SetOutput((uint)Join.btn2_DocCamOff);
+
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_PCOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_ExtDeskOn)].BoolValue = false;
+                                                
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_AirMediaOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_AuxOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_DSPwrOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_DocCamOn)].BoolValue = true;
+
                                                 NVX.RouteNVX(((uint)NVXInputs.in_DocCam).ToString() + "," + ((uint)NVXOutputs.out_Proj2).ToString());
                                                 break;
 
@@ -387,6 +496,15 @@ namespace NFAHRooms
                                         case ((uint)Join.btn2_AirMediaOff):
                                             {
                                                 SetOutput((uint)Join.btn2_AirMediaOff);
+
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_PCOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_ExtDeskOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_DocCamOn)].BoolValue = false;
+                                                
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_AuxOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_DSPwrOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_AirMediaOn)].BoolValue = true;
+
                                                 NVX.RouteNVX(((uint)NVXInputs.in_AirMedia).ToString() + "," + ((uint)NVXOutputs.out_Proj2).ToString());
                                                 break;
 
@@ -395,17 +513,45 @@ namespace NFAHRooms
                                             {
 
                                                 SetOutput((uint)Join.btn2_AuxOff);
+
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_PCOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_ExtDeskOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_DocCamOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_AirMediaOn)].BoolValue = false;
+                                                
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_DSPwrOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_AuxOn)].BoolValue = true;
+
                                                 NVX.RouteNVX(((uint)NVXInputs.in_Aux).ToString() + "," + ((uint)NVXOutputs.out_Proj2).ToString());
                                                 break;
                                             }
                                         case ((uint)Join.btn2_DSPwrOff):
                                             {
-                                                SetOutput((uint)Join.btn2_AuxOff);
+                                                SetOutput((uint)Join.btn2_DSPwrOff);
+
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_PCOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_ExtDeskOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_DocCamOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_AirMediaOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_AuxOn)].BoolValue = false;
+                                                
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn2_DSPwrOn)].BoolValue = true;
+
                                                 NVX.RouteNVX(((uint)NVXInputs.in_DS).ToString() + "," + ((uint)NVXOutputs.out_Proj2).ToString());
                                                 break;
                                             }
                                         case ((uint)Join.btn2_PwrOn):  //Power On
                                             {
+                                                if (RoomSetup.Display2 == "proj")
+                                                {
+                                                    //if (ControlSystem.proj1.PowerOffFeedback.BoolValue)
+                                                    SetOutput((uint)Join.btn2_PwrOn);
+                                                }
+                                                else if (RoomSetup.Display2 == "tv")
+                                                {
+                                                    //if (ControlSystem.disp1.Power.PowerOffFeedback.BoolValue)
+                                                    SetOutput((uint)Join.btn2_PwrOn);
+                                                }
                                                 //if (ControlSystem.proj2.PowerOffFeedback.BoolValue)
                                                 //    SetOutput((uint)Join.btn2_PwrOn);
                                                 //if (RoomSetup.Display2 == "proj")
@@ -416,30 +562,86 @@ namespace NFAHRooms
                                                 //else if (RoomSetup.Display2 == "tv")
                                                 //{
                                                 //    if (ControlSystem.disp2.Power.PowerOffFeedback.BoolValue)
-                                                        SetOutput((uint)Join.btn2_PwrOn);
+                                                //SetOutput((uint)Join.btn2_PwrOn);
                                                 //}
                                                 break;
                                             }
                                         case ((uint)Join.btn2_PwrOff):  //Power Off
                                             {
+                                                if (RoomSetup.Display2 == "proj")
+                                                {
+                                                    //if (ControlSystem.proj2.PowerOnFeedback.BoolValue)
+                                                    ControlSystem.proj2.PowerOff();
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn2_PCOn)].BoolValue = false;
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn2_ExtDeskOn)].BoolValue = false;
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn2_DocCamOn)].BoolValue = false;
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn2_AirMediaOn)].BoolValue = false;
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn2_AuxOn)].BoolValue = false;
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn2_DSPwrOn)].BoolValue = false;
+                                                    //tp_ClearButtonStatus(((uint)EvertzOutputs.out_Proj2).ToString());
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = true;
+                                                    Mics.Mute("On");
+                                                }
+                                                else if (RoomSetup.Display2 == "tv")
+                                                {
+
+                                                    //if (ControlSystem.disp2.Power.PowerOnFeedback.BoolValue)
+                                                    ControlSystem.disp2.Power.PowerOff();
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn2_PCOn)].BoolValue = false;
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn2_ExtDeskOn)].BoolValue = false;
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn2_DocCamOn)].BoolValue = false;
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn2_AirMediaOn)].BoolValue = false;
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn2_AuxOn)].BoolValue = false;
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn2_DSPwrOn)].BoolValue = false;
+                                                    //tp_ClearButtonStatus(((uint)EvertzOutputs.out_Proj2).ToString());
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = true;
+                                                    Mics.Mute("On");
+                                                }
                                                 NVX.RouteNVX(((uint)NVXInputs.in_Blank).ToString() + "," + ((uint)NVXOutputs.out_Proj2).ToString());
                                                 break;
                                             }
                                         case ((uint)Join.btn3_PCOff):
                                             {
                                                 SetOutput(((uint)Join.btn3_PCOff));
+
+                                                
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_ExtDeskOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_DocCamOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_AirMediaOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_AuxOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_DSPwrOn)].BoolValue = false;
+
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_PCOn)].BoolValue = true;
                                                 NVX.RouteNVX(((uint)NVXInputs.in_PCMain).ToString() + "," + ((uint)NVXOutputs.out_Proj3).ToString());
                                                 break;
                                             }
                                         case ((uint)Join.btn3_ExtDeskOff):
                                             {
                                                 SetOutput((uint)Join.btn3_ExtDeskOff);
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_PCOn)].BoolValue = false;
+                                                
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_DocCamOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_AirMediaOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_AuxOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_DSPwrOn)].BoolValue = false;
+
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_ExtDeskOn)].BoolValue = true;
+
                                                 NVX.RouteNVX(((uint)NVXInputs.in_PCExtDesk).ToString() + "," + ((uint)NVXOutputs.out_Proj3).ToString());
                                                 break;
                                             }
                                         case ((uint)Join.btn3_DocCamOff):
                                             {
                                                 SetOutput((uint)Join.btn3_DocCamOff);
+
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_PCOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_ExtDeskOn)].BoolValue = false;
+                                                
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_AirMediaOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_AuxOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_DSPwrOn)].BoolValue = false;
+
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_DocCamOn)].BoolValue = true;
                                                 NVX.RouteNVX(((uint)NVXInputs.in_DocCam).ToString() + "," + ((uint)NVXOutputs.out_Proj3).ToString());
                                                 break;
                                                 
@@ -447,40 +649,108 @@ namespace NFAHRooms
                                         case ((uint)Join.btn3_AirMediaOff):
                                             {
                                                 SetOutput((uint)Join.btn3_AirMediaOff);
+
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_PCOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_ExtDeskOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_DocCamOn)].BoolValue = false;
+                                                
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_AuxOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_DSPwrOn)].BoolValue = false;
+
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_AirMediaOn)].BoolValue = true;
                                                 NVX.RouteNVX(((uint)NVXInputs.in_AirMedia).ToString() + "," + ((uint)NVXOutputs.out_Proj3).ToString());
                                                 break;
                                             }
                                         case ((uint)Join.btn3_AuxOff):
                                             {
                                                 SetOutput((uint)Join.btn3_AuxOff);
+
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_PCOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_ExtDeskOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_DocCamOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_AirMediaOn)].BoolValue = false;
+                                                
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_DSPwrOn)].BoolValue = false;
+
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_AuxOn)].BoolValue = true;
+
                                                 NVX.RouteNVX(((uint)NVXInputs.in_Aux).ToString() + "," + ((uint)NVXOutputs.out_Proj3).ToString());
                                                 break;
                                             }
                                         case ((uint)Join.btn3_DSPwrOff):
                                             {
                                                 SetOutput((uint)Join.btn3_AuxOff);
+
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_PCOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_ExtDeskOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_DocCamOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_AirMediaOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_AuxOn)].BoolValue = false;
+                                                
+
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn3_DSPwrOn)].BoolValue = true;
+
                                                 NVX.RouteNVX(((uint)NVXInputs.in_DS).ToString() + "," + ((uint)NVXOutputs.out_Proj3).ToString());
                                                 break;
                                             }
                                         case ((uint)Join.btn3_PwrOn):  //Power On
                                             {
+                                                if (RoomSetup.Display3 == "proj")
+                                                {
+                                                    //if (ControlSystem.proj1.PowerOffFeedback.BoolValue)
+                                                    SetOutput((uint)Join.btn3_PwrOn);
+                                                }
+                                                else if (RoomSetup.Display3 == "tv")
+                                                {
+                                                    //if (ControlSystem.disp1.Power.PowerOffFeedback.BoolValue)
+                                                    SetOutput((uint)Join.btn3_PwrOn);
+                                                }
                                                 //if (ControlSystem.proj3.PowerOffFeedback.BoolValue)
                                                 //    SetOutput((uint)Join.btn3_PwrOn);
                                                 //break;
                                                 //if (RoomSetup.Display3 == "proj")
-                                               // {
-                                                    //if (ControlSystem.proj3.PowerOffFeedback.BoolValue)
+                                                // {
+                                                //if (ControlSystem.proj3.PowerOffFeedback.BoolValue)
                                                 //        SetOutput((uint)Join.btn3_PwrOn);
                                                 //}
                                                 //else if (RoomSetup.Display3 == "tv")
                                                 //{
                                                 //    if (ControlSystem.disp3.Power.PowerOffFeedback.BoolValue)
-                                                        SetOutput((uint)Join.btn3_PwrOn);
+                                                //SetOutput((uint)Join.btn3_PwrOn);
                                                 //}
                                                 break;
                                             }
                                         case ((uint)Join.btn3_PwrOff):  //Power Off
                                             {
+                                                if (RoomSetup.Display3 == "proj")
+                                                {
+                                                    //if (ControlSystem.proj3.PowerOnFeedback.BoolValue)
+                                                    ControlSystem.proj3.PowerOff();
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn3_PCOn)].BoolValue = false;
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn3_ExtDeskOn)].BoolValue = false;
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn3_DocCamOn)].BoolValue = false;
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn3_AirMediaOn)].BoolValue = false;
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn3_AuxOn)].BoolValue = false;
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn3_DSPwrOn)].BoolValue = false;
+                                                    //tp_ClearButtonStatus(((uint)EvertzOutputs.out_Proj3).ToString());
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn3_PwrOnVis)].BoolValue = true;
+                                                    Mics.Mute("On");
+                                                }
+                                                else if (RoomSetup.Display3 == "tv")
+                                                {
+
+                                                    //if (ControlSystem.disp3.Power.PowerOnFeedback.BoolValue)
+                                                    ControlSystem.disp3.Power.PowerOff();
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn3_PCOn)].BoolValue = false;
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn3_ExtDeskOn)].BoolValue = false;
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn3_DocCamOn)].BoolValue = false;
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn3_AirMediaOn)].BoolValue = false;
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn3_AuxOn)].BoolValue = false;
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn3_DSPwrOn)].BoolValue = false;
+                                                    //tp_ClearButtonStatus(((uint)EvertzOutputs.out_Proj3).ToString());
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.btn3_PwrOnVis)].BoolValue = true;
+                                                    Mics.Mute("On");
+                                                }
                                                 NVX.RouteNVX(((uint)NVXInputs.in_Blank).ToString() + "," + ((uint)NVXOutputs.out_Proj3).ToString());
                                                 break;
                                             }
@@ -1485,7 +1755,7 @@ namespace NFAHRooms
             }
         }
         private static void disp3_BaseEvent(GenericBase currentDevice, BaseEventArgs args)
-        {CrestronConsole.PrintLine("args: {0}", args.Index.ToString());
+        {//CrestronConsole.PrintLine("args: {0}", args.Index.ToString());
            
             //try
             //{
@@ -1574,8 +1844,8 @@ namespace NFAHRooms
                         throw new Exception(ControlSystem.proj1.RegistrationFailureReason.ToString());
 
                     ControlSystem.proj1.OnlineStatusChange += new OnlineStatusChangeEventHandler(proj1_OnlineStatusChange);
-                    ControlSystem.proj1.BaseEvent += new BaseEventHandler(proj1_BaseEvent);
-                    Proj1On = true;
+                    //ControlSystem.proj1.BaseEvent += new BaseEventHandler(proj1_BaseEvent);
+                    //Proj1On = true;
                 }
                 if (RoomSetup.Display1 == "tv")
                 {
@@ -1583,7 +1853,7 @@ namespace NFAHRooms
                         throw new Exception(ControlSystem.disp1.RegistrationFailureReason.ToString());
 
                     ControlSystem.disp1.OnlineStatusChange += new OnlineStatusChangeEventHandler(disp1_OnlineStatusChange);
-                    ControlSystem.disp1.BaseEvent += new BaseEventHandler(disp1_BaseEvent);
+                    //ControlSystem.disp1.BaseEvent += new BaseEventHandler(disp1_BaseEvent);
                 }
 
                 if (RoomSetup.Display2 == "proj")
@@ -1592,8 +1862,8 @@ namespace NFAHRooms
                         throw new Exception(ControlSystem.proj2.RegistrationFailureReason.ToString());
 
                     ControlSystem.proj2.OnlineStatusChange += new OnlineStatusChangeEventHandler(proj2_OnlineStatusChange);
-                    ControlSystem.proj2.BaseEvent += new BaseEventHandler(proj2_BaseEvent);
-                    Proj2On = true;
+                    //ControlSystem.proj2.BaseEvent += new BaseEventHandler(proj2_BaseEvent);
+                    //Proj2On = true;
                 }
                 if (RoomSetup.Display2 == "tv")
                 {
@@ -1601,7 +1871,7 @@ namespace NFAHRooms
                         throw new Exception(ControlSystem.disp2.RegistrationFailureReason.ToString());
 
                     ControlSystem.disp2.OnlineStatusChange += new OnlineStatusChangeEventHandler(disp2_OnlineStatusChange);
-                    ControlSystem.disp2.BaseEvent += new BaseEventHandler(disp2_BaseEvent);
+                    //ControlSystem.disp2.BaseEvent += new BaseEventHandler(disp2_BaseEvent);
                 }
 
 
@@ -1611,8 +1881,8 @@ namespace NFAHRooms
                         throw new Exception(ControlSystem.proj3.RegistrationFailureReason.ToString());
 
                     ControlSystem.proj3.OnlineStatusChange += new OnlineStatusChangeEventHandler(proj3_OnlineStatusChange);
-                    ControlSystem.proj3.BaseEvent += new BaseEventHandler(proj3_BaseEvent);
-                    Proj3On = true;
+                    //ControlSystem.proj3.BaseEvent += new BaseEventHandler(proj3_BaseEvent);
+                    //Proj3On = true;
                 }
                 if (RoomSetup.Display3 == "tv")
                 {
@@ -1620,7 +1890,7 @@ namespace NFAHRooms
                         throw new Exception(ControlSystem.disp3.RegistrationFailureReason.ToString());
 
                     ControlSystem.disp3.OnlineStatusChange += new OnlineStatusChangeEventHandler(disp3_OnlineStatusChange);
-                    ControlSystem.disp3.BaseEvent += new BaseEventHandler(disp3_BaseEvent);
+                    //ControlSystem.disp3.BaseEvent += new BaseEventHandler(disp3_BaseEvent);
                 }
             
 
@@ -1635,19 +1905,28 @@ namespace NFAHRooms
                     ControlSystem.tp.BooleanInput[((uint)Join.pg1Proj)].BoolValue = true;
                     ControlSystem.tp.BooleanInput[((uint)Join.pg2Proj)].BoolValue = false;
                     ControlSystem.tp.BooleanInput[((uint)Join.pg3Display)].BoolValue = false;
-                    break;
+                        
+                        tp_ButtonStatus("2", "0");
+                        
+                        break;
                 case "evertz_2":
                     CrestronConsole.PrintLine("NVX Room Setup 2");
                     ControlSystem.tp.BooleanInput[((uint)Join.pg1Proj)].BoolValue = false;
                     ControlSystem.tp.BooleanInput[((uint)Join.pg2Proj)].BoolValue = true;
                     ControlSystem.tp.BooleanInput[((uint)Join.pg3Display)].BoolValue = false;
-                    break;
+                        
+                        tp_ButtonStatus("2", "0");
+                        tp_ButtonStatus("3", "0");
+                        break;
                 case "evertz_3":
                     CrestronConsole.PrintLine("NVX Room Setup 3");
                     ControlSystem.tp.BooleanInput[((uint)Join.pg1Proj)].BoolValue = false;
                     ControlSystem.tp.BooleanInput[((uint)Join.pg2Proj)].BoolValue = false;
                     ControlSystem.tp.BooleanInput[((uint)Join.pg3Display)].BoolValue = true;
-                    break;
+                        tp_ButtonStatus("2", "0");
+                        tp_ButtonStatus("3", "0");
+                        tp_ButtonStatus("4", "0");
+                        break;
             }
 
                 string IP = CrestronEthernetHelper.GetEthernetParameter(CrestronEthernetHelper.ETHERNET_PARAMETER_TO_GET.GET_CURRENT_IP_ADDRESS, 0);
@@ -1673,6 +1952,25 @@ namespace NFAHRooms
                 NVX.RouteNVX(((uint)NVXInputs.in_PCExtDesk).ToString() + "," + ((uint)NVXOutputs.out_EXTDisplay).ToString());
                 NVX.RouteNVX(((uint)NVXInputs.in_TeachCam).ToString() + "," + ((uint)NVXOutputs.out_VTC).ToString());
                 //}
+
+                switch (RoomSetup.Touchpanel.TP_RoomType.ToLower())
+                {
+                    case "evertz_1":
+
+                        tp_ButtonStatus("2", "0");
+                        break;
+                    case "evertz_2":
+
+                        tp_ButtonStatus("2", "0");
+                        tp_ButtonStatus("3", "0");
+                        break;
+                    case "evertz_3":
+
+                        tp_ButtonStatus("2", "0");
+                        tp_ButtonStatus("3", "0");
+                        tp_ButtonStatus("4", "0");
+                        break;
+                }
 
             }
             catch (Exception e)
