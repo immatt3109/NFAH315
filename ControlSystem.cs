@@ -24,7 +24,7 @@ namespace NFAHRooms
         public static RoomViewConnectedDisplay proj2;
         public static RoomViewConnectedDisplay proj3;
         public static EthernetIntersystemCommunications EISC;
-        public static bool Is131 = false;
+        
 
         public ControlSystem() : base()
         {
@@ -101,9 +101,7 @@ namespace NFAHRooms
                     if (RoomSetup.Display3 == "tv")
                         disp3 = new CrestronConnectedDisplayV2(0x25, this);
 
-                    if (RoomSetup.Touchpanel.RoomText.Contains("131"))
-                        Is131 = true;
-
+                   
                     uint ipid = Convert.ToUInt32(RoomSetup.NvxSettings.AssignedIpid,16);
                     EISC = new EthernetIntersystemCommunications(ipid, RoomSetup.NvxSettings.DmServerProcessorIp, this);
                     

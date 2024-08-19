@@ -253,14 +253,14 @@
     }
 
     public enum NVXOutputs
-    {      out_VTC = 8,
+    {      out_VTC = 10,
            out_Proj1 = 2,
            out_Proj2 = 3,
            out_Proj3 = 4,
                               
            out_Disp3 = 4,
            out_Disp2 = 3,
-           out_Disp1 = 2,
+           out_Disp1 = 13,
                
            out_EXTDisplay = 1,
     }
@@ -288,14 +288,14 @@
     }
     public enum NVXInputs
     {      
-        in_PCMain = 1,
+        in_PCMain = 22,
         in_PCExtDesk = 2,
         in_DocCam = 3,
-        in_AirMedia = 4,
-        in_Aux = 5,
-        in_TeachCam = 6,
-        in_StudentCam = 7,
-        in_DS = 24,
+        in_AirMedia = 23,
+        in_Aux = 24,
+        in_TeachCam = 11,
+        in_StudentCam = 15,
+        in_DS = 27,
         in_Blank = 0,
     }
 
