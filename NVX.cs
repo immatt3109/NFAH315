@@ -28,23 +28,23 @@ namespace NFAHRooms
                 //if (ControlSystem.Is131)
                 //{
                 //    CrestronConsole.PrintLine("Is131: {0}", ControlSystem.Is131);
-                    if (output == "4")
-                    {
+                    //if (output == "4")
+                    //{
                         //CrestronConsole.PrintLine("output 4?: {0}", output);
-                        ControlSystem.EISC.StringInput[((uint)NVXRoutes.RouteOutput)].StringValue = input + "," + output;
+                      //  ControlSystem.EISC.StringInput[((uint)NVXRoutes.RouteOutput)].StringValue = input + "," + output;
                 
-                        for (int i = 5; i <= 7; i++)
-                        {
+                      //  for (int i = 5; i <= 7; i++)
+                        //{
                 //            RoomSetup.NvxSettings.OutputDictionary.TryGetValue(i.ToString(), out var outputValue2);
-                            ControlSystem.EISC.StringInput[((uint)NVXRoutes.RouteOutput)].StringValue = input + "," + i.ToString();
-                        }
-                    }
+                        //    ControlSystem.EISC.StringInput[((uint)NVXRoutes.RouteOutput)].StringValue = input + "," + i.ToString();
+                        //}
+                    //}
                 //}
-                else
-                {
+                //else
+                //{
                     ControlSystem.EISC.StringInput[((uint)NVXRoutes.RouteOutput)].StringValue = input + "," + output;
                     CrestronConsole.PrintLine("NVX Route Sent to NVX: {0}", input + "," + output);
-                }
+                //}
 
             }
             catch (Exception e)
@@ -80,7 +80,7 @@ namespace NFAHRooms
                             //CrestronConsole.PrintLine($"Original input: {input} Original output: {output}");
                             //if(Convert.ToInt32(outputValue.OutputProg) < ((int)NVXOutputs.out_EXTDisplay))
                             //{
-                            if (Convert.ToInt16(output) > 1 && Convert.ToInt16(output) <= 4)
+                            //if (Convert.ToInt16(output) > 1 && Convert.ToInt16(output) <= 4)
                                 NVXHandler.tp_ButtonStatus(output, input);
                             //}
                         }

@@ -254,15 +254,15 @@
 
     public enum NVXOutputs
     {      out_VTC = 10,
-           out_Proj1 = 2,
-           out_Proj2 = 3,
-           out_Proj3 = 4,
+           out_Proj1 = 13,
+           out_Proj2 = 0,
+           out_Proj3 = 0,
                               
-           out_Disp3 = 4,
-           out_Disp2 = 3,
+           out_Disp3 = 0,
+           out_Disp2 = 0,
            out_Disp1 = 13,
                
-           out_EXTDisplay = 1,
+           out_EXTDisplay = 0,
     }
 
     public enum EvertzInputs
@@ -289,8 +289,8 @@
     public enum NVXInputs
     {      
         in_PCMain = 22,
-        in_PCExtDesk = 2,
-        in_DocCam = 3,
+        in_PCExtDesk = 0,
+        in_DocCam = 0,
         in_AirMedia = 23,
         in_Aux = 24,
         in_TeachCam = 11,
