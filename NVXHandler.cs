@@ -73,7 +73,7 @@ namespace NFAHRooms
             CrestronConsole.PrintLine($"tp_ButtonStatus Output: {Output} Input: {Input}");
             switch (Output)
             {
-                case "13":
+                case "51":
                     //tp_ClearButtonStatus(((uint)NVXOutputs.out_Proj1).ToString());
                         if (Input != "0")
                         {
@@ -124,7 +124,7 @@ namespace NFAHRooms
                 
                 
                         
-                case "10":
+                case "9":
                     tp_ClearButtonStatus(((uint)NVXOutputs.out_VTC).ToString());
                     
                     switch (Input)
@@ -166,7 +166,7 @@ namespace NFAHRooms
         {   
             switch (Output)
             {
-                case "13":
+                case "51":
                     ControlSystem.tp.BooleanInput[((uint)Join.btn1_PCOn)].BoolValue = false;
                     ControlSystem.tp.BooleanInput[((uint)Join.btn1_ExtDeskOn)].BoolValue = false;
                     ControlSystem.tp.BooleanInput[((uint)Join.btn1_DocCamOn)].BoolValue = false;
