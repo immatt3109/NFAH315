@@ -288,14 +288,14 @@
     }
     public enum NVXInputs
     {      
-        in_PCMain = 22,
+        in_PCMain = 28,
         in_PCExtDesk = 0,
         in_DocCam = 0,
-        in_AirMedia = 23,
-        in_Aux = 24,
+        in_AirMedia = 29,
+        in_Aux = 30,
         in_TeachCam = 11,
         in_StudentCam = 15,
-        in_DS = 27,
+        in_DS = 26,
         in_Blank = 0,
     }
 

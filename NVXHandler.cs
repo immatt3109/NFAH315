@@ -175,15 +175,15 @@ namespace NFAHRooms
                     ControlSystem.tp.BooleanInput[((uint)Join.btn1_DSPwrOn)].BoolValue = false;
                     break;
                 
-                case "10":
-                    ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCPCOn)].BoolValue = false;
-                    ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCEXTOn)].BoolValue = false;
-                    ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCDocCamOn)].BoolValue = false;
-                    ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCAirMediaOn)].BoolValue = false;
-                    ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCAuxOn)].BoolValue = false;
-                    ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCTeachCamOn)].BoolValue = false;
-                    ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCStudentCamOn)].BoolValue = false;
-                    break;
+                //case "10":
+                //    ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCPCOn)].BoolValue = false;
+                //    ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCEXTOn)].BoolValue = false;
+                //    ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCDocCamOn)].BoolValue = false;
+                //    ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCAirMediaOn)].BoolValue = false;
+                //    ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCAuxOn)].BoolValue = false;
+                //    ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCTeachCamOn)].BoolValue = false;
+                //    ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCStudentCamOn)].BoolValue = false;
+                //    break;
             }
             
         }
@@ -683,21 +683,41 @@ namespace NFAHRooms
                                             }
                                         case ((uint)Join.btn_VTCAirMediaOff):
                                             {
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCAirMediaOn)].BoolValue = true;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCAuxOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCTeachCamOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCStudentCamOn)].BoolValue = false;
+                                                ControlSystem.tp.UShortInput[((ushort)Join.btn_VTCOpenVal)].UShortValue = ((ushort)Join.mode_VTCAirMedia);
                                                 NVX.RouteNVX(((uint)NVXInputs.in_AirMedia).ToString() + "," + ((uint)NVXOutputs.out_VTC).ToString());
                                                 break;
                                             }
                                         case ((uint)Join.btn_VTCAuxOff):
                                             {
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCAirMediaOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCAuxOn)].BoolValue = true;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCTeachCamOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCStudentCamOn)].BoolValue = false;
+                                                ControlSystem.tp.UShortInput[((ushort)Join.btn_VTCOpenVal)].UShortValue = ((ushort)Join.mode_VTCAux);
                                                 NVX.RouteNVX(((uint)NVXInputs.in_Aux).ToString() + "," + ((uint)NVXOutputs.out_VTC).ToString());
                                                 break;
                                             }
                                         case ((uint)Join.btn_VTCTeachCamOff):
                                             {
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCAirMediaOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCAuxOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCTeachCamOn)].BoolValue = true;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCStudentCamOn)].BoolValue = false;
+                                                ControlSystem.tp.UShortInput[((ushort)Join.btn_VTCOpenVal)].UShortValue = ((ushort)Join.mode_VTCTeachCam);
                                                 NVX.RouteNVX(((uint)NVXInputs.in_TeachCam).ToString() + "," + ((uint)NVXOutputs.out_VTC).ToString());
                                                 break;
                                             }
                                         case ((uint)Join.btn_VTCStudentCamOff):
                                             {
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCAirMediaOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCAuxOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCTeachCamOn)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCStudentCamOn)].BoolValue = true;
+                                                ControlSystem.tp.UShortInput[((ushort)Join.btn_VTCOpenVal)].UShortValue = ((ushort)Join.mode_VTCStudentCam);
                                                 NVX.RouteNVX(((uint)NVXInputs.in_StudentCam).ToString() + "," + ((uint)NVXOutputs.out_VTC).ToString());
                                                 break;
                                             }
@@ -1848,6 +1868,8 @@ namespace NFAHRooms
                 //{
                 //NVX.RouteNVX(((uint)NVXInputs.in_PCExtDesk).ToString() + "," + ((uint)NVXOutputs.out_EXTDisplay).ToString());
                 NVX.RouteNVX(((uint)NVXInputs.in_TeachCam).ToString() + "," + ((uint)NVXOutputs.out_VTC).ToString());
+                ControlSystem.tp.UShortInput[((ushort)Join.btn_VTCOpenVal)].UShortValue = ((ushort)Join.mode_VTCTeachCam);
+                ControlSystem.tp.BooleanInput[((uint)Join.btn_VTCTeachCamOn)].BoolValue = true;
                 //}
 
                 switch (RoomSetup.Touchpanel.TP_RoomType.ToLower())
