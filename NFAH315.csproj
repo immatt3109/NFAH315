@@ -7,8 +7,8 @@
     <ProjectGuid>{25F15C67-6A64-49E6-B9AE-1ECD2F0BE224}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NFAHRooms</RootNamespace>
-    <AssemblyName>NFAHRooms</AssemblyName>
+    <RootNamespace>NFAH315</RootNamespace>
+    <AssemblyName>NFAH315</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34723.18
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NFAHRooms", "NFAHRooms.csproj", "{25F15C67-6A64-49E6-B9AE-1ECD2F0BE224}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NFAH315", "NFAH315.csproj", "{25F15C67-6A64-49E6-B9AE-1ECD2F0BE224}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
