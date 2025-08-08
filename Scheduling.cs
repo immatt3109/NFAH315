@@ -7,44 +7,45 @@ using Crestron.SimplSharpPro;
 using Crestron.SimplSharpPro.DM.AirMedia;
 using Crestron.SimplSharpPro.CrestronConnected;
 using Crestron.SimplSharpPro.DM;
+using System.Net.Http;
 
 
 
 namespace NFAHRooms
 {
-    public class Scheduling
+    public static class Scheduling
     {
-        public ScheduledEventGroup SystemEventGroup;
-        public List<ScheduledEvent> SysEvent = new List<ScheduledEvent>();
+        public static ScheduledEventGroup SystemEventGroup;
+        public static List<ScheduledEvent> SysEvent = new List<ScheduledEvent>();
         
-        private RoomSetup _rsetup;
+        //private RoomSetup _rsetup;
         //private Email _email;
-        private Ts1070 _tp;
-        private Am300 _am3200;
-        private HdMd4x14kzE _hdmd;
-        private CrestronConnectedDisplayV2 _tv;
+        //private Ts1070 _tp;
+        //private Am300 _am3200;
+        //private HdMd4x14kzE _hdmd;
+        //private CrestronConnectedDisplayV2 _tv;
         public static Dictionary<string, int> errorCounts = new Dictionary<string, int>();
 
         public static bool SS_Active;
         public static bool Prox_Active;
         
 
-        public Scheduling(RoomSetup rsetup, Ts1070 tp, Am300 airmedia, CrestronConnectedDisplayV2 disp1, HdMd4x14kzE hdmd)
-        {
-            _rsetup = rsetup;
-            _tp = tp;
-            _am3200 = airmedia;
-            _tv = disp1;
-            _hdmd = hdmd;
+        //public Scheduling(RoomSetup rsetup, Ts1070 tp, Am300 airmedia, CrestronConnectedDisplayV2 disp1, HdMd4x14kzE hdmd)
+        //{
+        //    _rsetup = rsetup;
+        //    _tp = tp;
+        //    _am3200 = airmedia;
+        //    _tv = disp1;
+        //    _hdmd = hdmd;
 
             //_email = new Email();
             //_email.EmailSetup();
 
-        }
+        //}
 
-        public void AddDailyTimerEvent()
+        public static void AddDailyTimerEvent()
         {
-            foreach (var dailyevent in _rsetup.DailyEvents)
+            foreach (var dailyevent in RoomSetup.DailyEvents)
             {
                 string EventName = dailyevent.EventName;
 
@@ -113,7 +114,7 @@ namespace NFAHRooms
 
                 }
                 catch (Exception e)
-                { //Email _email = new Email();
+                { 
                     ErrorLog.Error("SystemEventTimer Add: {0}", e.Message);
                     CrestronConsole.PrintLine($"ERROR - SystemEventTimer Add:{e.Message}");
                     Email.SendEmail(RoomSetup.MailSubject, $"ERROR - SystemEventTimer Add: {e.Message} {e.Source} {e.StackTrace}");
@@ -121,7 +122,7 @@ namespace NFAHRooms
             }
         }
 
-        private void DailyEvent(string name, DateTime eventTime, string daystoschedule)
+        private static void DailyEvent(string name, DateTime eventTime, string daystoschedule)
         {
             
 
@@ -306,7 +307,7 @@ namespace NFAHRooms
                 Email.SendEmail(RoomSetup.MailSubject, $"ERROR - Daily Schedule Event: {e.Message} {e.Source} {e.StackTrace}");
             }
         }
-        private int DaysUntil(int startday, int targetday)
+        private static int DaysUntil(int startday, int targetday)
         {
             int daysuntil = ((targetday + 7) - startday) % 7;
            
@@ -320,51 +321,138 @@ namespace NFAHRooms
         /// </summary>
         /// <param name="schEvent"></param>
         /// <param name="type"></param>
-        private void SysEvent_Trigger_Callback(ScheduledEvent schEvent, ScheduledEventCommon.eCallbackReason type)
+        private static void SysEvent_Trigger_Callback(ScheduledEvent schEvent, ScheduledEventCommon.eCallbackReason type)
         {
             if (schEvent.Name.ToString().Length > 1 && schEvent.Name.ToString().Substring(0, schEvent.Name.ToString().Length - 1).Equals("autoshutdown", StringComparison.OrdinalIgnoreCase))
             {
-                if (_rsetup.RoomType.ToLower() == "huddle_room")
+                if (RoomSetup.RoomType.ToLower() == "huddle_room")
                 {
-                    _tv.Power.PowerOff();
+                    ControlSystem.disp1.Power.PowerOff();
+                }
+
+                if (RoomSetup.RoomType.ToLower() == "evertz_room")
+                {
+
+                    string ParameterURL = "http://" + RoomSetup.Evertz.IpAddress + "/v.api/apis/EV/SET/parameter/217/1";
+
+                    using (HttpClient client = new HttpClient())
+                    {
+                        try
+                        {
+                            HttpResponseMessage DelServerResponse = client.GetAsync(ParameterURL).Result;
+                            DelServerResponse.EnsureSuccessStatusCode();
+                        }
+                        catch (Exception e)
+                        {
+                            ErrorLog.Error("Could not send Evertz Dante Reset Command", e.Message);
+                            CrestronConsole.PrintLine($"ERROR - Could Not Send Evertz Dante Reseet Shutdown Command - Message: {e.Message}");
+                            Email.SendEmail(RoomSetup.MailSubject, $"ERROR - Evertz Dante Reset Command: {e.Message} {e.Source} {e.StackTrace}");
+                        }
+                    }
+
+                    if (RoomSetup.Touchpanel.TP_RoomType == "evertz_1")
+                    {
+                        if (RoomSetup.Display1 == "proj")
+                        {
+                            //if (ControlSystem.proj1.PowerOnFeedback.BoolValue)
+                            ControlSystem.proj1.PowerOff();
+                            EvertzHandler.tp_ClearButtonStatus(((uint)EvertzOutputs.out_Proj1).ToString());
+                            ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = true;
+                            Mics.Mute("On");
+                        }
+                        else if (RoomSetup.Display1 == "tv")
+                        {
+
+                            //if (ControlSystem.disp1.Power.PowerOnFeedback.BoolValue)
+                            ControlSystem.disp1.Power.PowerOff();
+                            EvertzHandler.tp_ClearButtonStatus(((uint)EvertzOutputs.out_Proj1).ToString());
+                            ControlSystem.tp.BooleanInput[((uint)Join.btn1_PwrOnVis)].BoolValue = true;
+                            Mics.Mute("On");
+                        }
+                        Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj1).ToString(), ((uint)EvertzInputs.in_Blank).ToString());
+                    }
+
+                    if (RoomSetup.Touchpanel.TP_RoomType == "evertz_2")
+                    {
+                        if (RoomSetup.Display2 == "proj")
+                        {
+                            //if (ControlSystem.proj2.PowerOnFeedback.BoolValue)
+                            ControlSystem.proj2.PowerOff();
+                            EvertzHandler.tp_ClearButtonStatus(((uint)EvertzOutputs.out_Proj2).ToString());
+                            ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = true;
+                            Mics.Mute("On");
+                        }
+                        else if (RoomSetup.Display2 == "tv")
+                        {
+
+                            //if (ControlSystem.disp2.Power.PowerOnFeedback.BoolValue)
+                            ControlSystem.disp2.Power.PowerOff();
+                            EvertzHandler.tp_ClearButtonStatus(((uint)EvertzOutputs.out_Proj2).ToString());
+                            ControlSystem.tp.BooleanInput[((uint)Join.btn2_PwrOnVis)].BoolValue = true;
+                            Mics.Mute("On");
+                        }
+                        Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj2).ToString(), ((uint)EvertzInputs.in_Blank).ToString());
+                    }
+
+                    if (RoomSetup.Touchpanel.TP_RoomType == "evertz_3")
+                    {
+                        if (RoomSetup.Display3 == "proj")
+                        {
+                            //if (ControlSystem.proj3.PowerOnFeedback.BoolValue)
+                            ControlSystem.proj3.PowerOff();
+                            EvertzHandler.tp_ClearButtonStatus(((uint)EvertzOutputs.out_Proj3).ToString());
+                            ControlSystem.tp.BooleanInput[((uint)Join.btn3_PwrOnVis)].BoolValue = true;
+                            Mics.Mute("On");
+                        }
+                        else if (RoomSetup.Display3 == "tv")
+                        {
+
+                            //if (ControlSystem.disp3.Power.PowerOnFeedback.BoolValue)
+                            ControlSystem.disp3.Power.PowerOff();
+                            EvertzHandler.tp_ClearButtonStatus(((uint)EvertzOutputs.out_Proj3).ToString());
+                            ControlSystem.tp.BooleanInput[((uint)Join.btn3_PwrOnVis)].BoolValue = true;
+                            Mics.Mute("On");
+                        }
+                        Evertz.SetEvertzData(RoomSetup.Evertz.UDP_Server.ParametersToReport.param1, ((uint)EvertzOutputs.out_Proj3).ToString(), ((uint)EvertzInputs.in_Blank).ToString());
+                    }
                 }
             }
 
-            if (schEvent.Name.ToString().Length > 1 && schEvent.Name.ToString().Substring(0, schEvent.Name.ToString().Length - 1).Equals("airmediareboot", StringComparison.OrdinalIgnoreCase))
+                if (schEvent.Name.ToString().Length > 1 && schEvent.Name.ToString().Substring(0, schEvent.Name.ToString().Length - 1).Equals("airmediareboot", StringComparison.OrdinalIgnoreCase))
             {
-                _am3200.AirMedia.DeviceReboot();
+                ControlSystem.am3200.AirMedia.DeviceReboot();
             }
             
             if (schEvent.Name.ToString().Length > 1 && schEvent.Name.ToString().Substring(0, schEvent.Name.ToString().Length - 1).Equals("tp_screensaver_off", StringComparison.OrdinalIgnoreCase))
             {
-                _tp.ExtenderScreenSaverReservedSigs.ScreensaverOn.BoolValue = false;
-                _tp.ExtenderScreenSaverReservedSigs.ScreensaverOff.BoolValue = true;
+                ControlSystem.tp.ExtenderScreenSaverReservedSigs.ScreensaverOn.BoolValue = false;
+                ControlSystem.tp.ExtenderScreenSaverReservedSigs.ScreensaverOff.BoolValue = true;
                 SS_Active = false;
             }
 
             if (schEvent.Name.ToString().Length > 1 && schEvent.Name.ToString().Substring(0, schEvent.Name.ToString().Length - 1).Equals("tp_screensaver_on", StringComparison.OrdinalIgnoreCase))
             {
-                _tp.ExtenderScreenSaverReservedSigs.ScreensaverOn.BoolValue = true;
-                _tp.ExtenderScreenSaverReservedSigs.ScreensaverOff.BoolValue = false;
+                ControlSystem.tp.ExtenderScreenSaverReservedSigs.ScreensaverOn.BoolValue = true;
+                ControlSystem.tp.ExtenderScreenSaverReservedSigs.ScreensaverOff.BoolValue = false;
                 SS_Active = true;
             }
 
             if (schEvent.Name.ToString().Length > 1 && schEvent.Name.ToString().Substring(0, schEvent.Name.ToString().Length - 1).Equals("tp_prox_off", StringComparison.OrdinalIgnoreCase))
             {
-                CrestronConsole.PrintLine("Prox_Off");
+                
                 Prox_Active = false;
             }
 
             if (schEvent.Name.ToString().Length > 1 && schEvent.Name.ToString().Substring(0, schEvent.Name.ToString().Length - 1).Equals("tp_prox_on", StringComparison.OrdinalIgnoreCase))
             {
-                CrestronConsole.PrintLine("Prox_On");
+                
                 Prox_Active = true;
             }
 
             
         }
 
-        public void Alert_Timer(string name, int delay, string ex)
+        public static void Alert_Timer(string name, int delay, string ex)
         {
            try
             {
@@ -390,7 +478,7 @@ namespace NFAHRooms
         /// </summary>
         /// <param name="obj"></param>
 
-        public void Alert_Timer_Callback(object obj)
+        private static void Alert_Timer_Callback(object obj)
         {
             var data = (dynamic)obj;
             string name = data.Name;
@@ -398,7 +486,7 @@ namespace NFAHRooms
             int delay = data.Delay;
                                     
             bool errorExists = CheckOnlineError(name);
-            if (errorExists && errorCounts[name] <= _rsetup.Timeouts.ErrorThreshold)
+            if (errorExists && errorCounts[name] <= RoomSetup.Timeouts.ErrorThreshold)
             {
                 Email.SendEmail(RoomSetup.MailSubject, ex);
                 Alert_Timer(name, delay, ex);
@@ -408,48 +496,48 @@ namespace NFAHRooms
                 errorCounts[name] = 0;
             }
         }
-        private bool CheckOnlineError(string type)
+        private static bool CheckOnlineError(string type)
         {
             if (type == "touchpanel")
             {
-                if (_tp.IsOnline)
+                if (ControlSystem.tp.IsOnline)
                 {   
                     return false;
                 }
-                else if (!_tp.IsOnline)
+                else if (!ControlSystem.tp.IsOnline)
                 {   
                     return true;
                 }
             }
             if (type == "hdmd")
             {
-                if (_hdmd.IsOnline)
+                if (ControlSystem.hdmd.IsOnline)
                 {
                     return false;
                 }
-                else if (!_hdmd.IsOnline)
+                else if (!ControlSystem.hdmd.IsOnline)
                 {
                     return true;
                 }
             }
             if (type == "airmedia")
             {
-                if (_am3200.IsOnline)
+                if (ControlSystem.am3200.IsOnline)
                 {
                     return false;
                 }
-                else if (!_am3200.IsOnline)
+                else if (!ControlSystem.am3200.IsOnline)
                 {
                     return true;
                 }
             }
             if (type == "tv")
             {
-                if (_tv.IsOnline)
+                if (ControlSystem.disp1.IsOnline)
                 {
                     return false;
                 }
-                else if (!_tv.IsOnline)
+                else if (!ControlSystem.disp1.IsOnline)
                 {
                     return true;
                 }

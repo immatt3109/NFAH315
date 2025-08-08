@@ -1,8 +1,8 @@
  {
-"room_type": "evertz_room",
+"room_type": "huddle_room",
 "display_1": "tv",
-"display_2": "tv",
-"display_3": "tv",
+"display_2": null,
+"display_3": null,
 "mail_subject": "Test Huddle Room",
 "Crestron":{
 		"SNTP_server":"pool.ntp.org",
@@ -15,7 +15,7 @@
 	"Screensaver":"off",
 	"Standby_Timeout": 5,
 	"Image_URL": null,
-	"Room_Type": "evertz_3"
+	"Room_Type": null
 	},
   "evertz": {
     "ip_address": "192.168.1.110",
@@ -42,11 +42,17 @@
       "password": "NfaH2024!",
       "pan": 10,
       "zoom": 5,
-	  "teacher_IP":"192.168.1.151",
-	  "student_IP":"192.168.1.85"}
+	  "teacher_IP":"192.168.1.85",
+	  "student_IP":"192.168.1.151"}
     },
 "microphones": [
-    
+    { "type": "mxa",
+      "ip_address": "192.168.1.84"
+    },
+    { "type": "tcc",
+      "ip_address": "192.168.1.82"
+    }
+	
   ],
   "huddle_room_settings": {
     "frontpanel_lock": "off",
@@ -144,15 +150,7 @@
     "error_threshold": 3
   },
   "nvx_settings": {
-    "dm_server_processor_ip": "192.168.1.98",
-    "assigned_ipid": "0x23",
-	  "hdmi_output_default_source": {
-      "out_1": -1,
-      "out_2": -1,
-      "out_3": -1,
-	  "out_4": -1
-    },
-	  "inputs":[{"InputProg": "1", "InputNVX": "17"},{"InputProg":"2","InputNVX":"21"},{"InputProg":"3","InputNVX": "19"},{"InputProg":"4","InputNVX":"4"},{"InputProg":"5","InputNVX":"51"}],
-	  "outputs":[{"OutputProg":"1","OutputNVX": "3"},{"OutputProg":"2","OutputNVX": "4"}]
+    "dm_server_processor_ip": "192.168.1.125",
+    "assigned_ipid": "0x22"
   }
   }

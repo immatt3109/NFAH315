@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Crestron.SimplSharp.CrestronIO;
 using Crestron.SimplSharp;
 using System;
+using static Crestron.SimplSharpPro.DM.Audio;
+using System.Linq;
 
 namespace NFAHRooms
 {       
@@ -11,34 +13,39 @@ namespace NFAHRooms
         private static string json;
 
         [JsonProperty("room_type")]
-        public string RoomType { get; set; }
-
+        public static string RoomType { get; set; }
+        [JsonProperty("display_1")]
+        public static string Display1 { get; set; }
+        [JsonProperty("display_2")]
+        public static string Display2 { get; set; }
+        [JsonProperty("display_3")]
+        public static string Display3 { get; set; }
         [JsonProperty("mail_subject")]
         public static string MailSubject { get; set; }
         [JsonProperty("Crestron")]
-        public CrestronConfiguration Crestron { get; set; }
+        public static CrestronConfiguration Crestron { get; set; }
         [JsonProperty("Touchpanel")]
-        public TouchpanelConfiguration Touchpanel { get; set; }
+        public static TouchpanelConfiguration Touchpanel { get; set; }
         [JsonProperty("evertz")]
-        public EvertzConfiguration Evertz { get; set; }
+        public static EvertzConfiguration Evertz { get; set; }
 
         [JsonProperty("sony_cameras")]
-        public SonyCameraConfig SonyCameras { get; set; }
+        public static SonyCameraConfig SonyCameras { get; set; }
 
         [JsonProperty("microphones")]
-        public List<Microphone> Microphones { get; set; }
+        public static List<Microphone> Microphones { get; set; }
 
         [JsonProperty("huddle_room_settings")]
-        public HuddleRoomSettings HuddleRoomSettings { get; set; }
+        public static HuddleRoomSettings HuddleRoomSettings { get; set; }
 
         [JsonProperty("DailyEvents")]
-        public List<DailyEvent> DailyEvents { get; set; }
+        public static List<DailyEvent> DailyEvents { get; set; }
 
         [JsonProperty("timeouts")]
-        public TimeoutConfig Timeouts { get; set; }
+        public static TimeoutConfig Timeouts { get; set; }
 
         [JsonProperty("nvx_settings")]
-        public NvxSettings NvxSettings { get; set; }
+        public static NvxSettings NvxSettings { get; set; }
 
         public static RoomSetup LoadRoomSetup(string filepath)
         {
@@ -50,8 +57,14 @@ namespace NFAHRooms
                 using (StreamReader sr = new StreamReader(filepath, System.Text.Encoding.Default))
 
                     json = sr.ReadToEnd();
-                
-                return JsonConvert.DeserializeObject<RoomSetup>(json);
+
+                RoomSetup roomSetup = JsonConvert.DeserializeObject<RoomSetup>(json);
+
+                NvxSettings?.PopulateDictionaries();
+
+                return roomSetup;
+
+                //return JsonConvert.DeserializeObject<RoomSetup>(json);
             }
             catch (Exception e)
             {
@@ -68,18 +81,6 @@ namespace NFAHRooms
         public string SntpServer { get; set; }
         [JsonProperty("Timezone_ID")]
         public string TimezoneId { get; set; }
-        [JsonProperty("Processor_IP")]
-        public string ProcessorIp { get; set; }
-        [JsonProperty("Host_Name")]
-        public string HostName { get; set; }
-        [JsonProperty("Subnet")]
-        public string Subnet { get; set; }
-        [JsonProperty("DNS1")]
-        public string Dns1 { get; set; }
-        [JsonProperty("DNS2")]
-        public string Dns2 { get; set; }
-        [JsonProperty("Gateway")]
-        public string Gateway { get; set; }
         [JsonProperty("Username")]
         public string Username { get; set; }
         [JsonProperty("Password")]
@@ -97,6 +98,8 @@ namespace NFAHRooms
         public ushort StandbyTimeout { get; set; }
         [JsonProperty("Image_URL")]
         public string ImageUrl { get; set; }
+        [JsonProperty("Room_Type")]
+        public string TP_RoomType { get; set; }
     }
     public class EvertzConfiguration
     {
@@ -104,10 +107,21 @@ namespace NFAHRooms
         public string IpAddress { get; set; }
 
         [JsonProperty("hdmi_output_default_source")]
-        public Dictionary<string, string> HdmiOutputDefaultSource { get; set; }
+        public DefEvertzOuts DefEvertzOut { get; set; }
 
         [JsonProperty("UDP_server")]
         public UDPServer UDP_Server { get; set; }
+    }
+    public class DefEvertzOuts
+    {
+        [JsonProperty("out_1")]
+        public int Out1 { get; set; }
+        [JsonProperty("out_2")]
+        public int Out2 { get; set; }
+        [JsonProperty("out_3")]
+        public int Out3 { get; set; }
+        [JsonProperty("out_4")]
+        public int Out4 { get; set; }
     }
 
     public class UDPServer
@@ -116,7 +130,7 @@ namespace NFAHRooms
         public int UdpPort { get; set; }
 
         [JsonProperty("parameters_to_report")]
-        public List<string> ParametersToReport { get; set; }
+        public ParametersToReport ParametersToReport { get; set; }
 
         [JsonProperty("allowed_ip_address")]
         public string AllowedIpAddress { get; set; }
@@ -127,14 +141,19 @@ namespace NFAHRooms
         [JsonProperty("server_name")]
         public string ServerName { get; set; }
     }
+    
+    public class ParametersToReport
+    {
+        [JsonProperty("param1")]
+        public string param1 { get; set; }
+        [JsonProperty("param2")]
+        public string param2 { get; set; }
+    }
 
     public class SonyCameraConfig
     {
         [JsonProperty("common_properties")]
         public SonyCameraCommonProperties CommonProperties { get; set; }
-
-        [JsonProperty("cameras")]
-        public List<SonyCamera> Cameras { get; set; }
     }
 
     public class SonyCameraCommonProperties
@@ -144,40 +163,27 @@ namespace NFAHRooms
 
         [JsonProperty("password")]
         public string Password { get; set; }
-
-        [JsonProperty("cam_url")]
-        public string  CamURL { get; set; }
-
-        [JsonProperty("image_name")]
-        public string IMGName { get; set; }
-        
-        [JsonProperty("storage_location")]
-        public string StorageLocation { get; set; }
-
+                
         [JsonProperty("pan")]
         public string Pan { get; set; }
 
         [JsonProperty("zoom")]
         public string Zoom { get; set; }
+        [JsonProperty("teacher_IP")]
+        public string TeacherIP { get; set; }
+        [JsonProperty("student_IP")]
+        public string StudentIP { get; set; }
     }
-
-    public class SonyCamera
-    {
-        [JsonProperty("ip_address")]
-        public string IpAddress { get; set; }
-    }
-       
     public class Microphone
     {
+        [JsonProperty("type")]
+        public string Type { get; set; }
         [JsonProperty("ip_address")]
         public string IpAddress { get; set; }
     }
 
     public class HuddleRoomSettings
     {
-        [JsonProperty("default_video_output")]
-        public int DefaultVideoOutput { get; set; }
-
         [JsonProperty("frontpanel_lock")]
         public string FrontpanelLock { get; set; }
 
@@ -235,7 +241,7 @@ namespace NFAHRooms
         [JsonProperty("error_threshold")]
         public int ErrorThreshold { get; set; }
     }
-
+    
     public class NvxSettings
     {
         [JsonProperty("dm_server_processor_ip")]
@@ -243,5 +249,61 @@ namespace NFAHRooms
 
         [JsonProperty("assigned_ipid")]
         public string AssignedIpid { get; set; }
+        [JsonProperty("inputs")]
+        public List<NvxInput> Inputs { get; set; }
+        [JsonProperty("outputs")]
+        public List<NvxOutput> Outputs { get; set; }
+
+        [JsonIgnore]
+        public Dictionary<string, NvxInput> InputDictionary { get; private set; }
+
+        [JsonIgnore]
+        public Dictionary<string, NvxOutput> OutputDictionary { get; private set; }
+        public void PopulateDictionaries()
+        {
+            try
+            {
+                InputDictionary = new Dictionary<string, NvxInput>();
+                OutputDictionary = new Dictionary<string, NvxOutput>();
+
+                if (Inputs != null)
+                {
+                    foreach (var input in Inputs)
+                    {
+                        InputDictionary[input.InputProg] = input;
+                        CrestronConsole.PrintLine($"Input Prog: {input.InputProg} Input NVX: {input.InputNVX}");
+                    }
+                }
+
+                if (Outputs != null)
+                {
+                    foreach (var output in Outputs)
+                    {
+                        OutputDictionary[output.OutputProg] = output;
+                        CrestronConsole.PrintLine($"Output Prog: {output.OutputProg} Output NVX: {output.OutputNVX}");
+
+                    }
+                }
+
+                
+            }
+            catch (Exception e)
+            {
+                CrestronConsole.PrintLine("Error in PopulateDictionaries: {0}", e.Message);
+            }
+        }
     }
+    public class NvxInput
+    {
+        public string InputProg { get; set; }
+        public string InputNVX { get; set; }
+    }
+    public class NvxOutput
+    {
+        public string OutputProg { get; set; }
+        public string OutputNVX { get; set; }
+    }
+    
+
+
 }

@@ -1,20 +1,20 @@
  {
-"room_type": "evertz_room",
+"room_type": "nvx_room",
 "display_1": "tv",
 "display_2": "tv",
 "display_3": "tv",
-"mail_subject": "Test Huddle Room",
+"mail_subject": "131 Classroom",
 "Crestron":{
 		"SNTP_server":"pool.ntp.org",
 		"Timezone_ID":"010",
 		"Username":"admin",
 		"Password":"password"},
 "Touchpanel":{
-	"Room_Text":"Test Huddle Room",
+	"Room_Text":"131 Classroom",
 	"Proximity":"on",
 	"Screensaver":"off",
 	"Standby_Timeout": 5,
-	"Image_URL": null,
+	"Image_URL": "http://192.168.1.95/TPAssets/AGSCreenSaver1920x1200.png",
 	"Room_Type": "evertz_3"
 	},
   "evertz": {
@@ -42,11 +42,23 @@
       "password": "NfaH2024!",
       "pan": 10,
       "zoom": 5,
-	  "teacher_IP":"192.168.1.151",
-	  "student_IP":"192.168.1.85"}
+	  "teacher_IP":"172.16.0.19",
+	  "student_IP":"172.16.0.18"}
     },
 "microphones": [
-    
+    { "type": "tcc",
+      "ip_address": "172.16.0.155"
+    },
+    { "type": "tcc",
+      "ip_address": "172.16.0.156"
+    },
+	{ "type": "tcc",
+      "ip_address": "172.16.0.157"
+    },
+	{ "type": "tcc",
+      "ip_address": "172.16.0.158"
+    }
+	
   ],
   "huddle_room_settings": {
     "frontpanel_lock": "off",
@@ -56,7 +68,7 @@
   "DailyEvents": [
     {
       "EventName": "AutoShutdown",
-      "EventTime": "16:15:00",
+      "EventTime": "23:00:00",
       "Daily": "True",
       "WeekDaysOnly": "False",
       "WeekendsOnly": "False",
@@ -70,7 +82,7 @@
     },
     {
       "EventName": "AirMediaReboot",
-      "EventTime": "16:00:00",
+      "EventTime": "03:00:00",
       "Daily": "True",
       "WeekDaysOnly": "False",
       "WeekendsOnly": "False",
@@ -113,7 +125,7 @@
 	{
 	"EventName": "TP_Prox_Off",
       "EventTime": "19:00:00",
-      "Daily": "True",
+      "Daily": "False",
       "WeekDaysOnly": "False",
       "WeekendsOnly": "False",
       "Monday": "False",
@@ -127,7 +139,7 @@
 	{
 	"EventName": "TP_Prox_On",
       "EventTime": "18:00:00",
-      "Daily": "True",
+      "Daily": "False",
       "WeekDaysOnly": "False",
       "WeekendsOnly": "False",
       "Monday": "False",
@@ -140,19 +152,34 @@
 	}
   ],
   "timeouts": {
-    "error_check_delay": 1,
-    "error_threshold": 3
+    "error_check_delay": 5,
+    "error_threshold": 2
   },
   "nvx_settings": {
-    "dm_server_processor_ip": "192.168.1.98",
+    "dm_server_processor_ip": "172.16.0.17",
     "assigned_ipid": "0x23",
-	  "hdmi_output_default_source": {
-      "out_1": -1,
-      "out_2": -1,
-      "out_3": -1,
-	  "out_4": -1
-    },
-	  "inputs":[{"InputProg": "1", "InputNVX": "17"},{"InputProg":"2","InputNVX":"21"},{"InputProg":"3","InputNVX": "19"},{"InputProg":"4","InputNVX":"4"},{"InputProg":"5","InputNVX":"51"}],
-	  "outputs":[{"OutputProg":"1","OutputNVX": "3"},{"OutputProg":"2","OutputNVX": "4"}]
+	"inputs":	[
+				{"InputProg":"1","InputNVX":"1"},
+				{"InputProg":"2","InputNVX":"2"},
+				{"InputProg":"3","InputNVX":"3"},
+				{"InputProg":"4","InputNVX":"4"},
+				{"InputProg":"5","InputNVX":"5"},
+				{"InputProg":"6","InputNVX":"6"},
+				{"InputProg":"7","InputNVX":"7"},
+				{"InputProg":"8","InputNVX":"8"},
+				{"InputProg":"0","InputNVX":"0"}
+				],
+	
+	"outputs":	[	
+				{"OutputProg":"0","OutputNVX":"1"},
+				{"OutputProg":"1","OutputNVX":"2"},
+				{"OutputProg":"2","OutputNVX":"3"},
+				{"OutputProg":"3","OutputNVX":"4"},
+				{"OutputProg":"4","OutputNVX":"5"},
+				{"OutputProg":"5","OutputNVX":"6"},
+				{"OutputProg":"6","OutputNVX":"7"},
+				{"OutputProg":"7","OutputNVX":"8"},
+				{"OutputProg":"8","OutputNVX":"9"}				
+				]
   }
   }
