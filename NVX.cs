@@ -16,7 +16,9 @@ namespace NFAHRooms
         {
             try
             {
+#if DEBUG
                 CrestronConsole.PrintLine("RouteNVX: {0}", s);
+#endif
                 var data = s.Split(',');
                 string input, output;
                 input = data[0];
@@ -43,7 +45,9 @@ namespace NFAHRooms
                 //else
                 //{
                     ControlSystem.EISC.StringInput[((uint)NVXRoutes.RouteOutput)].StringValue = input + "," + output;
-                    CrestronConsole.PrintLine("NVX Route Sent to NVX: {0}", input + "," + output);
+#if DEBUG
+                CrestronConsole.PrintLine("NVX Route Sent to NVX: {0}", input + "," + output);
+#endif
                 //}
 
             }

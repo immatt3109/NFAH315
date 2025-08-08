@@ -49,7 +49,9 @@ namespace NFAHRooms
                     //HuddleHandler huddleHandler = new HuddleHandler(tp, hdmd, am3200, disp1);
                     
                     HuddleHandler.Initialize();
-                    CrestronConsole.PrintLine("Huddle Room Setup");
+#if DEBUG
+                    gCrestronConsole.PrintLine("Huddle Room Setup");
+#endif
                 }
                 else if (RoomSetup.RoomType.ToLower() == "evertz_room")
                 {                    
@@ -75,8 +77,9 @@ namespace NFAHRooms
                         disp3 = new CrestronConnectedDisplayV2(0x25, this);
 
                     EvertzHandler.Initialize();
-                    
+#if DEBUG
                     CrestronConsole.PrintLine("Evertz Room Setup");
+#endif
                 }
                 else if (RoomSetup.RoomType.ToLower() == "nvx_room")
                 {
@@ -104,8 +107,9 @@ namespace NFAHRooms
                    
                     uint ipid = Convert.ToUInt32(RoomSetup.NvxSettings.AssignedIpid,16);
                     EISC = new EthernetIntersystemCommunications(ipid, RoomSetup.NvxSettings.DmServerProcessorIp, this);
-                    
+#if DEBUG
                     CrestronConsole.PrintLine("NVX Room Setup");
+#endif
                     CrestronConsole.AddNewConsoleCommand(NVX.RouteNVX, "RouteNVX", "Route NVX <source>,<dest>", ConsoleAccessLevelEnum.AccessOperator);
                    
                     NVXHandler.Initialize();

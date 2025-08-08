@@ -1783,14 +1783,14 @@ namespace NFAHRooms
                 switch (RoomSetup.Touchpanel.TP_RoomType.ToLower())
                 {
                     case "evertz_1":
-                        CrestronConsole.PrintLine("Evertz Room Setup 1");
+                        
                         ControlSystem.tp.BooleanInput[((uint)Join.pg1Proj)].BoolValue = true;
                         ControlSystem.tp.BooleanInput[((uint)Join.pg2Proj)].BoolValue = false;
                         ControlSystem.tp.BooleanInput[((uint)Join.pg3Display)].BoolValue = false;
                         tp_ButtonStatus("1", "0");
                         break;
                     case "evertz_2":
-                        CrestronConsole.PrintLine("Evertz Room Setup 2");
+                        
                         ControlSystem.tp.BooleanInput[((uint)Join.pg1Proj)].BoolValue = false;
                         ControlSystem.tp.BooleanInput[((uint)Join.pg2Proj)].BoolValue = true;
                         ControlSystem.tp.BooleanInput[((uint)Join.pg3Display)].BoolValue = false;
@@ -1798,7 +1798,7 @@ namespace NFAHRooms
                         tp_ButtonStatus("2", "0");
                         break;
                     case "evertz_3":
-                        CrestronConsole.PrintLine("Evertz Room Setup 3");
+                        
                         ControlSystem.tp.BooleanInput[((uint)Join.pg1Proj)].BoolValue = false;
                         ControlSystem.tp.BooleanInput[((uint)Join.pg2Proj)].BoolValue = false;
                         ControlSystem.tp.BooleanInput[((uint)Join.pg3Display)].BoolValue = true;

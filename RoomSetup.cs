@@ -271,7 +271,9 @@ namespace NFAHRooms
                     foreach (var input in Inputs)
                     {
                         InputDictionary[input.InputProg] = input;
+#if DEBUG
                         CrestronConsole.PrintLine($"Input Prog: {input.InputProg} Input NVX: {input.InputNVX}");
+#endif
                     }
                 }
 
@@ -280,7 +282,9 @@ namespace NFAHRooms
                     foreach (var output in Outputs)
                     {
                         OutputDictionary[output.OutputProg] = output;
+#if DEBUG
                         CrestronConsole.PrintLine($"Output Prog: {output.OutputProg} Output NVX: {output.OutputNVX}");
+#endif
 
                     }
                 }

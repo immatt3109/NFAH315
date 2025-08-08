@@ -16,9 +16,7 @@ namespace NFAHRooms
     public static class NVXHandler
     {
         static CTimer _timer;
-        private static bool Proj1On;
-        private static bool Proj2On;
-        private static bool Proj3On;
+
         private static bool AIOnVisState = false;
         private static bool LayoutCtrOnVisState = false;
         private static bool LayoutTopOnVisState = false;
@@ -70,7 +68,9 @@ namespace NFAHRooms
 
         public static void tp_ButtonStatus(String Output, String Input)
         {
+#if DEBUG
             CrestronConsole.PrintLine($"tp_ButtonStatus Output: {Output} Input: {Input}");
+#endif
             switch (Output)
             {
                 case "51":
@@ -1809,16 +1809,17 @@ namespace NFAHRooms
                     ControlSystem.disp3.OnlineStatusChange += new OnlineStatusChangeEventHandler(disp3_OnlineStatusChange);
                     //ControlSystem.disp3.BaseEvent += new BaseEventHandler(disp3_BaseEvent);
                 }
-            
 
 
-            CrestronConsole.PrintLine("Touchpanel Layout: {0}", RoomSetup.Touchpanel.TP_RoomType.ToLower());
-            //Determine which Touchpanel Layout to use
-            switch (RoomSetup.Touchpanel.TP_RoomType.ToLower())
+#if DEBUG
+                CrestronConsole.PrintLine("Touchpanel Layout: {0}", RoomSetup.Touchpanel.TP_RoomType.ToLower());
+#endif
+                //Determine which Touchpanel Layout to use
+                switch (RoomSetup.Touchpanel.TP_RoomType.ToLower())
             {
 
                 case "evertz_1":
-                    CrestronConsole.PrintLine("NVX Room Setup 1");
+                    
                     ControlSystem.tp.BooleanInput[((uint)Join.pg1Proj)].BoolValue = true;
                     ControlSystem.tp.BooleanInput[((uint)Join.pg2Proj)].BoolValue = false;
                     ControlSystem.tp.BooleanInput[((uint)Join.pg3Display)].BoolValue = false;
@@ -1827,7 +1828,7 @@ namespace NFAHRooms
                         
                         break;
                 case "evertz_2":
-                    CrestronConsole.PrintLine("NVX Room Setup 2");
+                    
                     ControlSystem.tp.BooleanInput[((uint)Join.pg1Proj)].BoolValue = false;
                     ControlSystem.tp.BooleanInput[((uint)Join.pg2Proj)].BoolValue = true;
                     ControlSystem.tp.BooleanInput[((uint)Join.pg3Display)].BoolValue = false;
@@ -1836,7 +1837,7 @@ namespace NFAHRooms
                         tp_ButtonStatus("3", "0");
                         break;
                 case "evertz_3":
-                    CrestronConsole.PrintLine("NVX Room Setup 3");
+                   
                     ControlSystem.tp.BooleanInput[((uint)Join.pg1Proj)].BoolValue = false;
                     ControlSystem.tp.BooleanInput[((uint)Join.pg2Proj)].BoolValue = false;
                     ControlSystem.tp.BooleanInput[((uint)Join.pg3Display)].BoolValue = true;
