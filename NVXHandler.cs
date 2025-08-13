@@ -1860,9 +1860,9 @@ namespace NFAHRooms
                 ControlSystem.tp.StringInput[((uint)Join.serial_TPS1)].StringValue = Constants.http + IP + Constants.PresetHTMLFolder + "1" + Constants.PresetFileSuffix;
                 ControlSystem.tp.StringInput[((uint)Join.serial_TPS2)].StringValue = Constants.http + IP + Constants.PresetHTMLFolder + "2" + Constants.PresetFileSuffix;
                 ControlSystem.tp.StringInput[((uint)Join.serial_TPS3)].StringValue = Constants.http + IP + Constants.PresetHTMLFolder + "3" + Constants.PresetFileSuffix;
-                ControlSystem.tp.StringInput[((uint)Join.serial_SPS1)].StringValue = Constants.http + IP + Constants.PresetHTMLFolder + "1" + Constants.PresetFileSuffix;
-                ControlSystem.tp.StringInput[((uint)Join.serial_SPS2)].StringValue = Constants.http + IP + Constants.PresetHTMLFolder + "2" + Constants.PresetFileSuffix;
-                ControlSystem.tp.StringInput[((uint)Join.serial_SPS3)].StringValue = Constants.http + IP + Constants.PresetHTMLFolder + "3" + Constants.PresetFileSuffix;
+                ControlSystem.tp.StringInput[((uint)Join.serial_SPS1)].StringValue = Constants.http + IP + Constants.PresetHTMLFolder + "4" + Constants.PresetFileSuffix;
+                ControlSystem.tp.StringInput[((uint)Join.serial_SPS2)].StringValue = Constants.http + IP + Constants.PresetHTMLFolder + "5" + Constants.PresetFileSuffix;
+                ControlSystem.tp.StringInput[((uint)Join.serial_SPS3)].StringValue = Constants.http + IP + Constants.PresetHTMLFolder + "6" + Constants.PresetFileSuffix;
                 NVX.InitializeSystem();
             
                 //if (RoomSetup.NvxSettings.OutputDictionary.ContainsKey("5"))
