@@ -17,13 +17,21 @@ namespace NFAHRooms
     {
         static CTimer _timer;
 
-        private static bool AIOnVisState = false;
-        private static bool LayoutCtrOnVisState = false;
-        private static bool LayoutTopOnVisState = false;
-        private static bool LayoutFullOnVisState = false;
-        private static bool LayoutHeadOnVisState = false;
-        private static bool LayoutLeftOnVisState = false;
-        private static bool LayoutRightOnVisState = false;
+        private static bool Student_AIOnVisState = false;
+        private static bool Student_LayoutCtrOnVisState = false;
+        private static bool Student_LayoutTopOnVisState = false;
+        private static bool Student_LayoutFullOnVisState = false;
+        private static bool Student_LayoutHeadOnVisState = false;
+        private static bool Student_LayoutLeftOnVisState = false;
+        private static bool Student_LayoutRightOnVisState = false;
+
+        private static bool Teach_AIOnVisState = false;
+        private static bool Teach_LayoutCtrOnVisState = false;
+        private static bool Teach_LayoutTopOnVisState = false;
+        private static bool Teach_LayoutFullOnVisState = false;
+        private static bool Teach_LayoutHeadOnVisState = false;
+        private static bool Teach_LayoutLeftOnVisState = false;
+        private static bool Teach_LayoutRightOnVisState = false;
 
 
         private static void disp1_BaseEvent(GenericBase currentDevice, BaseEventArgs args)
@@ -654,16 +662,36 @@ namespace NFAHRooms
                                         case ((uint)Join.btn_VTCOpen):
                                             {
                                                 ControlSystem.tp.BooleanInput[((uint)Join.pgVTC)].BoolValue = true;
+#if DEBUG
+                                                CrestronConsole.PrintLine("VTC Page Opened");
+#endif
+
                                                 if (ControlSystem.tp.BooleanInput[((uint)Join.mode_StuCamVisibile)].BoolValue)
                                                 {
-                                                    ControlSystem.tp.BooleanInput[((uint)Join.pgAIVis)].BoolValue = true;
+#if DEBUG
+                                                    CrestronConsole.PrintLine("Student Cam Visible");
+#endif
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.pgCam2AIVis)].BoolValue = true;
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.pgCam1AIVis)].BoolValue = false;
                                                 }
+                                                
+                                                if (ControlSystem.tp.BooleanInput[((uint)Join.mode_TeachCamVisibile)].BoolValue)
+                                                {
+#if DEBUG
+                                                    CrestronConsole.PrintLine("Teach Cam Visible");
+#endif
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.pgCam1AIVis)].BoolValue = true;
+                                                    ControlSystem.tp.BooleanInput[((uint)Join.pgCam2AIVis)].BoolValue = false;
+                                                }
+                                                
                                                 break;
                                             }
                                         case ((uint)Join.btn_VTCClose):
                                             {
                                                 ControlSystem.tp.BooleanInput[((uint)Join.pgVTC)].BoolValue = false; 
-                                                ControlSystem.tp.BooleanInput[((uint)Join.pgAIVis)].BoolValue = false;
+                                                //ControlSystem.tp.BooleanInput[((uint)Join.pgAIVis)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.pgCam1AIVis)].BoolValue = false;
+                                                ControlSystem.tp.BooleanInput[((uint)Join.pgCam2AIVis)].BoolValue = false;
                                                 break;
                                             }
                                         case ((uint)Join.btn_VTCPCOff):
@@ -842,27 +870,29 @@ namespace NFAHRooms
                                             }
                                             break;
                                         case (uint)Join.btn_StudentCamControl:
-                                            AIOnVisState = ControlSystem.tp.BooleanInput[((uint)Join.btn_AIOnVis)].BoolValue;
-                                            LayoutCtrOnVisState = ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutCtrOnVis)].BoolValue;
-                                            LayoutTopOnVisState = ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutTopOnVis)].BoolValue;
-                                            LayoutFullOnVisState = ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutFullOnVis)].BoolValue;
-                                            LayoutHeadOnVisState = ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutHeadOnVis)].BoolValue;
-                                            LayoutLeftOnVisState = ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutLeftOnVis)].BoolValue;
-                                            LayoutRightOnVisState = ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutRightOnVis)].BoolValue;
-                                            ControlSystem.tp.BooleanInput[((uint)Join.pgAIVis)].BoolValue = true;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.pgCam1AIVis)].BoolValue = false;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.pgCam2AIVis)].BoolValue = true;
+                                            Student_AIOnVisState = ControlSystem.tp.BooleanInput[((uint)Join.btn2_AIOnVis)].BoolValue;
+                                            Student_LayoutCtrOnVisState = ControlSystem.tp.BooleanInput[((uint)Join.btn2_LayoutCtrOnVis)].BoolValue;
+                                            Student_LayoutTopOnVisState = ControlSystem.tp.BooleanInput[((uint)Join.btn2_LayoutTopOnVis)].BoolValue;
+                                            Student_LayoutFullOnVisState = ControlSystem.tp.BooleanInput[((uint)Join.btn2_LayoutFullOnVis)].BoolValue;
+                                            Student_LayoutHeadOnVisState = ControlSystem.tp.BooleanInput[((uint)Join.btn2_LayoutHeadOnVis)].BoolValue;
+                                            Student_LayoutLeftOnVisState = ControlSystem.tp.BooleanInput[((uint)Join.btn2_LayoutLeftOnVis)].BoolValue;
+                                            Student_LayoutRightOnVisState = ControlSystem.tp.BooleanInput[((uint)Join.btn2_LayoutRightOnVis)].BoolValue;
                                             ControlSystem.tp.BooleanInput[((uint)Join.mode_StuCamVisibile)].BoolValue = true;
                                             ControlSystem.tp.BooleanInput[((uint)Join.mode_TeachCamVisibile)].BoolValue = false;
                                             ControlSystem.tp.StringInput[((uint)Join.serial_Stream)].StringValue = Constants.rtsp + RoomSetup.SonyCameras.CommonProperties.StudentIP + Constants.rtspStream;
                                             break;
                                         case (uint)Join.btn_TeachCamControl:
-                                            ControlSystem.tp.BooleanInput[((uint)Join.btn_AIOnVis)].BoolValue = AIOnVisState;
-                                            ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutCtrOnVis)].BoolValue = LayoutCtrOnVisState;
-                                            ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutTopOnVis)].BoolValue = LayoutTopOnVisState;
-                                            ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutFullOnVis)].BoolValue = LayoutFullOnVisState;
-                                            ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutHeadOnVis)].BoolValue = LayoutHeadOnVisState;
-                                            ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutLeftOnVis)].BoolValue = LayoutLeftOnVisState;
-                                            ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutRightOnVis)].BoolValue = LayoutRightOnVisState;
-                                            ControlSystem.tp.BooleanInput[((uint)Join.pgAIVis)].BoolValue = false;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.pgCam1AIVis)].BoolValue = true;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.pgCam2AIVis)].BoolValue = false;
+                                            Teach_AIOnVisState = ControlSystem.tp.BooleanInput[((uint)Join.btn_AIOnVis)].BoolValue;
+                                            Teach_LayoutCtrOnVisState = ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutCtrOnVis)].BoolValue;
+                                            Teach_LayoutTopOnVisState = ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutTopOnVis)].BoolValue;
+                                            Teach_LayoutFullOnVisState = ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutFullOnVis)].BoolValue;
+                                            Teach_LayoutHeadOnVisState = ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutHeadOnVis)].BoolValue;
+                                            Teach_LayoutLeftOnVisState = ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutLeftOnVis)].BoolValue;
+                                            Teach_LayoutRightOnVisState = ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutRightOnVis)].BoolValue;
                                             ControlSystem.tp.BooleanInput[((uint)Join.mode_StuCamVisibile)].BoolValue = false;
                                             ControlSystem.tp.BooleanInput[((uint)Join.mode_TeachCamVisibile)].BoolValue = true;
                                             ControlSystem.tp.StringInput[((uint)Join.serial_Stream)].StringValue = Constants.rtsp + RoomSetup.SonyCameras.CommonProperties.TeacherIP + Constants.rtspStream;
@@ -951,7 +981,74 @@ namespace NFAHRooms
                                             ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutFullOnVis)].BoolValue = false;
                                             ControlSystem.tp.BooleanInput[((uint)Join.btn_LayoutHeadOnVis)].BoolValue = true;
                                             break;
- 
+
+                                        case ((uint)Join.btn2_AIOff):
+                                            _ = Sony.SendRequest(Sony.urls["AI_ON2"]);
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn2_AIOnVis)].BoolValue = true;
+                                            _ = Sony.SendRequest(Sony.urls["Lay_Ctr2"]);
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn2_LayoutCtrOnVis)].BoolValue = true;
+                                            _ = Sony.SendRequest(Sony.urls["Lay_Top2"]);
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn2_LayoutTopOnVis)].BoolValue = true;
+                                            break;
+                                        case ((uint)Join.btn2_AIOn):
+                                            _ = Sony.SendRequest(Sony.urls["AI_OFF2"]);
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn2_AIOnVis)].BoolValue = false;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn2_LayoutCtrOnVis)].BoolValue = false;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn2_LayoutTopOnVis)].BoolValue = false;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn2_LayoutFullOnVis)].BoolValue = false;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn2_LayoutHeadOnVis)].BoolValue = false;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn2_LayoutLeftOnVis)].BoolValue = false;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn2_LayoutRightOnVis)].BoolValue = false;
+                                            break;
+                                        case ((uint)Join.btn2_LayoutCtrOff):
+                                            _ = Sony.SendRequest(Sony.urls["Lay_Ctr2"]);
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn2_LayoutCtrOnVis)].BoolValue = true;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn2_LayoutLeftOnVis)].BoolValue = false;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn2_LayoutRightOnVis)].BoolValue = false;
+                                            break;
+                                        case ((uint)Join.btn2_LayoutLeftOff):
+                                            _ = Sony.SendRequest(Sony.urls["Lay_Left2"]);
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn2_LayoutCtrOnVis)].BoolValue = false;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn2_LayoutLeftOnVis)].BoolValue = true;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn2_LayoutRightOnVis)].BoolValue = false;
+                                            break;
+                                        case ((uint)Join.btn2_LayoutRightOff):
+                                            _ = Sony.SendRequest(Sony.urls["Lay_Right2"]);
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn2_LayoutCtrOnVis)].BoolValue = false;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn2_LayoutLeftOnVis)].BoolValue = false;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn2_LayoutRightOnVis)].BoolValue = true;
+                                            break;
+                                        case ((uint)Join.btn2_LayoutFullOff):
+                                            _ = Sony.SendRequest(Sony.urls["AI_OFF2"]);
+                                            Thread.Sleep(1000);
+                                            _ = Sony.SendRequest(Sony.urls["Lay_Full2"]);
+                                            Thread.Sleep(1000);
+                                            _ = Sony.SendRequest(Sony.urls["AI_ON2"]);
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn2_LayoutTopOnVis)].BoolValue = false;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn2_LayoutFullOnVis)].BoolValue = true;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn2_LayoutHeadOnVis)].BoolValue = false;
+                                            break;
+                                        case ((uint)Join.btn2_LayoutTopOff):
+                                            _ = Sony.SendRequest(Sony.urls["AI_OFF2"]);
+                                            Thread.Sleep(1000);
+                                            _ = Sony.SendRequest(Sony.urls["Lay_Top2"]);
+                                            Thread.Sleep(1000);
+                                            _ = Sony.SendRequest(Sony.urls["AI_ON2"]);
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn2_LayoutTopOnVis)].BoolValue = true;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn2_LayoutFullOnVis)].BoolValue = false;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn2_LayoutHeadOnVis)].BoolValue = false;
+                                            break;
+                                        case ((uint)Join.btn2_LayoutHeadOff):
+                                            _ = Sony.SendRequest(Sony.urls["AI_OFF2"]);
+                                            Thread.Sleep(1000);
+                                            _ = Sony.SendRequest(Sony.urls["Lay_Head2"]);
+                                            Thread.Sleep(1000);
+                                            _ = Sony.SendRequest(Sony.urls["AI_ON2"]);
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn2_LayoutTopOnVis)].BoolValue = false;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn2_LayoutFullOnVis)].BoolValue = false;
+                                            ControlSystem.tp.BooleanInput[((uint)Join.btn2_LayoutHeadOnVis)].BoolValue = true;
+                                            break;
+
                                         default:
                                             break;
                                     }

@@ -25,6 +25,8 @@
         pg3Display = 14,
         pgVTC = 15,
         pgAIVis = 16,
+        pgCam1AIVis = 17,
+        pgCam2AIVis = 18,
 
         btn1_PCOff = 120,
         btn1_PCOn = 130,
@@ -226,6 +228,34 @@
         btn_LayoutHeadOff = 726,
         btn_LayoutHeadOn = 736,
         btn_LayoutHeadOnVis = 736,
+
+        btn2_AIOff = 740,
+        btn2_AIOn = 750,
+        btn2_AIOnVis = 750,
+
+        btn2_LayoutLeftOff = 741,
+        btn2_LayoutLeftOn = 751,
+        btn2_LayoutLeftOnVis = 751,
+
+        btn2_LayoutCtrOff = 742,
+        btn2_LayoutCtrOn = 752,
+        btn2_LayoutCtrOnVis = 752,
+
+        btn2_LayoutRightOff = 743,
+        btn2_LayoutRightOn = 753,
+        btn2_LayoutRightOnVis = 753,
+
+        btn2_LayoutFullOff = 744,
+        btn2_LayoutFullOn = 754,
+        btn2_LayoutFullOnVis = 754,
+
+        btn2_LayoutTopOff = 745,
+        btn2_LayoutTopOn = 755,
+        btn2_LayoutTopOnVis = 755,
+
+        btn2_LayoutHeadOff = 746,
+        btn2_LayoutHeadOn = 756,
+        btn2_LayoutHeadOnVis = 756,
 
 
     }

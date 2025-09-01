@@ -50,7 +50,7 @@ namespace NFAHRooms
                     
                     HuddleHandler.Initialize();
 #if DEBUG
-                    gCrestronConsole.PrintLine("Huddle Room Setup");
+                    CrestronConsole.PrintLine("Huddle Room Setup");
 #endif
                 }
                 else if (RoomSetup.RoomType.ToLower() == "evertz_room")

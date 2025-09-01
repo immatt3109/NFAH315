@@ -43,7 +43,9 @@ namespace NFAHRooms
             urls.Add("Lay_FullHeight", Constants.http + RoomSetup.SonyCameras.CommonProperties.TeacherIP + Constants.AICommand + "PtzAutoFramingShotMode=height3");
             urls.Add("Lay_TopHeight", Constants.http + RoomSetup.SonyCameras.CommonProperties.TeacherIP + Constants.AICommand + "PtzAutoFramingShotMode=height4");
             urls.Add("Lay_HeadHeight", Constants.http + RoomSetup.SonyCameras.CommonProperties.TeacherIP + Constants.AICommand + "PtzAutoFramingShotMode=height1");
-            
+            urls.Add("Teach_AIInquire", Constants.http + RoomSetup.SonyCameras.CommonProperties.TeacherIP + Constants.command + "inquiry.cgi?inq=PtzAutoFraming");
+            urls.Add("Teach_AIHorizontal", Constants.http + RoomSetup.SonyCameras.CommonProperties.TeacherIP + Constants.command + "inquiry.cgi?inq=PtzAutoFramingAdjustObjectHorizontal");
+
             urls.Add("Student_MoveUP", Constants.http + RoomSetup.SonyCameras.CommonProperties.StudentIP + Constants.command + Constants.ptzf + "up," + movespeed);
             urls.Add("Student_MoveDOWN", Constants.http + RoomSetup.SonyCameras.CommonProperties.StudentIP + Constants.command + Constants.ptzf + "down," + movespeed);
             urls.Add("Student_MoveLEFT", Constants.http + RoomSetup.SonyCameras.CommonProperties.StudentIP + Constants.command + Constants.ptzf + "left," + movespeed);
@@ -59,6 +61,19 @@ namespace NFAHRooms
             urls.Add("Student_Preset1", Constants.http + RoomSetup.SonyCameras.CommonProperties.StudentIP + Constants.command + Constants.preset + "1");
             urls.Add("Student_Preset2", Constants.http + RoomSetup.SonyCameras.CommonProperties.StudentIP + Constants.command + Constants.preset + "2");
             urls.Add("Student_Preset3", Constants.http + RoomSetup.SonyCameras.CommonProperties.StudentIP + Constants.command + Constants.preset + "3");
+            urls.Add("AI_ON2", Constants.http + RoomSetup.SonyCameras.CommonProperties.StudentIP + Constants.AICommand + "PtzAutoFraming=on");
+            urls.Add("AI_OFF2", Constants.http + RoomSetup.SonyCameras.CommonProperties.StudentIP + Constants.AICommand + "PtzAutoFraming=off");
+            urls.Add("Lay_Ctr2", Constants.http + RoomSetup.SonyCameras.CommonProperties.StudentIP + Constants.AICommand + "PtzAutoFramingAdjustObjectHorizontal=center");
+            urls.Add("Lay_Left2", Constants.http + RoomSetup.SonyCameras.CommonProperties.StudentIP + Constants.AICommand + "PtzAutoFramingAdjustObjectHorizontal=left1");
+            urls.Add("Lay_Right2", Constants.http + RoomSetup.SonyCameras.CommonProperties.StudentIP + Constants.AICommand + "PtzAutoFramingAdjustObjectHorizontal=right1");
+            urls.Add("Lay_Full2", Constants.http + RoomSetup.SonyCameras.CommonProperties.StudentIP + Constants.AICommand + "PtzAutoFramingShotMode=fullbody");
+            urls.Add("Lay_Top2", Constants.http + RoomSetup.SonyCameras.CommonProperties.StudentIP + Constants.AICommand + "PtzAutoFramingShotMode=waist");
+            urls.Add("Lay_Head2", Constants.http + RoomSetup.SonyCameras.CommonProperties.StudentIP + Constants.AICommand + "PtzAutoFramingShotMode=closeup");
+            urls.Add("Lay_FullHeight2", Constants.http + RoomSetup.SonyCameras.CommonProperties.StudentIP + Constants.AICommand + "PtzAutoFramingShotMode=height3");
+            urls.Add("Lay_TopHeight2", Constants.http + RoomSetup.SonyCameras.CommonProperties.StudentIP + Constants.AICommand + "PtzAutoFramingShotMode=height4");
+            urls.Add("Lay_HeadHeight2", Constants.http + RoomSetup.SonyCameras.CommonProperties.StudentIP + Constants.AICommand + "PtzAutoFramingShotMode=height1");
+            urls.Add("Student_AIInquire", Constants.http + RoomSetup.SonyCameras.CommonProperties.StudentIP + Constants.command + "inquiry.cgi?inq=PtzAutoFraming");
+            urls.Add("Student_AIHorizontal", Constants.http + RoomSetup.SonyCameras.CommonProperties.StudentIP + Constants.command + "inquiry.cgi?inq=PtzAutoFramingAdjustObjectHorizontal");
 
             urls.Add("TPS1_Set", Constants.http + RoomSetup.SonyCameras.CommonProperties.TeacherIP + Constants.command + Constants.presetset + "1,TPS1,On");
             urls.Add("TPS2_Set", Constants.http + RoomSetup.SonyCameras.CommonProperties.TeacherIP + Constants.command + Constants.presetset + "2,TPS2,On");
